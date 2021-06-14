@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "./static/css/main.8c8b27cf.chunk.css",
+    "main.js": "./static/js/main.a32a4305.chunk.js",
+    "main.js.map": "./static/js/main.a32a4305.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.d92d6cd1.js",
+    "runtime-main.js.map": "./static/js/runtime-main.d92d6cd1.js.map",
+    "static/css/2.b721c66f.chunk.css": "./static/css/2.b721c66f.chunk.css",
+    "static/js/2.9ee62452.chunk.js": "./static/js/2.9ee62452.chunk.js",
+    "static/js/2.9ee62452.chunk.js.map": "./static/js/2.9ee62452.chunk.js.map",
+    "static/js/3.ba15e926.chunk.js": "./static/js/3.ba15e926.chunk.js",
+    "static/js/3.ba15e926.chunk.js.map": "./static/js/3.ba15e926.chunk.js.map",
+    "index.html": "./index.html",
+    "service-worker.js": "./service-worker.js",
+    "service-worker.js.map": "./service-worker.js.map",
+    "static/css/2.b721c66f.chunk.css.map": "./static/css/2.b721c66f.chunk.css.map",
+    "static/css/main.8c8b27cf.chunk.css.map": "./static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.9ee62452.chunk.js.LICENSE.txt": "./static/js/2.9ee62452.chunk.js.LICENSE.txt",
+    "static/media/MeinStandpunktMarker.aec65d22.jpg": "./static/media/MeinStandpunktMarker.aec65d22.jpg",
+    "static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg": "./static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg",
+    "static/media/font-awesome.css": "./static/media/fontawesome-webfont.f691f37e.woff",
+    "static/media/leaflet.extra-markers.min.css": "./static/media/markers_default@2x.9593b3c7.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d92d6cd1.js",
+    "static/css/2.b721c66f.chunk.css",
+    "static/js/2.9ee62452.chunk.js",
+    "static/css/main.8c8b27cf.chunk.css",
+    "static/js/main.a32a4305.chunk.js"
+  ]
+}
