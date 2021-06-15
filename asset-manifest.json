@@ -1,31 +1,31 @@
 {
   "files": {
     "main.css": "./static/css/main.8c8b27cf.chunk.css",
-    "main.js": "./static/js/main.8cd94a86.chunk.js",
-    "main.js.map": "./static/js/main.8cd94a86.chunk.js.map",
-    "runtime-main.js": "./static/js/runtime-main.d92d6cd1.js",
-    "runtime-main.js.map": "./static/js/runtime-main.d92d6cd1.js.map",
+    "main.js": "./static/js/main.024163b5.chunk.js",
+    "main.js.map": "./static/js/main.024163b5.chunk.js.map",
+    "runtime-main.js": "./static/js/runtime-main.7c487fe8.js",
+    "runtime-main.js.map": "./static/js/runtime-main.7c487fe8.js.map",
     "static/css/2.b721c66f.chunk.css": "./static/css/2.b721c66f.chunk.css",
-    "static/js/2.1a27efcc.chunk.js": "./static/js/2.1a27efcc.chunk.js",
-    "static/js/2.1a27efcc.chunk.js.map": "./static/js/2.1a27efcc.chunk.js.map",
-    "static/js/3.ba15e926.chunk.js": "./static/js/3.ba15e926.chunk.js",
-    "static/js/3.ba15e926.chunk.js.map": "./static/js/3.ba15e926.chunk.js.map",
+    "static/js/2.8c6eb878.chunk.js": "./static/js/2.8c6eb878.chunk.js",
+    "static/js/2.8c6eb878.chunk.js.map": "./static/js/2.8c6eb878.chunk.js.map",
+    "static/js/3.b6e6442b.chunk.js": "./static/js/3.b6e6442b.chunk.js",
+    "static/js/3.b6e6442b.chunk.js.map": "./static/js/3.b6e6442b.chunk.js.map",
     "index.html": "./index.html",
     "service-worker.js": "./service-worker.js",
     "service-worker.js.map": "./service-worker.js.map",
     "static/css/2.b721c66f.chunk.css.map": "./static/css/2.b721c66f.chunk.css.map",
     "static/css/main.8c8b27cf.chunk.css.map": "./static/css/main.8c8b27cf.chunk.css.map",
-    "static/js/2.1a27efcc.chunk.js.LICENSE.txt": "./static/js/2.1a27efcc.chunk.js.LICENSE.txt",
+    "static/js/2.8c6eb878.chunk.js.LICENSE.txt": "./static/js/2.8c6eb878.chunk.js.LICENSE.txt",
     "static/media/MeinStandpunktMarker.aec65d22.jpg": "./static/media/MeinStandpunktMarker.aec65d22.jpg",
     "static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg": "./static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg",
     "static/media/font-awesome.css": "./static/media/fontawesome-webfont.f691f37e.woff",
     "static/media/leaflet.extra-markers.min.css": "./static/media/markers_default@2x.9593b3c7.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.d92d6cd1.js",
+    "static/js/runtime-main.7c487fe8.js",
     "static/css/2.b721c66f.chunk.css",
-    "static/js/2.1a27efcc.chunk.js",
+    "static/js/2.8c6eb878.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.8cd94a86.chunk.js"
+    "static/js/main.024163b5.chunk.js"
   ]
 }
