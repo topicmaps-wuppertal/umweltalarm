@@ -67,7 +67,7 @@ function UmweltalarmMap() {
         style={{
           position: "absolute",
           left: windowSize?.width / 2 - 1,
-          height: windowSize?.width || "100%",
+          height: windowSize?.height || "100%",
           width: "2px",
           backgroundColor: "#00000023",
           zIndex: "100000",
