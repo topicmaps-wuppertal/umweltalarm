@@ -1,36 +1,29 @@
-import { useEffect, useContext } from "react";
-
-import "./App.css";
-import { useState } from "react";
+import bboxPolygon from "@turf/bbox-polygon";
+import booleanIntersects from "@turf/boolean-intersects";
+import turfCenter from "@turf/center";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import "react-cismap/topicMaps.css";
-import { md5FetchText, fetchJSON, md5FetchJSON } from "react-cismap/tools/fetching";
+import { md5FetchJSON, md5FetchText } from "react-cismap/tools/fetching";
 import { getGazDataForTopicIds } from "react-cismap/tools/gazetteerHelper";
-
-import { getClusterIconCreatorFunction } from "react-cismap/tools/uiHelper";
-import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
-import FeatureCollection from "react-cismap/FeatureCollection";
-import GenericInfoBoxFromFeature from "react-cismap/topicmaps/GenericInfoBoxFromFeature";
-import getGTMFeatureStyler from "react-cismap/topicmaps/generic/GTMStyler";
-import Crosshair from "./Crosshair";
-import booleanIntersects from "@turf/boolean-intersects";
-import turf from "@turf/helpers";
-import bboxPolygon from "@turf/bbox-polygon";
-import turfCenter from "@turf/center";
+import "react-cismap/topicMaps.css";
 import ResponsiveInfoBox from "react-cismap/topicmaps/ResponsiveInfoBox";
+import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
+import "./App.css";
+import MyMenu from "./components/Menu";
+import Crosshair from "./Crosshair";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
 const getData = async (setGazData, setInfoData) => {
   const prefix = "GazDataForStories";
   const sources = {};
-  sources.adressen = await md5FetchText(prefix, host + "/data/adressen.json");
-  sources.bezirke = await md5FetchText(prefix, host + "/data/bezirke.json");
-  sources.quartiere = await md5FetchText(prefix, host + "/data/quartiere.json");
-  sources.pois = await md5FetchText(prefix, host + "/data/pois.json");
-  sources.kitas = await md5FetchText(prefix, host + "/data/kitas.json");
+  sources.adressen = await md5FetchText(prefix, host + "/data/3857/adressen.json");
+  sources.bezirke = await md5FetchText(prefix, host + "/data/3857/bezirke.json");
+  sources.quartiere = await md5FetchText(prefix, host + "/data/3857/quartiere.json");
+  sources.pois = await md5FetchText(prefix, host + "/data/3857/pois.json");
+  sources.kitas = await md5FetchText(prefix, host + "/data/3857/kitas.json");
 
   const gazData = getGazDataForTopicIds(sources, [
     "pois",
@@ -42,8 +35,24 @@ const getData = async (setGazData, setInfoData) => {
 
   setGazData(gazData);
 
-  const ns = await md5FetchJSON(prefix, host + "/data/naturschutzgebiete.json");
-  const ls = await md5FetchJSON(prefix, host + "/data/landschaftsschutzgebiete.json");
+  const ns = await md5FetchJSON(prefix, host + "/data/3857/naturschutzgebiete.json");
+  const ls = await md5FetchJSON(prefix, host + "/data/3857/landschaftsschutzgebiete.json");
+  for (const f of ns) {
+    f.crs = {
+      type: "name",
+      properties: {
+        name: "urn:ogc:def:crs:EPSG::25832",
+      },
+    };
+  }
+  for (const f of ls) {
+    f.crs = {
+      type: "name",
+      properties: {
+        name: "urn:ogc:def:crs:EPSG::25832",
+      },
+    };
+  }
   setInfoData([ns, ls]);
 };
 
@@ -59,6 +68,9 @@ function UmweltalarmMap() {
       <Crosshair />
       <TopicMapComponent
         gazData={gazData}
+        modalMenu={<MyMenu />}
+        homeZoom={13}
+        maxZoom={22}
         mappingBoundsChanged={(boundingBox) => {
           setHits([]);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
@@ -78,8 +90,6 @@ function UmweltalarmMap() {
             }
           }
           setHits(hits);
-
-          console.log("xxx end");
         }}
       >
         <ResponsiveInfoBox

@@ -10,7 +10,7 @@ const Comp = () => {
       <div
         style={{
           position: "absolute",
-          top: windowSize?.height / 2 - 1,
+          top: (windowSize?.height || 500) / 2 - 1,
           width: windowSize?.width || "100%",
           height: "2px",
           backgroundColor: "#00000023",
@@ -21,7 +21,7 @@ const Comp = () => {
       <div
         style={{
           position: "absolute",
-          left: windowSize?.width / 2 - 1,
+          left: (windowSize?.width || 500) / 2 - 1,
           height: windowSize?.height || "100%",
           width: "2px",
           backgroundColor: "#00000023",
@@ -33,8 +33,8 @@ const Comp = () => {
         style={{
           borderRadius: "50%",
           position: "absolute",
-          left: windowSize?.width / 2 - 10,
-          top: windowSize?.height / 2 - 10,
+          left: (windowSize?.width || 500) / 2 - 10,
+          top: (windowSize?.height || 500) / 2 - 10,
           height: "20px",
           width: "20px",
           backgroundColor: "#00000023",
