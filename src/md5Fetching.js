@@ -1,21 +1,38 @@
 import Dexie from 'dexie';
+import Flatbush from 'flatbush';
+import turf from 'turf';
 
 export const CACHE_JWT = "--cached--data--";
+export const OBJECT_TABLE_EXT = "'_all_objects'";
 
+export const initTables = (prefix, daqKeys) => {
+    var db = new Dexie(prefix);
+    var schema = new Object();
+    for (const key of daqKeys) {
+        schema[key] = "++id, md5,data,time";
+        schema[key + OBJECT_TABLE_EXT] = "id";
+    }
+    schema['index_table'] = "id,table,tabid";
+    console.log(schema);
+    db.version(3).stores(schema);
 
-export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey) => {
+    return db;
+}
+
+export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) => {
     const cachePrefix = "@" + prefix + ".." + apiUrl + "." + daqKey;
     const md5Key = cachePrefix + ".md5";
     const dataKey = cachePrefix + ".data";
     const timeKey = cachePrefix + ".time";
-    var db = new Dexie(daqKey);
+//    var db = new Dexie(prefix);
 
-    if (await db[cachePrefix] == undefined) {
-        var schema = new Object();
-        schema[daqKey] = "++id, md5,data,time";
-        console.log(schema);
-        db.version(1).stores(schema);
-    }
+//    var schema = new Object();
+//    schema[daqKey] = "++id, md5,data,time";
+//    schema[daqKey + '_all_objects'] = "id";
+//    schema['index_table'] = "id,table,tabid";
+//    console.log(schema);
+//    db.version(2).stores(schema);
+
     const allObjects = await db.table(daqKey).toArray();
     var md5InCache = null;
 
@@ -83,6 +100,7 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey) => {
               console.log('new md5: ' + newData.md5);
               await db.table(daqKey).clear();
               await db.table(daqKey).add(newData);
+              await indexGeometries(newData, daqKey, prefix, db);
             } else if (status === 304) {
               console.log("DAQ cache hit for " + daqKey);
               //go for result.time after the new version of the action is live
@@ -128,3 +146,35 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey) => {
     }
   };
   
+
+  export const indexGeometries = async (content, table, prefix, db) => {
+    const index = new Flatbush(JSON.parse(content.data).length);
+    const tableObject = db.table(table + OBJECT_TABLE_EXT);
+    await tableObject.clear();
+
+    for (const el of JSON.parse(content.data)) {
+      const geo = getBoundsFromArea(el.geojson);
+      var i = index.add(geo[0][0], geo[1][0], geo[0][1], geo[1][1]);
+      var newData = new Object();
+      newData['id'] = i;
+      newData['data'] = el.toString();
+      await tableObject.add(newData);
+    }
+
+    index.finish();
+    
+    const allObjects = await db.table(table).toArray();
+    var changes = new Object();
+    changes['pol_index'] = index.data;
+    await db.table(table).update(allObjects[0].id, changes);
+  }
+
+
+  export const getBoundsFromArea = (area) => {
+    const bboxArray = turf.bbox(area);
+    const corner1 = [bboxArray[1], bboxArray[0]];
+    const corner2 = [bboxArray[3], bboxArray[2]];
+    var bounds = [corner1, corner2];
+
+    return bounds;
+  }
