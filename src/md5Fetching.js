@@ -3,17 +3,15 @@ import Flatbush from 'flatbush';
 import turf from 'turf';
 
 export const CACHE_JWT = "--cached--data--";
-export const OBJECT_TABLE_EXT = "_all_objects";
 
 export const initTables = (prefix, daqKeys) => {
     var db = new Dexie(prefix);
     var schema = new Object();
     for (const key of daqKeys) {
-        schema[key] = "++id, md5,data,time";
-        schema[key + OBJECT_TABLE_EXT] = "id";
+        schema[key] = "gid";
     }
-    schema['index_table'] = "id,table,tabid";
-    db.version(5).stores(schema);
+    schema['daq_meta'] = "++id,name,md5,time";
+    db.version(7).stores(schema);
 
     return db;
 }
@@ -24,11 +22,11 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     const dataKey = cachePrefix + ".data";
     const timeKey = cachePrefix + ".time";
 
-    const allObjects = await db.table(daqKey).toArray();
+    const allObjects = await db.table('daq_meta').get({name: daqKey});
     var md5InCache = null;
 
-    if (allObjects[0] != null) {
-        md5InCache = allObjects[0].md5;
+    if (allObjects != null) {
+        md5InCache = allObjects.md5;
     }
   
     console.log("DAQ for " + daqKey);
@@ -49,10 +47,10 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     );
   
     if (jwt === CACHE_JWT) {
-      const data = allObjects[0].data;
+      const data = 'data retrieved';
       
       //go for result.time after the new version of the action is live
-      const time = allObjects[0].time;
+      const time = allObjects.time;
       return new Promise((resolve, reject) => {
         resolve({ data, time });
       });
@@ -86,19 +84,23 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
               time = result.time;
               var newData = new Object();
               newData['md5'] = result.md5;
-              newData['data'] = result.content;
               newData['time'] = time;
+              newData['name'] = daqKey;
               console.log('new md5: ' + newData.md5);
-              await db.table(daqKey).clear();
-              await db.table(daqKey).add(newData);
-              await indexGeometries(newData, daqKey, prefix, db);
+
+              if (allObjects != null) {
+                await db.table('daq_meta').update(allObjects.id, newData);
+              } else {
+                db.table('daq_meta').add(newData);
+              } 
+              await indexGeometries(data, daqKey, prefix, db);
             } else if (status === 304) {
               console.log("DAQ cache hit for " + daqKey);
               //go for result.time after the new version of the action is live
 
-              if (allObjects[0] != null) {
-                time = allObjects[0].time;
-                data = JSON.parse(allObjects[0].data);
+              if (allObjects != null) {
+                time = allObjects.time;
+                data = 'data retrieved';
               }
             }
   
@@ -139,25 +141,25 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
   
 
   export const indexGeometries = async (content, table, prefix, db) => {
-    const index = new Flatbush(JSON.parse(content.data).length);
-    const tableObject = db.table(table + OBJECT_TABLE_EXT);
+    const index = new Flatbush(content.length);
+    const tableObject = db.table(table);
     await tableObject.clear();
 
-    for (const el of JSON.parse(content.data)) {
+    for (const el of content) {
       const geo = getBoundsFromArea(el.geojson);
       var i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
       var newData = new Object();
-      newData['id'] = i;
-      newData['data'] = JSON.stringify(el);
+      newData['gid'] = i;
+      newData['data'] = el;//JSON.stringify(el);
       await tableObject.add(newData);
     }
 
     index.finish();
     
-    const allObjects = await db.table(table).toArray();
+    const allObjects = await db.table('daq_meta').get({name: table});
     var changes = new Object();
     changes['pol_index'] = index.data;
-    await db.table(table).update(allObjects[0].id, changes);
+    await db.table('daq_meta').update(allObjects.id, changes);
   }
 
 

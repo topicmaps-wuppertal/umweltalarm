@@ -21,11 +21,11 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     const geomBounds = getBoundsFromArea(geom);
 
     for (const key of daqKeys) {
-        const tableObjects = await db.table(key).toArray();
-        const otable  = await db.table(key + OBJECT_TABLE_EXT);
+        const tableObjects = await db.table('daq_meta').get({name: key});
+        const otable  = await db.table(key);
 
-        if (tableObjects[0] != null) {
-            var serIndex = tableObjects[0].pol_index;
+        if (tableObjects != null) {
+            var serIndex = tableObjects.pol_index;
             if (serIndex != null) {
                 const index = Flatbush.from(serIndex);
                 var indizes = index.search(geomBounds[0][1], geomBounds[0][0], geomBounds[1][1], geomBounds[1][0]);
@@ -33,7 +33,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                 if (indizes != null) {
                     for (var i of indizes) {
                         var o = await otable.get(i);
-                        var obj = JSON.parse(o.data);
+                        var obj = o.data;
                         obj['typ'] = key;
                         obj['default_name'] = obj[nameMapping[key]];
                         var geoj = obj.geojson;
@@ -56,10 +56,10 @@ export const offlineDataAvailable = async (db, daqKeys) => {
     var lastTime = null;
 
     for (const key of daqKeys) {
-        const tableObjects = await db.table(key).toArray();
+        const tableObjects = await db.table('daq_meta').get({name: key});
 
-        if (tableObjects[0] != null) {
-            lastTime = tableObjects[0].time;
+        if (tableObjects != null) {
+            lastTime = tableObjects.time;
         } else {
             console.log('offline data for key ' + key + ' not available');
             return null;
