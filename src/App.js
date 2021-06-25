@@ -66,12 +66,14 @@ function App() {
 
   baseLayerConf.namedLayers.cismetLight = {
     type: "vector",
-    style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
+    style_: "http://0.0.0.0:888/styles/cismetplus/style.json",
+    style: "https://omt.map-hosting.de/styles/cismetplus/style.json",
     xpane: "backgroundvectorLayers",
   };
   baseLayerConf.namedLayers.cismetText = {
     type: "vector",
-    style: "https://omt.map-hosting.de/styles/klokantech-basic/style.json",
+    style: "http://omt.map-hosting.de/styles/klokantech-basic/style.json",
+
     opacity: 0.05,
     iconOpacity: 0.7,
     textOpacity: 0.7,
