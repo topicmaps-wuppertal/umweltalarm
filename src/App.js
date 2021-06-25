@@ -133,21 +133,25 @@ function App() {
   // TODO problems in settings preview map wehen doing the immutable way
   const baseLayerConf = { ...defaultLayerConf };
 
-  baseLayerConf.namedLayers.cismetLight = {
-    type: "vector",
-    style_: "http://0.0.0.0:888/styles/cismetplus/style.json",
-    style: "https://omt.map-hosting.de/styles/cismetplus/style.json",
-    xpane: "backgroundvectorLayers",
-  };
-  baseLayerConf.namedLayers.cismetText = {
-    type: "vector",
-    style: "http://omt.map-hosting.de/styles/klokantech-basic/style.json",
+  if (baseLayerConf.namedLayers.cismetLight == undefined) {
+    baseLayerConf.namedLayers.cismetLight = {
+      type: "vector",
+      style_: "http://0.0.0.0:888/styles/cismetplus/style.json",
+      style: "https://omt.map-hosting.de/styles/cismetplus/style.json",
+      xpane: "backgroundvectorLayers",
+    };
+  }
+  if (baseLayerConf.namedLayers.cismetLight == undefined) {
+    baseLayerConf.namedLayers.cismetText = {
+      type: "vector",
+      style: "http://omt.map-hosting.de/styles/klokantech-basic/style.json",
 
-    opacity: 0.05,
-    iconOpacity: 0.7,
-    textOpacity: 0.7,
-    xpane: "backgroundlayerTooltips",
-  };
+      opacity: 0.05,
+      iconOpacity: 0.7,
+      textOpacity: 0.7,
+      xpane: "backgroundlayerTooltips",
+    };
+  }
 
   return (
     <TopicMapContextProvider
