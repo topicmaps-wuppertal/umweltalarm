@@ -30,7 +30,7 @@ function App() {
   }, []);
 
   const [jwt, _setJWT] = useState();
-  const [outLogged, setOutLogged] = useState();
+  const [loggedOut, setLoggedOut] = useState();
   const [waiting, setWaiting] = useState();
   const [loginInfo, setLoginInfo] = useState();
 
@@ -44,10 +44,10 @@ function App() {
       const jwtInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "jwt");
       if (jwtInCache) {
         setJWT(jwtInCache);
-        setOutLogged(false);
+        setLoggedOut(false);
       } else {
         setJWT(undefined);
-        setOutLogged(true);
+        setLoggedOut(true);
       }
     })();
   }, []);
@@ -77,9 +77,9 @@ function App() {
             console.log("xxx error ", e);
           });
       }
-      setOutLogged(false);
+      setLoggedOut(false);
     } else {
-      setOutLogged(true);
+      setLoggedOut(true);
 //      setDynGazData([]);
     }
   }, [jwt]);
@@ -163,7 +163,7 @@ function App() {
       referenceSystemDefinition={MappingConstants.proj4crs3857def}
       maskingPolygon='POLYGON((668010.063156992 6750719.23021889,928912.612468322 6757273.20343972,930494.610325512 6577553.43685138,675236.835570551 6571367.64964125,668010.063156992 6750719.23021889))'
     >
-      {outLogged && jwt === undefined && (
+      {loggedOut && jwt === undefined && (
         <LoginForm
           key={"login."}
           setJWT={setJWT}
@@ -171,11 +171,11 @@ function App() {
           setLoginInfo={setLoginInfo}
         />
       )}
-      {!outLogged && jwt !== undefined && (
+      {!loggedOut && jwt !== undefined && (
         <Title
           logout={() => {
             setJWT(undefined);
-            setOutLogged(true);
+            setLoggedOut(true);
             setLoginInfo({ color: "#69D2E7", text: "Sie wurden erfolgreich abgemeldet." });
             setTimeout(() => {
               setLoginInfo();
