@@ -3,7 +3,7 @@ import Flatbush from 'flatbush';
 import turf from 'turf';
 
 export const CACHE_JWT = "--cached--data--";
-export const OBJECT_TABLE_EXT = "'_all_objects'";
+export const OBJECT_TABLE_EXT = "_all_objects";
 
 export const initTables = (prefix, daqKeys) => {
     var db = new Dexie(prefix);
@@ -14,7 +14,7 @@ export const initTables = (prefix, daqKeys) => {
     }
     schema['index_table'] = "id,table,tabid";
     console.log(schema);
-    db.version(3).stores(schema);
+    db.version(5).stores(schema);
 
     return db;
 }
@@ -24,14 +24,6 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     const md5Key = cachePrefix + ".md5";
     const dataKey = cachePrefix + ".data";
     const timeKey = cachePrefix + ".time";
-//    var db = new Dexie(prefix);
-
-//    var schema = new Object();
-//    schema[daqKey] = "++id, md5,data,time";
-//    schema[daqKey + '_all_objects'] = "id";
-//    schema['index_table'] = "id,table,tabid";
-//    console.log(schema);
-//    db.version(2).stores(schema);
 
     const allObjects = await db.table(daqKey).toArray();
     var md5InCache = null;
@@ -154,10 +146,10 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
 
     for (const el of JSON.parse(content.data)) {
       const geo = getBoundsFromArea(el.geojson);
-      var i = index.add(geo[0][0], geo[1][0], geo[0][1], geo[1][1]);
+      var i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
       var newData = new Object();
       newData['id'] = i;
-      newData['data'] = el.toString();
+      newData['data'] = JSON.stringify(el);
       await tableObject.add(newData);
     }
 

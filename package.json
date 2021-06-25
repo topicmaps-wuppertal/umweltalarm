@@ -6,14 +6,18 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@turf/buffer": "^6.4.0",
     "@turf/center": "^6.3.0",
+    "dexie": "^3.0.3",
     "fflate": "^0.6.10",
+    "flatbush": "^3.3.0",
     "react": "^16.11",
     "react-bootstrap": "^1.5.2",
     "react-bootstrap-typeahead": "^5.1.4",
     "react-cismap": "^1.2.21",
     "react-dom": "^16.11",
     "react-scripts": "4.0.3",
+    "turf": "^3.0.14",
     "web-vitals": "^0.2.4",
     "workbox-background-sync": "^5.1.3",
     "workbox-broadcast-update": "^5.1.3",
@@ -26,8 +30,7 @@
     "workbox-range-requests": "^5.1.3",
     "workbox-routing": "^5.1.3",
     "workbox-strategies": "^5.1.3",
-    "workbox-streams": "^5.1.3",
-    "dexie": "^3.0.3"
+    "workbox-streams": "^5.1.3"
   },
   "scripts": {
     "start": "react-scripts start",
