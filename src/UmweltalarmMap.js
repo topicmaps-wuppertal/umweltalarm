@@ -78,7 +78,7 @@ function UmweltalarmMap() {
         homeZoom={13}
         maxZoom={22}
         mappingBoundsChanged={(boundingBox) => {
-          setHits([]);
+          setHits(undefined);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
           let bbPoly = bboxPolygon(bbox);
           let center = turfCenter(bbPoly);
@@ -115,17 +115,13 @@ function UmweltalarmMap() {
             </table>
           }
           pixelwidth={300}
-          //   collapsedInfoBox={collapsedInfoBox}
-          //   setCollapsedInfoBox={setCollapsedInfoBox}
           isCollapsible={false}
-          //   handleResponsiveDesign={handleResponsiveDesign}
-          //   infoStyle={infoStyle}
-          //   secondaryInfoBoxElements={secondaryInfoBoxElements}
-          alwaysVisibleDiv={<span>Analyseergebnis ({hits.length})</span>}
+          alwaysVisibleDiv={<span>Analyseergebnis ({(hits !== undefined ? hits.length : '-')})</span>}
           collapsibleDiv={
             <div>
-              {hits.length === 0 && <span>keine Besonderheiten</span>}
-              {hits.length > 0 && (
+              {hits === undefined && <span>Suche ...</span>}
+              {hits !== undefined && hits.length === 0 && <span>keine Besonderheiten</span>}
+              {hits !== undefined && hits.length > 0 && (
                 <div>
                   es wurden folgende Treffer gefunden:
                   {hits.map((entry, index) => {
