@@ -8,13 +8,82 @@ import UmweltalarmMap from "./UmweltalarmMap";
 import { MappingConstants } from "react-cismap";
 import { getInternetExplorerVersion } from "react-cismap/tools/browserHelper";
 import { defaultLayerConf } from "react-cismap/tools/layerFactory";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import localforage from "localforage";
+import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
+import LoginForm from "./components/LoginForm";
+import Waiting from "./components/Waiting";
+import Title from "./components/TitleControl";
+
+
+const host = "https://wupp-topicmaps-data.cismet.de";
+export const appKey = "umweltalarm.Online.Wuppertal";
+export const apiUrl = "https://potenzialflaechen-online-api.cismet.de";
+export const daqKeys = ['StoerfallBetriebeKlasse1', 'StoerfallBetriebeKlasse2', 'wasserverbaende', 'wasserschutzgebiete', 'autobahnmeisterei', 'landschaftsschutzgebiete', 'naturschutzgebiete', 'strassenmeisterei', 'bimschNrw', 'bimschWuppertal', 'trinkwasserbrunnen', 'stadtFlurstuecke'];
+export const db = initTables(appKey, daqKeys);
+
 
 function App() {
   let backgroundModes;
   useEffect(() => {
     document.title = "Umweltalarm Wuppertal";
   }, []);
+
+  const [jwt, _setJWT] = useState();
+  const [outLogged, setOutLogged] = useState();
+  const [waiting, setWaiting] = useState();
+  const [loginInfo, setLoginInfo] = useState();
+
+  const setJWT = (jwt) => {
+    localforage.setItem("@" + appKey + "." + "auth" + "." + "jwt", jwt);
+    _setJWT(jwt);
+  };
+    
+  useEffect(() => {
+    (async () => {
+      const jwtInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "jwt");
+      if (jwtInCache) {
+        setJWT(jwtInCache);
+        setOutLogged(false);
+      } else {
+        setJWT(undefined);
+        setOutLogged(true);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (jwt) {
+
+      for (const daqKey of daqKeys) {
+        md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db)
+          .then(
+            (stoerfallResult) => {
+//              alert('drin ' + daqKey);
+            },
+            (problem) => {
+              if (problem.status === 401) {
+                alert("error 401");
+                setJWT(undefined);
+                setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+                setTimeout(() => {
+                  setLoginInfo();
+                }, 2500);
+              }
+//              setDynGazData([]);
+            }
+          )
+          .catch((e) => {
+            console.log("xxx error ", e);
+          });
+      }
+      setOutLogged(false);
+    } else {
+      setOutLogged(true);
+//      setDynGazData([]);
+    }
+  }, [jwt]);
+
   if (getInternetExplorerVersion() === -1) {
     backgroundModes = [
       {
@@ -90,6 +159,29 @@ function App() {
       referenceSystemDefinition={MappingConstants.proj4crs3857def}
       maskingPolygon='POLYGON((668010.063156992 6750719.23021889,928912.612468322 6757273.20343972,930494.610325512 6577553.43685138,675236.835570551 6571367.64964125,668010.063156992 6750719.23021889))'
     >
+      {outLogged && jwt === undefined && (
+        <LoginForm
+          key={"login."}
+          setJWT={setJWT}
+          loginInfo={loginInfo}
+          setLoginInfo={setLoginInfo}
+        />
+      )}
+      {!outLogged && jwt !== undefined && (
+        <Title
+          logout={() => {
+            setJWT(undefined);
+            setOutLogged(true);
+            setLoginInfo({ color: "#69D2E7", text: "Sie wurden erfolgreich abgemeldet." });
+            setTimeout(() => {
+              setLoginInfo();
+            }, 2500);
+          }}
+          jwt={jwt}
+        />
+      )}
+      <Waiting waiting={waiting} />
+
       <UmweltalarmMap />
     </TopicMapContextProvider>
   );

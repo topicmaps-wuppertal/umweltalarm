@@ -13,12 +13,18 @@ import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
 import "./App.css";
 import MyMenu from "./components/Menu";
 import Crosshair from "./Crosshair";
+import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
+import {searchForFeatures} from "./search"
+import {appKey, daqKeys, db} from "./App";
+import buffer from "@turf/buffer"
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
 const getData = async (setGazData, setInfoData) => {
   const prefix = "GazDataForStories";
   const sources = {};
+
+//  sources.stoerfallbetrieb = await md5ActionFetchDAQ4Dexie(prefix, 'url', 'xxx', 'daqStoerfallBetriebeKlasse1');
   sources.adressen = await md5FetchText(prefix, host + "/data/3857/adressen.json");
   sources.bezirke = await md5FetchText(prefix, host + "/data/3857/bezirke.json");
   sources.quartiere = await md5FetchText(prefix, host + "/data/3857/quartiere.json");
@@ -77,19 +83,11 @@ function UmweltalarmMap() {
           let bbPoly = bboxPolygon(bbox);
           let center = turfCenter(bbPoly);
           //   console.log("xxx mappingBoundsChanged", center);
-          const hits = [];
-          for (const infodataSet of infoData) {
-            // console.log("infodataSet", infodataSet);
-            // console.log("infodataSetLength", infodataSet.length);
-
-            for (const feature of infodataSet) {
-              if (booleanIntersects(feature, center)) {
-                hits.push(feature);
-                console.log("xxx hit", feature.properties.SG_TYP);
-              }
-            }
-          }
-          setHits(hits);
+          console.log(center);
+          console.log( buffer(center, 1, {units: 'meters'} ) );
+          const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
+            setHits(hits);
+          });
         }}
       >
         <ResponsiveInfoBox
@@ -131,7 +129,7 @@ function UmweltalarmMap() {
                 <div>
                   es wurden folgende Treffer gefunden:
                   {hits.map((entry, index) => {
-                    return <div key={index}>{entry.properties.SG_TYP}</div>;
+                    return <div key={index}>{entry.typ + ': ' + entry.default_name}</div>;
                   })}
                 </div>
               )}

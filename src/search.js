@@ -2,10 +2,23 @@ import Flatbush from 'flatbush';
 import {getBoundsFromArea, OBJECT_TABLE_EXT} from "./md5Fetching";
 import booleanIntersects from "@turf/boolean-intersects";
 
+export const nameMapping = new Object();
+nameMapping['StoerfallBetriebeKlasse1']='betrieb';
+nameMapping['StoerfallBetriebeKlasse2']='betrieb';
+nameMapping['wasserverbaende']='name';
+nameMapping['wasserschutzgebiete']='zone';
+nameMapping['autobahnmeisterei']='bezirk';
+nameMapping['landschaftsschutzgebiete']='sg_typ';
+nameMapping['naturschutzgebiete']='sg_typ';
+nameMapping['strassenmeisterei']='bezirk';
+nameMapping['bimschNrw']='astnr';
+nameMapping['bimschWuppertal']='astnr';
+nameMapping['trinkwasserbrunnen']='str_name';
+nameMapping['stadtFlurstuecke']='flurstueck';
 
 export const searchForFeatures = async (db, daqKeys, geom) => {
-    const geomBounds = getBoundsFromArea(geom);
     var hits = [];
+    const geomBounds = getBoundsFromArea(geom);
 
     for (const key of daqKeys) {
         const tableObjects = await db.table(key).toArray();
@@ -22,6 +35,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                         var o = await otable.get(i);
                         var obj = JSON.parse(o.data);
                         obj['typ'] = key;
+                        obj['default_name'] = obj[nameMapping[key]];
                         var geoj = obj.geojson;
                       
 
@@ -35,4 +49,22 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     }
 
     return hits;
+}
+
+
+export const offlineDataAvailable = async (db, daqKeys) => {
+    var lastTime = null;
+
+    for (const key of daqKeys) {
+        const tableObjects = await db.table(key).toArray();
+
+        if (tableObjects[0] != null) {
+            lastTime = tableObjects[0].time;
+        } else {
+            console.log('offline data for key ' + key + ' not available');
+            return null;
+        }
+    }
+
+    return lastTime;
 }

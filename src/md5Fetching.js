@@ -13,7 +13,6 @@ export const initTables = (prefix, daqKeys) => {
         schema[key + OBJECT_TABLE_EXT] = "id";
     }
     schema['index_table'] = "id,table,tabid";
-    console.log(schema);
     db.version(5).stores(schema);
 
     return db;
