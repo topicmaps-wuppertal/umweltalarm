@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^12.1.10",
     "@turf/buffer": "^6.4.0",
     "@turf/center": "^6.3.0",
+    "@turf/circle": "^6.4.0",
+    "dayjs": "^1.10.5",
     "dexie": "^3.0.3",
     "fflate": "^0.6.10",
     "flatbush": "^3.3.0",

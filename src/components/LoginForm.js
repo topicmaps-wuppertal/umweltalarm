@@ -6,7 +6,11 @@ import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopic
 import { apiUrl, appKey, daqKeys, db } from "../App";
 import { CACHE_JWT } from "react-cismap/tools/fetching";
 import {offlineDataAvailable} from "../search"
+import { FeatureCollectionDispatchContext } from "react-cismap/contexts/FeatureCollectionContextProvider";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
+dayjs.extend(customParseFormat);
 
 const LoginForm = ({
   setJWT = (jwt) => {
@@ -16,6 +20,7 @@ const LoginForm = ({
   setLoginInfo = () => {},
 }) => {
   const { windowSize } = useContext(ResponsiveTopicMapContext);
+  const { setMetaInformation } = useContext(FeatureCollectionDispatchContext);
   const pwFieldRef = useRef();
   const userFieldRef = useRef();
   const _height = windowSize?.height || 800 - 180;
@@ -42,6 +47,10 @@ const LoginForm = ({
       console.log('xxx offData' + (dataValueInCache !== null && dataValueInCache !== undefined));
 
       setCacheDataAvailable(dataValueInCache !== null && dataValueInCache !== undefined);
+      if (dataValueInCache !== null && dataValueInCache !== undefined) {
+        const time = dayjs(dataValueInCache, "YYYY-MM-DD hh:mm:ss").toDate();
+        setMetaInformation({time});      
+      }
       if (userInCache) {
         setUser(userInCache);
       }

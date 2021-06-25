@@ -17,6 +17,7 @@ import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
 import {searchForFeatures} from "./search"
 import {appKey, daqKeys, db} from "./App";
 import buffer from "@turf/buffer"
+import circle from "@turf/circle"
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
@@ -66,9 +67,9 @@ function UmweltalarmMap() {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
-  useEffect(() => {
-    getData(setGazData, setInfoData);
-  }, []);
+//  useEffect(() => {
+//    getData(setGazData, setInfoData);
+//  }, []);
   return (
     <div>
       <Crosshair />
@@ -84,7 +85,8 @@ function UmweltalarmMap() {
           let center = turfCenter(bbPoly);
           //   console.log("xxx mappingBoundsChanged", center);
           console.log(center);
-          console.log( buffer(center, 1, {units: 'meters'} ) );
+//          console.log( buffer(center, 1, {units: 'meters'} ) );
+//          console.log( circle(center, 1, {units: 'meters'} ) );
           const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
             setHits(hits);
           });
