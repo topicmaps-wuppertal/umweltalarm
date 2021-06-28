@@ -93,7 +93,9 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
               } else {
                 db.table('daq_meta').add(newData);
               } 
+//              console.time("index time"+daqKey)
               await indexGeometries(data, daqKey, prefix, db);
+//              console.timeEnd("index time"+daqKey)
             } else if (status === 304) {
               console.log("DAQ cache hit for " + daqKey);
               //go for result.time after the new version of the action is live
@@ -145,15 +147,18 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     const tableObject = db.table(table);
     await tableObject.clear();
 
+    const data=[];
+
     for (const el of content) {
       const geo = getBoundsFromArea(el.geojson);
       var i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
       var newData = new Object();
       newData['gid'] = i;
-      newData['data'] = el;//JSON.stringify(el);
-      await tableObject.add(newData);
+      newData['data'] = el;
+      data.push(newData);
     }
 
+    await tableObject.bulkPut(data);
     index.finish();
     
     const allObjects = await db.table('daq_meta').get({name: table});

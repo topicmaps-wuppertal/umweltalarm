@@ -1,5 +1,5 @@
 import Flatbush from 'flatbush';
-import {getBoundsFromArea, OBJECT_TABLE_EXT} from "./md5Fetching";
+import {getBoundsFromArea} from "./md5Fetching";
 import booleanIntersects from "@turf/boolean-intersects";
 
 export const nameMapping = new Object();
@@ -21,26 +21,33 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     const geomBounds = getBoundsFromArea(geom);
 
     for (const key of daqKeys) {
-        const tableObjects = await db.table('daq_meta').get({name: key});
-        const otable  = await db.table(key);
+        const metaTable = await db.table('daq_meta');
 
-        if (tableObjects != null) {
-            var serIndex = tableObjects.pol_index;
-            if (serIndex != null) {
-                const index = Flatbush.from(serIndex);
-                var indizes = index.search(geomBounds[0][1], geomBounds[0][0], geomBounds[1][1], geomBounds[1][0]);
+        if (metaTable) {
+            const tableObjects = await metaTable.get({name: key});
+            const otable  = await db.table(key);
 
-                if (indizes != null) {
-                    for (var i of indizes) {
-                        var o = await otable.get(i);
-                        var obj = o.data;
-                        obj['typ'] = key;
-                        obj['default_name'] = obj[nameMapping[key]];
-                        var geoj = obj.geojson;
-                      
+            if (tableObjects) {
+                var serIndex = tableObjects.pol_index;
+                if (serIndex != null) {
+                    const index = Flatbush.from(serIndex);
+                    var indizes = index.search(geomBounds[0][1], geomBounds[0][0], geomBounds[1][1], geomBounds[1][0]);
 
-                        if (booleanIntersects(geoj, geom)) {
-                            hits.push(obj);
+                    if (indizes != null) {
+                        for (var i of indizes) {
+                            var o = await otable.get(i);
+
+                            if (o != null) {
+                                var obj = o.data;
+                                obj['typ'] = key;
+                                obj['default_name'] = obj[nameMapping[key]];
+                                var geoj = obj.geojson;
+                            
+
+                                if (booleanIntersects(geoj, geom)) {
+                                    hits.push(obj);
+                                }
+                            }
                         }
                     }
                 }
@@ -56,13 +63,17 @@ export const offlineDataAvailable = async (db, daqKeys) => {
     var lastTime = null;
 
     for (const key of daqKeys) {
-        const tableObjects = await db.table('daq_meta').get({name: key});
+        const metaTable = await db.table('daq_meta');
 
-        if (tableObjects != null) {
-            lastTime = tableObjects.time;
-        } else {
-            console.log('offline data for key ' + key + ' not available');
-            return null;
+        if (metaTable != null) {
+            const tableObjects = await metaTable.get({name: key});
+
+            if (tableObjects != null) {
+                lastTime = tableObjects.time;
+            } else {
+                console.log('offline data for key ' + key + ' not available');
+                return null;
+            }
         }
     }
 
