@@ -63,7 +63,6 @@ function App() {
             },
             (problem) => {
               if (problem.status === 401) {
-                alert("error 401");
                 setJWT(undefined);
                 setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
                 setTimeout(() => {
