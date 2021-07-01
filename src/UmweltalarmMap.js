@@ -18,6 +18,7 @@ import {searchForFeatures} from "./search"
 import {appKey, daqKeys, db} from "./App";
 import buffer from "@turf/buffer"
 import circle from "@turf/circle"
+import InfoBox from "./components/InfoBox";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
@@ -92,49 +93,7 @@ function UmweltalarmMap() {
           });
         }}
       >
-        <ResponsiveInfoBox
-          //   panelClick={panelClick}
-          header={
-            <table style={{ width: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "left",
-                      verticalAlign: "top",
-                      background: "grey",
-                      color: "black",
-                      opacity: "0.9",
-                      paddingLeft: "3px",
-                      paddingTop: "0px",
-                      paddingBottom: "0px",
-                    }}
-                  >
-                    <span>Umweltalarm</span>
-                  </td>
-                </tr>
-              </tbody>{" "}
-            </table>
-          }
-          pixelwidth={300}
-          isCollapsible={false}
-          alwaysVisibleDiv={<span>Analyseergebnis ({(hits !== undefined ? hits.length : '-')})</span>}
-          collapsibleDiv={
-            <div>
-              {hits === undefined && <span>Suche ...</span>}
-              {hits !== undefined && hits.length === 0 && <span>keine Besonderheiten</span>}
-              {hits !== undefined && hits.length > 0 && (
-                <div>
-                  es wurden folgende Treffer gefunden:
-                  {hits.map((entry, index) => {
-                    return <div key={index}>{entry.typ + ': ' + entry.default_name}</div>;
-                  })}
-                </div>
-              )}
-            </div>
-          }
-          fixedRow={true}
-        />
+        <InfoBox hits={hits}/>
       </TopicMapComponent>
     </div>
   );
