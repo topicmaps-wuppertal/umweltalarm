@@ -6,22 +6,20 @@ export const CACHE_JWT = "--cached--data--";
 
 export const initTables = (prefix, daqKeys) => {
     var db = new Dexie(prefix);
-    var schema = new Object();
+    var schema = {};
     for (const key of daqKeys) {
         schema[key] = "gid";
     }
     schema['daq_meta'] = "++id,name,md5,time";
-    db.version(7).stores(schema);
+    schema['anprechp'] = "id";
+    schema['zustaendigkeit'] = "id,tabelle,referenzfeld,referenz,[tabelle+referenzfeld+referenz]";
+
+    db.version(10).stores(schema);
 
     return db;
 }
 
 export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) => {
-    const cachePrefix = "@" + prefix + ".." + apiUrl + "." + daqKey;
-    const md5Key = cachePrefix + ".md5";
-    const dataKey = cachePrefix + ".data";
-    const timeKey = cachePrefix + ".time";
-
     const allObjects = await db.table('daq_meta').get({name: daqKey});
     var md5InCache = null;
 
@@ -82,7 +80,7 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
   
               data = JSON.parse(result.content);
               time = result.time;
-              var newData = new Object();
+              var newData = {};
               newData['md5'] = result.md5;
               newData['time'] = time;
               newData['name'] = daqKey;
@@ -94,7 +92,9 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
                 db.table('daq_meta').add(newData);
               } 
 //              console.time("index time"+daqKey)
-              await indexGeometries(data, daqKey, prefix, db);
+              if (data && data[0] && data[0].geojson) {
+                await indexGeometries(data, daqKey, prefix, db);
+              }
 //              console.timeEnd("index time"+daqKey)
             } else if (status === 304) {
               console.log("DAQ cache hit for " + daqKey);
@@ -152,7 +152,7 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     for (const el of content) {
       const geo = getBoundsFromArea(el.geojson);
       var i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
-      var newData = new Object();
+      var newData = {};
       newData['gid'] = i;
       newData['data'] = el;
       data.push(newData);
@@ -162,11 +162,47 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     index.finish();
     
     const allObjects = await db.table('daq_meta').get({name: table});
-    var changes = new Object();
+    var changes = {};
     changes['pol_index'] = index.data;
     await db.table('daq_meta').update(allObjects.id, changes);
   }
 
+  export const indexAnsprechpartner = async (content, table, db) => {
+    const tableObject = db.table('anprechp');
+    await tableObject.clear();
+
+    const data=[];
+    var i = 0;
+
+    for (const el of content) {
+      var newData = {};
+      newData['id'] = el.id;
+      newData['data'] = el;
+      data.push(newData);
+    }
+
+    await tableObject.bulkPut(data);
+  }
+
+  export const indexAnsprechpartnerZustaendigkeit = async (content, table, db) => {
+    const tableObject = db.table('zustaendigkeit');
+    await tableObject.clear();
+
+    const data=[];
+    var i = 0;
+
+    for (const el of content) {
+      var newData = {};
+      newData['id'] = el.id;
+      newData['tabelle'] = el.tabelle;
+      newData['referenz'] = el.referenz;
+      newData['referenzfeld'] = el.referenzfeld;
+      newData['data'] = el;
+      data.push(newData);
+    }
+
+    await tableObject.bulkPut(data);
+  }
 
   export const getBoundsFromArea = (area) => {
     const bboxArray = turf.bbox(area);
