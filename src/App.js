@@ -10,7 +10,7 @@ import { getInternetExplorerVersion } from "react-cismap/tools/browserHelper";
 import { defaultLayerConf } from "react-cismap/tools/layerFactory";
 import { useEffect, useState } from "react";
 import localforage from "localforage";
-import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
+import { md5ActionFetchDAQ4Dexie, initTables, indexAnsprechpartner, indexAnsprechpartnerZustaendigkeit } from "./md5Fetching";
 import LoginForm from "./components/LoginForm";
 import Waiting from "./components/Waiting";
 import Title from "./components/TitleControl";
@@ -76,6 +76,50 @@ function App() {
             console.log("xxx error ", e);
           });
       }
+
+      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, 'ansprechpartner', db)
+      .then(
+        (stoerfallResult) => {
+          if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
+            indexAnsprechpartner(stoerfallResult.data, 'ansprechpartner', db);
+          }
+        },
+        (problem) => {
+          if (problem.status === 401) {
+            setJWT(undefined);
+            setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+            setTimeout(() => {
+              setLoginInfo();
+            }, 2500);
+          }
+        }
+      )
+      .catch((e) => {
+        console.log("xxx error ", e);
+      });
+
+      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, 'ansprechpartnerZustaendigkeit', db)
+      .then(
+        (stoerfallResult) => {
+          if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
+            console.log('Ansprechpartner referenz');
+            indexAnsprechpartnerZustaendigkeit(stoerfallResult.data, 'ansprechpartnerZustaendigkeit', db);
+          }
+        },
+        (problem) => {
+          if (problem.status === 401) {
+            setJWT(undefined);
+            setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+            setTimeout(() => {
+              setLoginInfo();
+            }, 2500);
+          }
+        }
+      )
+      .catch((e) => {
+        console.log("xxx error ", e);
+      });
+
       setLoggedOut(false);
     } else {
       setLoggedOut(true);
