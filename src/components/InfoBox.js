@@ -139,7 +139,7 @@ const InfoBox = ({ hits }) => {
           {/* Trinkwasserbrunnen */}
           <div style={hitsObject?.brunnen !== undefined ? activeStyle : inactiveStyle}>
             <FontAwesomeIcon style={{ fontSize }} icon={faFaucet} />
-            <div style={subtextStyle}>{(hitsObject?.brunnen !== undefined ? hitsObject?.brunnen[0].str_name + ' ' + hitsObject?.brunnen[0].hsnr : '')}</div>
+            <div style={subtextStyle}>{(hitsObject?.brunnen !== undefined ? 'Abstand ' + hitsObject?.brunnen[0].abstand + ' m': '')}</div>
           </div>
           {/* Autobahnmeisterei */}
           <div style={hitsObject?.autobahnmeisterei !== undefined ? activeStyle : inactiveStyle}>

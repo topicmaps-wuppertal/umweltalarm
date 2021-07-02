@@ -9,6 +9,8 @@
     "@turf/buffer": "^6.4.0",
     "@turf/center": "^6.3.0",
     "@turf/circle": "^6.4.0",
+    "@turf/distance": "^6.4.0",
+    "proj4": "^2.7.4",
     "dayjs": "^1.10.5",
     "dexie": "^3.0.3",
     "fflate": "^0.6.10",

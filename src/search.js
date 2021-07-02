@@ -1,6 +1,9 @@
 import Flatbush from 'flatbush';
 import {getBoundsFromArea} from "./md5Fetching";
 import booleanIntersects from "@turf/boolean-intersects";
+import turfDistance from "@turf/distance";
+import turfCenter from "@turf/center";
+import proj4 from "proj4";
 
 export const nameMapping = {};
 nameMapping['StoerfallBetriebeKlasse1']='betrieb';
@@ -35,6 +38,8 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     const geomBounds = getBoundsFromArea(geom);
     var ansprechpartner = db.table('anprechp');
     var ansprechpartnerZustaendigkeit = db.table('zustaendigkeit');
+    var trinkwasserbrunnen = null;
+    var trinkwasserbrunnenDist = null;
 
     for (const key of daqKeys) {
         const metaTable = await db.table('daq_meta');
@@ -61,8 +66,28 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                 var geoj = obj.geojson;
                             
                                 if (booleanIntersects(geoj, geom)) {
-                                    addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
-                                    hits.push(obj);
+                                    if (key === 'trinkwasserbrunnen') {
+                                        var geomCoords = [geom.geometry.coordinates[0], geom.geometry.coordinates[1]];
+                                        var transformedGeom = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), geomCoords);
+                                        var brunnenCenter = turfCenter(geoj);
+                                        var brunnenCoords = [brunnenCenter.geometry.coordinates[0], brunnenCenter.geometry.coordinates[1]];
+                                        var transformedBrunnen = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), brunnenCoords);
+                                        var dist = turfDistance(transformedGeom, transformedBrunnen, {unit: 'kilometers'});
+//                                        alert(transformedGeom);
+//                                        alert(transformedBrunnen);
+//                                        alert(dist * 1000 * 1.6);
+                                        var distanceInMeters = dist * 1000 * 1.6;
+                                        if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
+                                            addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                            obj['abstand'] = Math.round(distanceInMeters);
+                                            trinkwasserbrunnen = obj;
+                                            trinkwasserbrunnenDist = distanceInMeters;
+                                        }
+
+                                    } else {
+                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        hits.push(obj);
+                                    }
                                 }
                             }
                         }
@@ -71,6 +96,10 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
             }
         }
     }
+
+    if (trinkwasserbrunnen !== null) {
+        hits.push(trinkwasserbrunnen);
+    } 
 
     return hits;
 }
