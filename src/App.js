@@ -14,6 +14,7 @@ import { md5ActionFetchDAQ4Dexie, initTables, indexAnsprechpartner, indexAnsprec
 import LoginForm from "./components/LoginForm";
 import Waiting from "./components/Waiting";
 import Title from "./components/TitleControl";
+import MapLibreLayer from "react-cismap/vector/MapLibreLayer"
 
 
 const host = "https://wupp-topicmaps-data.cismet.de";
@@ -155,13 +156,13 @@ function App() {
   }
   const backgroundConfigurations = {
     lbk: {
-      layerkeyx: "cismetText|trueOrtho2020@60",
-      layerkey: "wupp-plan-live@100|trueOrtho2020@75|rvrSchrift@100",
+      layerkey: "cismetText|trueOrtho2020@40",
+      layerkey_: "wupp-plan-live@100|trueOrtho2020@75|rvrSchrift@100",
       src: "/images/rain-hazard-map-bg/ortho.png",
       title: "Luftbildkarte",
     },
     stadtplan: {
-      layerkey: "wupp-plan-live@45",
+      layerkey: "wupp-plan-live@60",
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
@@ -179,25 +180,71 @@ function App() {
   if (baseLayerConf.namedLayers.cismetLight == undefined) {
     baseLayerConf.namedLayers.cismetLight = {
       type: "vector",
-      style_: "http://0.0.0.0:888/styles/cismetplus/style.json",
-      style: "https://omt.map-hosting.de/styles/cismetplus/style.json",
-      xpane: "backgroundvectorLayers",
+      style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
+      pane: "backgroundvectorLayers",
     };
   }
-  if (baseLayerConf.namedLayers.cismetLight == undefined) {
+  if (baseLayerConf.namedLayers.cismetText == undefined) {
     baseLayerConf.namedLayers.cismetText = {
       type: "vector",
-      style: "http://omt.map-hosting.de/styles/klokantech-basic/style.json",
-
-      opacity: 0.05,
-      iconOpacity: 0.7,
-      textOpacity: 0.7,
-      xpane: "backgroundlayerTooltips",
+      style: "https://omt.map-hosting.de/styles/cismet-text/style.json",
+      pane: "backgroundlayerTooltips",
     };
   }
 
   return (
     <TopicMapContextProvider
+      persistenceSettings={{
+        ui: ["XappMenuVisible", "appMenuActiveMenuSection", "collapsedInfoBox"],
+        featureCollection: ["filterState", "filterMode", "clusteringEnabled"],
+        responsive: [],
+        styling: [
+          "activeAdditionalLayerKeys",
+          "namedMapStyle",
+          "selectedBackground",
+          "markerSymbolSize",
+        ],
+      }}
+
+      additionalLayerConfiguration={{
+        brunnen: {
+          title: <span>Trinkwasserbrunnen</span>,
+          initialActive: true,
+          layer: (
+            <MapLibreLayer
+              key={"brunnen"}
+              style_="http://localhost:888/styles/brunnen/style.json"
+              style="https://omt.map-hosting.de/styles/brunnen/style.json"
+              pane="additionalLayers0"
+            />
+          ),
+        },
+        kanal: {
+          title: <span>Kanalnetz</span>,
+          initialActive: true,
+          layer: (
+            <MapLibreLayer
+              key={"kanal"}
+              style_="http://localhost:888/styles/kanal/style.json"
+              style="https://omt.map-hosting.de/styles/kanal/style.json"
+              pane="additionalLayers1"
+            />
+          ),
+        },
+        gewaesser: {
+          title: <span>Gewässernetz</span>,
+          initialActive: true,
+          layer: (
+            <MapLibreLayer
+              key={"gewaesser"}
+              style_="http://localhost:888/styles/gewaesser/style.json"
+              style="https://omt.map-hosting.de/styles/gewaesser/style.json"
+              pane="additionalLayers2"
+            />
+          ),
+        },
+      }}
+
       baseLayerConf={baseLayerConf}
       backgroundConfigurations={backgroundConfigurations}
       backgroundModes={backgroundModes}
