@@ -3,7 +3,7 @@ import booleanIntersects from "@turf/boolean-intersects";
 import turfCenter from "@turf/center";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { md5FetchJSON, md5FetchText } from "react-cismap/tools/fetching";
 import { getGazDataForTopicIds } from "react-cismap/tools/gazetteerHelper";
@@ -19,6 +19,8 @@ import {appKey, daqKeys, db} from "./App";
 import buffer from "@turf/buffer"
 import circle from "@turf/circle"
 import InfoBox from "./components/InfoBox";
+import InfoPanel from "./components/SecondaryInfo";
+import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
@@ -68,6 +70,8 @@ function UmweltalarmMap() {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
+  const { windowSize } = useContext(ResponsiveTopicMapContext);
+
   useEffect(() => {
     getData(setGazData, setInfoData);
   }, []);
@@ -79,15 +83,15 @@ function UmweltalarmMap() {
         modalMenu={<MyMenu />}
         homeZoom={13}
         maxZoom={22}
+        secondaryInfo={windowSize && <InfoPanel hits={hits} />}
+    
         mappingBoundsChanged={(boundingBox) => {
           setHits(undefined);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
           let bbPoly = bboxPolygon(bbox);
-          let center = turfCenter(bbPoly);
           //   console.log("xxx mappingBoundsChanged", center);
-          console.log(center);
-//          console.log( buffer(center, 1, {units: 'meters'} ) );
-//          console.log( circle(center, 1, {units: 'meters'} ) );
+          let center = turfCenter(bbPoly);
+//          console.log(center);
           const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
             setHits(hits);
           });

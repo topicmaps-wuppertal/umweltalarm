@@ -22,8 +22,7 @@ import Loadable from "react-loading-overlay";
 
 const InfoBox = ({ hits }) => {
   const { collapsedInfoBox } = useContext(UIContext);
-  const { setCollapsedInfoBox } = useContext(UIDispatchContext);
-
+  const { setCollapsedInfoBox, setSecondaryInfoVisible } = useContext(UIDispatchContext);
   var hitsObject = {};
 
   if (Array.isArray(hits)) {
@@ -86,9 +85,6 @@ const InfoBox = ({ hits }) => {
           }
           hitsObject.stadtFlurstuecke.push(el);
           break;
-        default:
-            alert(el.typ);
-            break;
       }
     }
   }
@@ -109,7 +105,7 @@ const InfoBox = ({ hits }) => {
               paddingBottom: "0px",
             }}
           >
-            <span> Analyseergebnis: (9)</span>
+            <span> Analyseergebnis: ({(Array.isArray(hits) ? hits.length : '-')})</span>
           </td>
         </tr>
       </tbody>
@@ -130,8 +126,8 @@ const InfoBox = ({ hits }) => {
   let subtextStyle = { fontSize: 12, minHeight: "18px" };
 
   let collapsibleDiv = (
-    <div style={{ paddingRight: 9 }} onClick={() => {alert('onClick')}}>
-      <Loadable active={hitsObject === undefined} spinner text={"Suchen"}>
+    <div style={{ paddingRight: 9 }} onClick={() => {setSecondaryInfoVisible(true)}}>
+      <Loadable active={hits === undefined} spinner text={"Suchen"}>
         <div
           style={{
             display: "grid",

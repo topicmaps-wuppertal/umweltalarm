@@ -81,7 +81,7 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
     var found = false;
 
     for (const key of keys) {
-        if (key !== 'geojson' && dataObject[key] !== undefined) {
+        if (key !== 'geojson' && dataObject[key] != undefined) {
             var anprechreferenz = await ansprechpartnerZustaendigkeit.get({tabelle: table, referenz: dataObject[key], referenzfeld: key});
             
             if (anprechreferenz) {
