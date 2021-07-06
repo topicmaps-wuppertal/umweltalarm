@@ -261,7 +261,7 @@ function App() {
           setLoginInfo={setLoginInfo}
         />
       )}
-      {!loggedOut && jwt !== undefined && (
+      {!loggedOut && (
         <Title
           logout={() => {
             setJWT(undefined);
@@ -276,7 +276,7 @@ function App() {
       )}
       <Waiting waiting={waiting} />
 
-      <UmweltalarmMap />
+      <UmweltalarmMap loggedOut={loggedOut}/>
     </TopicMapContextProvider>
   );
 }
