@@ -3,7 +3,7 @@ import booleanIntersects from "@turf/boolean-intersects";
 import turfCenter from "@turf/center";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { md5FetchJSON, md5FetchText } from "react-cismap/tools/fetching";
 import { getGazDataForTopicIds } from "react-cismap/tools/gazetteerHelper";
@@ -13,12 +13,22 @@ import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
 import "./App.css";
 import MyMenu from "./components/Menu";
 import Crosshair from "./Crosshair";
+import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
+import {searchForFeatures} from "./search"
+import {appKey, daqKeys, db} from "./App";
+import buffer from "@turf/buffer"
+import circle from "@turf/circle"
+import InfoBox from "./components/InfoBox";
+import InfoPanel from "./components/SecondaryInfo";
+import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
 const getData = async (setGazData, setInfoData) => {
   const prefix = "GazDataForStories";
   const sources = {};
+
+//  sources.stoerfallbetrieb = await md5ActionFetchDAQ4Dexie(prefix, 'url', 'xxx', 'daqStoerfallBetriebeKlasse1');
   sources.adressen = await md5FetchText(prefix, host + "/data/3857/adressen.json");
   sources.bezirke = await md5FetchText(prefix, host + "/data/3857/bezirke.json");
   sources.quartiere = await md5FetchText(prefix, host + "/data/3857/quartiere.json");
@@ -34,32 +44,14 @@ const getData = async (setGazData, setInfoData) => {
   ]);
 
   setGazData(gazData);
-
-  const ns = await md5FetchJSON(prefix, host + "/data/3857/naturschutzgebiete.json");
-  const ls = await md5FetchJSON(prefix, host + "/data/3857/landschaftsschutzgebiete.json");
-  for (const f of ns) {
-    f.crs = {
-      type: "name",
-      properties: {
-        name: "urn:ogc:def:crs:EPSG::25832",
-      },
-    };
-  }
-  for (const f of ls) {
-    f.crs = {
-      type: "name",
-      properties: {
-        name: "urn:ogc:def:crs:EPSG::25832",
-      },
-    };
-  }
-  setInfoData([ns, ls]);
 };
 
-function UmweltalarmMap() {
+function UmweltalarmMap({loggedOut}) {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
+  const { windowSize } = useContext(ResponsiveTopicMapContext);
+
   useEffect(() => {
     getData(setGazData, setInfoData);
   }, []);
@@ -71,74 +63,21 @@ function UmweltalarmMap() {
         modalMenu={<MyMenu />}
         homeZoom={13}
         maxZoom={22}
+        secondaryInfo={windowSize && <InfoPanel hits={hits} />}
+    
         mappingBoundsChanged={(boundingBox) => {
-          setHits([]);
+          setHits(undefined);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
           let bbPoly = bboxPolygon(bbox);
-          let center = turfCenter(bbPoly);
           //   console.log("xxx mappingBoundsChanged", center);
-          const hits = [];
-          for (const infodataSet of infoData) {
-            // console.log("infodataSet", infodataSet);
-            // console.log("infodataSetLength", infodataSet.length);
-
-            for (const feature of infodataSet) {
-              if (booleanIntersects(feature, center)) {
-                hits.push(feature);
-                console.log("xxx hit", feature.properties.SG_TYP);
-              }
-            }
-          }
-          setHits(hits);
+          let center = turfCenter(bbPoly);
+//          console.log(center.geometry.coordinates);
+          const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
+            setHits(hits);
+          });
         }}
       >
-        <ResponsiveInfoBox
-          //   panelClick={panelClick}
-          header={
-            <table style={{ width: "100%" }}>
-              <tbody>
-                <tr>
-                  <td
-                    style={{
-                      textAlign: "left",
-                      verticalAlign: "top",
-                      background: "grey",
-                      color: "black",
-                      opacity: "0.9",
-                      paddingLeft: "3px",
-                      paddingTop: "0px",
-                      paddingBottom: "0px",
-                    }}
-                  >
-                    <span>Umweltalarm</span>
-                  </td>
-                </tr>
-              </tbody>{" "}
-            </table>
-          }
-          pixelwidth={300}
-          //   collapsedInfoBox={collapsedInfoBox}
-          //   setCollapsedInfoBox={setCollapsedInfoBox}
-          isCollapsible={false}
-          //   handleResponsiveDesign={handleResponsiveDesign}
-          //   infoStyle={infoStyle}
-          //   secondaryInfoBoxElements={secondaryInfoBoxElements}
-          alwaysVisibleDiv={<span>Analyseergebnis ({hits.length})</span>}
-          collapsibleDiv={
-            <div>
-              {hits.length === 0 && <span>keine Besonderheiten</span>}
-              {hits.length > 0 && (
-                <div>
-                  es wurden folgende Treffer gefunden:
-                  {hits.map((entry, index) => {
-                    return <div key={index}>{entry.properties.SG_TYP}</div>;
-                  })}
-                </div>
-              )}
-            </div>
-          }
-          fixedRow={true}
-        />
+        { !loggedOut &&  <InfoBox hits={hits}/>}
       </TopicMapComponent>
     </div>
   );
