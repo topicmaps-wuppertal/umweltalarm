@@ -31,11 +31,18 @@ const InfoPanel = ({ hits }) => {
 
     const showRawData = new URLSearchParams(window.location.href).get("showRawData");
     if (hits !== undefined) {
+      //remove the geometries
+      const hitsForRawDisplay = JSON.parse(JSON.stringify(hits));
+
+      for (const hit of hits){
+        delete hit.geojson;
+      }
+
       subSections.push(
         <SecondaryInfoPanelSection
           key='standort'
           bsStyle='info'
-          header={"Umweltalarm (raw data): " + hits.length + ' Treffer'}
+          header={"Umweltalarm (raw data ohne Geometrie): " + hits.length + ' Treffer'}
         >
           <div style={{ fontSize: "115%", padding: "10px", paddingTop: "0px" }}>
             <pre>{JSON.stringify(hits, null, 2)}</pre>
