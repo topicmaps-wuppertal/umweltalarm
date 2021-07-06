@@ -19,7 +19,7 @@ import MapLibreLayer from "react-cismap/vector/MapLibreLayer"
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 export const appKey = "umweltalarm.Online.Wuppertal";
-export const apiUrl = "https://potenzialflaechen-online-api.cismet.de";
+export const apiUrl = "https://umweltalarm-api.cismet.de";
 export const daqKeys = ['StoerfallBetriebeKlasse1', 'StoerfallBetriebeKlasse2', 'wasserverbaende', 'wasserschutzgebiete', 'autobahnmeisterei', 'landschaftsschutzgebiete', 'naturschutzgebiete', 'strassenmeisterei', 'bimschNrw', 'bimschWuppertal', 'trinkwasserbrunnen', 'stadtFlurstuecke'];
 export const db = initTables(appKey, daqKeys);
 
@@ -261,7 +261,7 @@ function App() {
           setLoginInfo={setLoginInfo}
         />
       )}
-      {!loggedOut && jwt !== undefined && (
+      {!loggedOut && (
         <Title
           logout={() => {
             setJWT(undefined);
@@ -276,7 +276,7 @@ function App() {
       )}
       <Waiting waiting={waiting} />
 
-      <UmweltalarmMap />
+      <UmweltalarmMap loggedOut={loggedOut}/>
     </TopicMapContextProvider>
   );
 }

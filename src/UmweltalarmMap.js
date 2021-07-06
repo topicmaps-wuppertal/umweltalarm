@@ -44,29 +44,9 @@ const getData = async (setGazData, setInfoData) => {
   ]);
 
   setGazData(gazData);
-
-  // const ns = await md5FetchJSON(prefix, host + "/data/3857/naturschutzgebiete.json");
-  // const ls = await md5FetchJSON(prefix, host + "/data/3857/landschaftsschutzgebiete.json");
-  // for (const f of ns) {
-  //   f.crs = {
-  //     type: "name",
-  //     properties: {
-  //       name: "urn:ogc:def:crs:EPSG::25832",
-  //     },
-  //   };
-  // }
-  // for (const f of ls) {
-  //   f.crs = {
-  //     type: "name",
-  //     properties: {
-  //       name: "urn:ogc:def:crs:EPSG::25832",
-  //     },
-  //   };
-  // }
-  // setInfoData([ns, ls]);
 };
 
-function UmweltalarmMap() {
+function UmweltalarmMap({loggedOut}) {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
@@ -91,13 +71,13 @@ function UmweltalarmMap() {
           let bbPoly = bboxPolygon(bbox);
           //   console.log("xxx mappingBoundsChanged", center);
           let center = turfCenter(bbPoly);
-//          console.log(center);
+//          console.log(center.geometry.coordinates);
           const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
             setHits(hits);
           });
         }}
       >
-        <InfoBox hits={hits}/>
+        { !loggedOut &&  <InfoBox hits={hits}/>}
       </TopicMapComponent>
     </div>
   );

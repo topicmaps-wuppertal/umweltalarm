@@ -62,7 +62,7 @@ const LoginForm = ({
   }, []);
 
   const login = () => {
-    fetch("https://potenzialflaechen-online-api.cismet.de/users", {
+    fetch("https://umweltalarm-api.cismet.de/users", {
       method: "GET",
       headers: {
         Authorization: "Basic " + btoa(user + "@" + "WUNDA_BLAU" + ":" + pw),
