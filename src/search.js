@@ -12,7 +12,7 @@ nameMapping['wasserverbaende']='name';
 nameMapping['wasserschutzgebiete']='zone';
 nameMapping['autobahnmeisterei']='bezirk';
 nameMapping['landschaftsschutzgebiete']='sg_typ';
-nameMapping['naturschutzgebiete']='sg_typ';
+nameMapping['naturschutzgebiete']='sg_nummer';
 nameMapping['strassenmeisterei']='bezirk';
 nameMapping['bimschNrw']='astnr';
 nameMapping['bimschWuppertal']='astnr';
@@ -40,6 +40,8 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     var ansprechpartnerZustaendigkeit = db.table('zustaendigkeit');
     var trinkwasserbrunnen = null;
     var trinkwasserbrunnenDist = null;
+    var bimsch = null;
+    var bimschDist = null;
 
     for (const key of daqKeys) {
         const metaTable = await db.table('daq_meta');
@@ -67,21 +69,23 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                             
                                 if (booleanIntersects(geoj, geom)) {
                                     if (key === 'trinkwasserbrunnen') {
-                                        var geomCoords = [geom.geometry.coordinates[0], geom.geometry.coordinates[1]];
-                                        var transformedGeom = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), geomCoords);
-                                        var brunnenCenter = turfCenter(geoj);
-                                        var brunnenCoords = [brunnenCenter.geometry.coordinates[0], brunnenCenter.geometry.coordinates[1]];
-                                        var transformedBrunnen = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), brunnenCoords);
-                                        var dist = turfDistance(transformedGeom, transformedBrunnen, {unit: 'kilometers'});
-//                                        alert(transformedGeom);
-//                                        alert(transformedBrunnen);
-//                                        alert(dist * 1000 * 1.6);
-                                        var distanceInMeters = dist * 1000 * 1.6;
+                                        var distanceInMeters = getDistance(geom, geoj);
+
                                         if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
                                             addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                             obj['abstand'] = Math.round(distanceInMeters);
                                             trinkwasserbrunnen = obj;
                                             trinkwasserbrunnenDist = distanceInMeters;
+                                        }
+
+                                    } else if (key === 'bimschNrw' || key === 'bimschWuppertal') {
+                                        distanceInMeters = getDistance(geom, geoj);
+
+                                        if (bimschDist === null || bimschDist > distanceInMeters) {
+                                            addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                            obj['abstand'] = Math.round(distanceInMeters);
+                                            bimsch = obj;
+                                            bimschDist = distanceInMeters;
                                         }
 
                                     } else {
@@ -101,7 +105,23 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
         hits.push(trinkwasserbrunnen);
     } 
 
+    if (bimsch !== null) {
+        hits.push(bimsch);
+    } 
+
     return hits;
+}
+
+export const getDistance = (geom, geojson) => {
+    var geomCoords = [geom.geometry.coordinates[0], geom.geometry.coordinates[1]];
+    var transformedGeom = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), geomCoords);
+    var brunnenCenter = turfCenter(geojson);
+    var brunnenCoords = [brunnenCenter.geometry.coordinates[0], brunnenCenter.geometry.coordinates[1]];
+    var transformedBrunnen = proj4(proj4.defs("EPSG:3857"), proj4.defs("EPSG:4326"), brunnenCoords);
+    var dist = turfDistance(transformedGeom, transformedBrunnen, {unit: 'kilometers'});
+    var distanceInMeters = dist * 1000 * 1.6;
+
+    return distanceInMeters;
 }
 
 export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, ansprechpartnerZustaendigkeit) => {

@@ -154,7 +154,7 @@ const InfoBox = ({ hits }) => {
           {/* BIMSchG */}
           <div style={hitsObject?.bimsch !== undefined ? activeStyle : inactiveStyle}>
             <FontAwesomeIcon style={{ fontSize }} icon={faIndustry} />
-            <div style={subtextStyle}>{(hitsObject?.bimsch !== undefined ? hitsObject?.bimsch[0].default_name : '')}</div>
+            <div style={subtextStyle}>{(hitsObject?.bimsch !== undefined ? (hitsObject?.bimsch[0].key === 'bimschNrw' ? 'BRD - ' : 'UIB - ') + hitsObject?.bimsch[0].abstand + ' m' : '')}</div>
           </div>
           {/* Wasserschutzgebiete */}
           <div style={hitsObject?.wasserschutzgebiete !== undefined ? activeStyle : inactiveStyle}>
