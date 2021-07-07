@@ -42,6 +42,8 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
     var trinkwasserbrunnenDist = null;
     var bimsch = null;
     var bimschDist = null;
+    var allBimsch = [];
+    var allTrinkwasserbrunnen = [];
 
     for (const key of daqKeys) {
         const metaTable = await db.table('daq_meta');
@@ -70,24 +72,32 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                 if (booleanIntersects(geoj, geom)) {
                                     if (key === 'trinkwasserbrunnen') {
                                         var distanceInMeters = getDistance(geom, geoj);
+                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
-                                            addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
-                                            obj['abstand'] = Math.round(distanceInMeters);
+                                            if (trinkwasserbrunnen !== null) {
+                                                allTrinkwasserbrunnen.push(trinkwasserbrunnen);
+                                            }
                                             trinkwasserbrunnen = obj;
                                             trinkwasserbrunnenDist = distanceInMeters;
+                                        } else {
+                                            allTrinkwasserbrunnen.push(obj);
                                         }
-
                                     } else if (key === 'bimschNrw' || key === 'bimschWuppertal') {
                                         distanceInMeters = getDistance(geom, geoj);
+                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (bimschDist === null || bimschDist > distanceInMeters) {
-                                            addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
-                                            obj['abstand'] = Math.round(distanceInMeters);
+                                            if (bimsch !== null) {
+                                                allBimsch.push(bimsch);
+                                            }
                                             bimsch = obj;
                                             bimschDist = distanceInMeters;
+                                        } else {
+                                            allBimsch.push(obj);
                                         }
-
                                     } else {
                                         addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);
@@ -103,11 +113,13 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
 
     if (trinkwasserbrunnen !== null) {
         hits.push(trinkwasserbrunnen);
+        Array.prototype.push.apply(hits, allTrinkwasserbrunnen);
     } 
 
     if (bimsch !== null) {
         hits.push(bimsch);
-    } 
+        Array.prototype.push.apply(hits, allBimsch);
+    }
 
     return hits;
 }
@@ -134,8 +146,13 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
             var anprechreferenz = await ansprechpartnerZustaendigkeit.get({tabelle: table, referenz: dataObject[key], referenzfeld: key});
             
             if (anprechreferenz) {
-                dataObject['Anprechpartner'] = await ansprechpartner.get(anprechreferenz.ansprechpartner);
-                found = true;
+                var anspr = await ansprechpartner.get({id: '' + anprechreferenz.data.ansprechpartner});
+
+                if (anspr) {
+                    removeNullValues(anspr.data);
+                    dataObject['Anprechpartner'] = anspr.data;
+                    found = true;
+                }
                 break;
             }
         }
@@ -148,12 +165,23 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
             var anspr = await ansprechpartner.get({id: '' + anprechreferenz.data.ansprechpartner});
             
             if (anspr) {
+                removeNullValues(anspr.data);
                 dataObject['Anprechpartner'] = anspr.data;
             }
         }
     }
 
     return dataObject;
+}
+
+export const removeNullValues = (obj) => {
+    var keys = Object.keys(obj);
+
+    for (const key of keys) {
+        if (obj[key] === null) {
+            obj[key] = undefined;
+        }
+    }
 }
 
 export const offlineDataAvailable = async (db, daqKeys) => {
