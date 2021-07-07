@@ -10,19 +10,35 @@ import { getInternetExplorerVersion } from "react-cismap/tools/browserHelper";
 import { defaultLayerConf } from "react-cismap/tools/layerFactory";
 import { useEffect, useState } from "react";
 import localforage from "localforage";
-import { md5ActionFetchDAQ4Dexie, initTables, indexAnsprechpartner, indexAnsprechpartnerZustaendigkeit } from "./md5Fetching";
+import {
+  md5ActionFetchDAQ4Dexie,
+  initTables,
+  indexAnsprechpartner,
+  indexAnsprechpartnerZustaendigkeit,
+} from "./md5Fetching";
 import LoginForm from "./components/LoginForm";
 import Waiting from "./components/Waiting";
 import Title from "./components/TitleControl";
-import MapLibreLayer from "react-cismap/vector/MapLibreLayer"
-
+import MapLibreLayer from "react-cismap/vector/MapLibreLayer";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 export const appKey = "umweltalarm.Online.Wuppertal";
 export const apiUrl = "https://umweltalarm-api.cismet.de";
-export const daqKeys = ['StoerfallBetriebeKlasse1', 'StoerfallBetriebeKlasse2', 'wasserverbaende', 'wasserschutzgebiete', 'autobahnmeisterei', 'landschaftsschutzgebiete', 'naturschutzgebiete', 'strassenmeisterei', 'bimschNrw', 'bimschWuppertal', 'trinkwasserbrunnen', 'stadtFlurstuecke'];
+export const daqKeys = [
+  "StoerfallBetriebeKlasse1",
+  "StoerfallBetriebeKlasse2",
+  "wasserverbaende",
+  "wasserschutzgebiete",
+  "autobahnmeisterei",
+  "landschaftsschutzgebiete",
+  "naturschutzgebiete",
+  "strassenmeisterei",
+  "bimschNrw",
+  "bimschWuppertal",
+  "trinkwasserbrunnen",
+  "stadtFlurstuecke",
+];
 export const db = initTables(appKey, daqKeys);
-
 
 function App() {
   let backgroundModes;
@@ -39,7 +55,7 @@ function App() {
     localforage.setItem("@" + appKey + "." + "auth" + "." + "jwt", jwt);
     _setJWT(jwt);
   };
-    
+
   useEffect(() => {
     (async () => {
       const jwtInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "jwt");
@@ -55,12 +71,11 @@ function App() {
 
   useEffect(() => {
     if (jwt) {
-
       for (const daqKey of daqKeys) {
         md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db)
           .then(
             (stoerfallResult) => {
-//              alert('drin ' + daqKey);
+              //              alert('drin ' + daqKey);
             },
             (problem) => {
               if (problem.status === 401) {
@@ -70,7 +85,7 @@ function App() {
                   setLoginInfo();
                 }, 2500);
               }
-//              setDynGazData([]);
+              //              setDynGazData([]);
             }
           )
           .catch((e) => {
@@ -78,53 +93,57 @@ function App() {
           });
       }
 
-      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, 'ansprechpartner', db)
-      .then(
-        (stoerfallResult) => {
-          if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
-            indexAnsprechpartner(stoerfallResult.data, 'ansprechpartner', db);
+      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartner", db)
+        .then(
+          (stoerfallResult) => {
+            if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
+              indexAnsprechpartner(stoerfallResult.data, "ansprechpartner", db);
+            }
+          },
+          (problem) => {
+            if (problem.status === 401) {
+              setJWT(undefined);
+              setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+              setTimeout(() => {
+                setLoginInfo();
+              }, 2500);
+            }
           }
-        },
-        (problem) => {
-          if (problem.status === 401) {
-            setJWT(undefined);
-            setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
-            setTimeout(() => {
-              setLoginInfo();
-            }, 2500);
-          }
-        }
-      )
-      .catch((e) => {
-        console.log("xxx error ", e);
-      });
+        )
+        .catch((e) => {
+          console.log("xxx error ", e);
+        });
 
-      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, 'ansprechpartnerZustaendigkeit', db)
-      .then(
-        (stoerfallResult) => {
-          if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
-            console.log('Ansprechpartner referenz');
-            indexAnsprechpartnerZustaendigkeit(stoerfallResult.data, 'ansprechpartnerZustaendigkeit', db);
+      md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartnerZustaendigkeit", db)
+        .then(
+          (stoerfallResult) => {
+            if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
+              console.log("Ansprechpartner referenz");
+              indexAnsprechpartnerZustaendigkeit(
+                stoerfallResult.data,
+                "ansprechpartnerZustaendigkeit",
+                db
+              );
+            }
+          },
+          (problem) => {
+            if (problem.status === 401) {
+              setJWT(undefined);
+              setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+              setTimeout(() => {
+                setLoginInfo();
+              }, 2500);
+            }
           }
-        },
-        (problem) => {
-          if (problem.status === 401) {
-            setJWT(undefined);
-            setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
-            setTimeout(() => {
-              setLoginInfo();
-            }, 2500);
-          }
-        }
-      )
-      .catch((e) => {
-        console.log("xxx error ", e);
-      });
+        )
+        .catch((e) => {
+          console.log("xxx error ", e);
+        });
 
       setLoggedOut(false);
     } else {
       setLoggedOut(true);
-//      setDynGazData([]);
+      //      setDynGazData([]);
     }
   }, [jwt]);
 
@@ -205,7 +224,6 @@ function App() {
           "markerSymbolSize",
         ],
       }}
-
       additionalLayerConfiguration={{
         brunnen: {
           title: <span>Trinkwasserbrunnen</span>,
@@ -213,9 +231,9 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"brunnen"}
-              style_="http://localhost:888/styles/brunnen/style.json"
-              style="https://omt.map-hosting.de/styles/brunnen/style.json"
-              pane="additionalLayers0"
+              style_='http://localhost:888/styles/brunnen/style.json'
+              style='https://omt.map-hosting.de/styles/brunnen/style.json'
+              pane='additionalLayers0'
             />
           ),
         },
@@ -225,9 +243,9 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"kanal"}
-              style_="http://localhost:888/styles/kanal/style.json"
-              style="https://omt.map-hosting.de/styles/kanal/style.json"
-              pane="additionalLayers1"
+              style_='http://localhost:888/styles/kanal/style.json'
+              style='https://omt.map-hosting.de/styles/kanal/style.json'
+              pane='additionalLayers1'
             />
           ),
         },
@@ -237,14 +255,13 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"gewaesser"}
-              style_="http://localhost:888/styles/gewaesser/style.json"
-              style="https://omt.map-hosting.de/styles/gewaesser/style.json"
-              pane="additionalLayers2"
+              style_='http://localhost:888/styles/gewaesser/style.json'
+              style='https://omt.map-hosting.de/styles/gewaesser/style.json'
+              pane='additionalLayers2'
             />
           ),
         },
       }}
-
       baseLayerConf={baseLayerConf}
       backgroundConfigurations={backgroundConfigurations}
       backgroundModes={backgroundModes}
@@ -276,7 +293,7 @@ function App() {
       )}
       <Waiting waiting={waiting} />
 
-      <UmweltalarmMap loggedOut={loggedOut}/>
+      <UmweltalarmMap loggedOut={loggedOut} />
     </TopicMapContextProvider>
   );
 }
