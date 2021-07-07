@@ -14,10 +14,10 @@ import "./App.css";
 import MyMenu from "./components/Menu";
 import Crosshair from "./Crosshair";
 import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
-import {searchForFeatures} from "./search"
-import {appKey, daqKeys, db} from "./App";
-import buffer from "@turf/buffer"
-import circle from "@turf/circle"
+import { searchForFeatures } from "./search";
+import { appKey, daqKeys, db } from "./App";
+import buffer from "@turf/buffer";
+import circle from "@turf/circle";
 import InfoBox from "./components/InfoBox";
 import InfoPanel from "./components/SecondaryInfo";
 import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
@@ -28,7 +28,7 @@ const getData = async (setGazData, setInfoData) => {
   const prefix = "GazDataForStories";
   const sources = {};
 
-//  sources.stoerfallbetrieb = await md5ActionFetchDAQ4Dexie(prefix, 'url', 'xxx', 'daqStoerfallBetriebeKlasse1');
+  //  sources.stoerfallbetrieb = await md5ActionFetchDAQ4Dexie(prefix, 'url', 'xxx', 'daqStoerfallBetriebeKlasse1');
   sources.adressen = await md5FetchText(prefix, host + "/data/3857/adressen.json");
   sources.bezirke = await md5FetchText(prefix, host + "/data/3857/bezirke.json");
   sources.quartiere = await md5FetchText(prefix, host + "/data/3857/quartiere.json");
@@ -46,7 +46,7 @@ const getData = async (setGazData, setInfoData) => {
   setGazData(gazData);
 };
 
-function UmweltalarmMap({loggedOut}) {
+function UmweltalarmMap({ loggedOut }) {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
@@ -64,20 +64,20 @@ function UmweltalarmMap({loggedOut}) {
         homeZoom={13}
         maxZoom={22}
         secondaryInfo={windowSize && <InfoPanel hits={hits} />}
-    
+        locatorControl={true}
         mappingBoundsChanged={(boundingBox) => {
           setHits(undefined);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
           let bbPoly = bboxPolygon(bbox);
           //   console.log("xxx mappingBoundsChanged", center);
           let center = turfCenter(bbPoly);
-//          console.log(center.geometry.coordinates);
-          const hits = searchForFeatures(db, daqKeys, center).then((hits)=>{
+          //          console.log(center.geometry.coordinates);
+          const hits = searchForFeatures(db, daqKeys, center).then((hits) => {
             setHits(hits);
           });
         }}
       >
-        { !loggedOut &&  <InfoBox hits={hits}/>}
+        {!loggedOut && <InfoBox hits={hits} />}
       </TopicMapComponent>
     </div>
   );
