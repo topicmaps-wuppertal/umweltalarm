@@ -8,16 +8,16 @@ import IconLink from "react-cismap/commons/IconLink";
 const objectifyHits = (hits) => {
   const hitObject = {};
 
-  const testAnsprechpartner = {
-    organisation: "cismet GmbH",
-    name: "Thorsten Hell",
-    email: "th@cismet.de",
-    telefon: "0681 965901 20",
-    bemerkung: "nur zum testen",
-  };
+  // const testAnsprechpartner = {
+  //   organisation: "cismet GmbH",
+  //   name: "Thorsten Hell",
+  //   email: "th@cismet.de",
+  //   tel: "0681 965901 20",
+  //   bemerkung: "nur zum testen",
+  // };
   if (hits) {
     for (const hit of hits) {
-      hit.ansprechpartner = testAnsprechpartner;
+//      hit.ansprechpartner = testAnsprechpartner;
       if (hitObject[hit.typ]) {
         hitObject[hit.typ].push(hit);
       } else {
@@ -32,13 +32,13 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
   console.log("ansprechpartner", ansprechpartner);
 
   let links = [];
-  if (ansprechpartner.telefon) {
+  if (ansprechpartner.tel) {
     links.push(
       <span style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.tel`}
-          tooltip='Betreiber Anrufen'
-          href={"tel:" + ansprechpartner.telefon}
+          tooltip='Ansprechpartner Anrufen'
+          href={"tel:" + ansprechpartner.tel}
           iconname='phone'
         />
       </span>
@@ -49,7 +49,7 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
       <span style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.email`}
-          tooltip='E-Mail an Betreiber schreiben'
+          tooltip='E-Mail an Ansprechpartner schreiben'
           href={"mailto:" + ansprechpartner.email}
           iconname='envelope-square'
           target='_blank'
@@ -62,7 +62,7 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
       <span style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.web`}
-          tooltip='Betreiberwebseite'
+          tooltip='Webseite'
           href={ansprechpartner.url}
           target='_blank'
           iconname='external-link-square'
@@ -72,6 +72,33 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
   }
   return links;
 };
+
+const getAnsprechpartner = (ansprechpartner) => {
+  return (
+      <div>
+        <div style={{paddingLeft: "auto", paddingRight: "auto"}}>
+          <b>Ansprechpartner</b>
+        </div>
+        <div style={{
+          paddingLeft: 10,
+          paddingRight: 10,
+          float: "right",
+          paddingBottom: "5px",
+        }}> 
+          {getAnsprechpartnerLinks(ansprechpartner)}
+        </div>
+        <div>
+          {ansprechpartner.firma}
+        </div>
+        <div>
+          {ansprechpartner.name}
+        </div>
+        <div>
+          {ansprechpartner.bemerkung}
+        </div>
+      </div>
+    );
+}
 
 const InfoPanel = ({ hits }) => {
   const { history } = useContext(TopicMapContext);
@@ -107,7 +134,172 @@ const InfoPanel = ({ hits }) => {
     };
 
     if (hits !== undefined) {
-      if (hitObject.strassenmeisterei || hitObject.autobahnmeisterei) {
+      if (hitObject.trinkwasserbrunnen) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='primary' header={"Trinkwasserbrunnen"}>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "baseline",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <div style={{width: "100%"}}>
+              <div>
+                <span style={{ display: 'inline-block', width: 70, marginBottom: 5}} ><b>Abstand</b></span>
+                {/* <span style={{ marginLeft: 70}} ><b>Trinkwasserbrunnen</b></span>  */}
+              </div>
+              {hitObject.trinkwasserbrunnen &&
+                hitObject.trinkwasserbrunnen.map((value, index) => {
+                  return (
+                    <div>
+                      <span style={{ display: 'inline-block', width: 70}}>
+                        <b>bis 10m</b>
+                      </span>
+                      <span key={"trinkwasserbrunnen_" + index} style={{ marginLeft: 70}}>
+                        <b>Adresse: </b>
+                        {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
+                      </span>
+                      <br />
+                      <br />
+                      <div key={"trinkwasser_anprechp_" + index} style={{ marginLeft: 140, width: 'auto'}}>
+                        {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+          </SecondaryInfoPanelSection>
+        );
+      }
+
+      if (true || hitObject.bimschNrw || hitObject.bimschWuppertal || hitObject.StoerfallBetriebeKlasse1 || hitObject.StoerfallBetriebeKlasse2) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"BImschG-Anlagen und Störfallbetriebe"}>
+            {hitObject.bimschNrw &&
+              hitObject.bimschNrw.map((value, index) => {
+                return (
+                  <div key={"bimschNrw_"+index}>
+                    <div>
+                      <b>Anlagenbezeichnung: </b>
+                      {value.anlag_bez}
+                    </div>
+                    <div>
+                      <b>Firma: </b>
+                      {value.b_firma1}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+
+            {hitObject.bimschWuppertal &&
+              hitObject.bimschWuppertal.map((value, index) => {
+                return (
+                  <div key={"bimschWupp_"+index}>
+                    <div>
+                      <b>Betrieb: </b>
+                      {value.betrieb}
+                    </div>
+                    <div>
+                      <b>Lage: </b>
+                      {value.lage}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+
+            {hitObject.StoerfallBetriebeKlasse1 &&
+              hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
+                return (
+                  <div key={"stoer1_"+index}>
+                    <div>
+                      <b>Betrieb: </b>
+                      {value.betrieb}
+                    </div>
+                    <div>
+                      <b>Lage: </b>
+                      {value.lage}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+
+              {hitObject.StoerfallBetriebeKlasse1 &&<br />}
+              {hitObject.StoerfallBetriebeKlasse2 &&
+              hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
+                return (
+                  <div key={"stoer2_"+index}>
+                    <div>
+                      <b>Betrieb: </b>
+                      {value.betrieb}
+                    </div>
+                    <div>
+                      <b>Lage: </b>
+                      {value.lage}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+          </SecondaryInfoPanelSection>
+        );
+      }
+
+      if (true || hitObject.wasserverbaende) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='info' header={"Wasserverbände"}>
+            {hitObject.wasserverbaende &&
+              hitObject.wasserverbaende.map((value, index) => {
+                return (
+                  <div key={"stadtFlurstuecke_" + index}>
+                    <div>
+                      <b>Name: </b>
+                      {value.name}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+          </SecondaryInfoPanelSection>
+        );
+      }
+
+      if (true || hitObject.stadtFlurstuecke) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='warning' header={"Städtische Flurstücke"}>
+            {hitObject.stadtFlurstuecke &&
+              hitObject.stadtFlurstuecke.map((value, index) => {
+                return (
+                  <div key={"stadtFlurstuecke_" + index}>
+                    <div>
+                      <b>Flurstück: </b>
+                      {value.flurstueck}
+                    </div>
+                    <div>
+                      <b>Dienststelle: </b>
+                      {value.dienststellen.replace('#', ',')}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+          </SecondaryInfoPanelSection>
+        );
+      }
+
+      if (true || hitObject.strassenmeisterei || hitObject.autobahnmeisterei) {
         subSections.push(
           <SecondaryInfoPanelSection key='standort' bsStyle='success' header={"Straßen"}>
             {/* Immer nur 1 möglich */}
@@ -122,7 +314,6 @@ const InfoPanel = ({ hits }) => {
                     paddingBottom: "5px",
                   }}
                 >
-                  {getAnsprechpartnerLinks(hitObject.strassenmeisterei[0].ansprechpartner)}
                 </div>
                 <div
                   style={{
@@ -137,24 +328,85 @@ const InfoPanel = ({ hits }) => {
                   <b>zuständige Straßenmeisterei: </b>
                   {hitObject.strassenmeisterei[0].default_name}
                 </div>
+                <br />
+                {hitObject.strassenmeisterei[0].ansprechpartner && getAnsprechpartner(hitObject.strassenmeisterei[0].ansprechpartner)}
               </div>
             )}
 
-            <br></br>
             <br></br>
             {/* mehrere möglich*/}
             {hitObject.autobahnmeisterei &&
               hitObject.autobahnmeisterei.map((value, index) => {
                 return (
-                  <div>
-                    <b>zuständige Autobahnmeisterei: </b>
-                    {value.default_name}
+                  <div key={"autm_"+index}>
+                    <div>
+                      <b>zuständige Autobahnmeisterei: </b>
+                      {value.default_name}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
           </SecondaryInfoPanelSection>
         );
       }
+
+      if (true|| hitObject.landschaftsschutzgebiete || hitObject.naturschutzgebiete || hitObject.wasserschutzgebiete) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='muted' header={"Gewässerschutz und Landschaftsschutz"}>
+            {/* mehrere möglich*/}
+            {hitObject.wasserschutzgebiete &&
+              hitObject.wasserschutzgebiete.map((value, index) => {
+                return (
+                  <div key={"autm_"+index}>
+                    <div>
+                      <b>Zone: </b>
+                      {value.zone}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+            {hitObject.wasserschutzgebiete &&  <br></br>}
+            {/* mehrere möglich*/}
+            {hitObject.landschaftsschutzgebiete &&
+              hitObject.landschaftsschutzgebiete.map((value, index) => {
+                return (
+                  <div key={"autm_"+index}>
+                    <div>
+                      <b>SG-Typ: </b>
+                      {value.sg_typ}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+            {hitObject.landschaftsschutzgebiete &&  <br></br>}
+            {/* mehrere möglich*/}
+            {hitObject.naturschutzgebiete &&
+              hitObject.naturschutzgebiete.map((value, index) => {
+                return (
+                  <div key={"autm_"+index}>
+                    <div>
+                      <b>SG-Typ: </b>
+                      {value.sg_typ}
+                    </div>
+                    <div>
+                      <b>SG-Nummer: </b>
+                      {value.sg_nummer}
+                    </div>
+                    <br />
+                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  </div>
+                );
+              })}
+          </SecondaryInfoPanelSection>
+        );
+      }
+
       if (showRawData) {
         //remove the geometries
         const hitsForRawDisplay = JSON.parse(JSON.stringify(hits));
