@@ -17,7 +17,7 @@ nameMapping['strassenmeisterei']='bezirk';
 nameMapping['bimschNrw']='astnr';
 nameMapping['bimschWuppertal']='astnr';
 nameMapping['trinkwasserbrunnen']='str_name';
-nameMapping['stadtFlurstuecke']='flurstueck';
+nameMapping['stadtFlurstuecke']='dienststellen';
 
 export const daqTableMapping = {};
 daqTableMapping['StoerfallBetriebeKlasse1']='stoerfallbetriebe_klasse1';
@@ -72,7 +72,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                 if (booleanIntersects(geoj, geom)) {
                                     if (key === 'trinkwasserbrunnen') {
                                         var distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
@@ -86,7 +86,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         }
                                     } else if (key === 'bimschNrw' || key === 'bimschWuppertal') {
                                         distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (bimschDist === null || bimschDist > distanceInMeters) {
@@ -99,7 +99,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                             allBimsch.push(obj);
                                         }
                                     } else {
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);
                                     }
                                 }
@@ -113,15 +113,27 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
 
     if (trinkwasserbrunnen !== null) {
         hits.push(trinkwasserbrunnen);
+        allTrinkwasserbrunnen.sort(compareDist);
         Array.prototype.push.apply(hits, allTrinkwasserbrunnen);
     } 
 
     if (bimsch !== null) {
         hits.push(bimsch);
+        allBimsch.sort(compareDist);
         Array.prototype.push.apply(hits, allBimsch);
     }
 
     return hits;
+}
+
+const compareDist = (a, b) => {
+    if (a.abstand < b.abstand) {
+        return -1;
+    } else if (a.abstand > b.abstand) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 export const getDistance = (geom, geojson) => {
@@ -150,7 +162,7 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
 
                 if (anspr) {
                     removeNullValues(anspr.data);
-                    dataObject['Anprechpartner'] = anspr.data;
+                    dataObject['ansprechpartner'] = anspr.data;
                     found = true;
                 }
                 break;
@@ -166,7 +178,7 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
             
             if (anspr) {
                 removeNullValues(anspr.data);
-                dataObject['Anprechpartner'] = anspr.data;
+                dataObject['ansprechpartner'] = anspr.data;
             }
         }
     }

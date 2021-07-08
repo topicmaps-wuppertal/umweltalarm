@@ -157,7 +157,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faFaucet} />
             <div style={subtextStyle}>
               {hitsObject?.brunnen !== undefined
-                ? "Abstand " + hitsObject?.brunnen[0].abstand + " m"
+                ? hitsObject?.brunnen[0].abstand + " m" + (hitsObject?.brunnen.length > 1 ? ' (+' + (hitsObject?.brunnen.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
@@ -178,7 +178,7 @@ const InfoBox = ({ hits }) => {
               {hitsObject?.bimsch !== undefined
                 ? (hitsObject?.bimsch[0].typ === "bimschNrw" ? "BRD - " : "UIB - ") +
                   hitsObject?.bimsch[0].abstand +
-                  " m"
+                  " m"  + (hitsObject?.bimsch.length > 1 ? ' (+' + (hitsObject?.bimsch.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
@@ -187,7 +187,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faHandHoldingWater} />
             <div style={subtextStyle}>
               {hitsObject?.wasserschutzgebiete !== undefined
-                ? hitsObject?.wasserschutzgebiete[0].default_name
+                ? hitsObject?.wasserschutzgebiete[0].default_name  + (hitsObject?.wasserschutzgebiete.length > 1 ? ' (+' + (hitsObject?.wasserschutzgebiete.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
@@ -203,7 +203,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faExclamationCircle} />
             <div style={subtextStyle}>
               {hitsObject?.stoerfallbetriebe !== undefined
-                ? hitsObject?.stoerfallbetriebe[0].default_name
+                ? hitsObject?.stoerfallbetriebe[0].default_name  + (hitsObject?.stoerfallbetriebe[0].typ === 'StoerfallBetriebeKlasse1' ?  '-A1' :  '-A2') + (hitsObject?.stoerfallbetriebe.length > 1 ? ' (+' + (hitsObject?.stoerfallbetriebe.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
@@ -212,7 +212,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faCity} />
             <div style={subtextStyle}>
               {hitsObject?.stadtFlurstuecke !== undefined
-                ? hitsObject?.stadtFlurstuecke[0].default_name
+                ? hitsObject?.stadtFlurstuecke[0].default_name + (hitsObject?.stadtFlurstuecke.length > 1 ? ' (+' + (hitsObject?.stadtFlurstuecke.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
@@ -221,7 +221,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faTree} />
             <div style={subtextStyle}>
               {hitsObject?.schutzgebiete !== undefined
-                ? hitsObject?.schutzgebiete[0].default_name
+                ? hitsObject?.schutzgebiete[0].default_name + (hitsObject?.schutzgebiete.length > 1 ? ' (+' + (hitsObject?.schutzgebiete.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
