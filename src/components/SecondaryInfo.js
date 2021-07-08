@@ -4,6 +4,8 @@ import SecondaryInfoPanelSection from "react-cismap/topicmaps/SecondaryInfoPanel
 import SecondaryInfo from "react-cismap/topicmaps/SecondaryInfo";
 import { TopicMapContext } from "react-cismap/contexts/TopicMapContextProvider";
 import IconLink from "react-cismap/commons/IconLink";
+import { getApplicationVersion } from "../version";
+import { version as reactCismapVersion } from "react-cismap/meta";
 
 const objectifyHits = (hits) => {
   const hitObject = {};
@@ -27,6 +29,36 @@ const objectifyHits = (hits) => {
   }
   return hitObject;
 };
+
+const footer = (
+  <div style={{ fontSize: "11px" }}>
+    <div>
+      <b>
+        {document.title} v{getApplicationVersion()}
+      </b>
+      :{" "}
+      <a href='https://cismet.de/' target='_cismet'>
+        cismet GmbH
+      </a>{" "}
+      auf Basis von{" "}
+      <a href='http://leafletjs.com/' target='_more'>
+        Leaflet
+      </a>{" "}
+      und{" "}
+      <a href='https://cismet.de/#refs' target='_cismet'>
+        cids | react-cismap v{reactCismapVersion}
+      </a>{" "}
+      |{" "}
+      <a
+        target='_blank'
+        rel='noopener noreferrer'
+        href='https://cismet.de/datenschutzerklaerung.html'
+      >
+        Datenschutzerklärung (Privacy Policy)
+      </a>
+    </div>
+  </div>
+);
 
 const getAnsprechpartnerLinks = (ansprechpartner) => {
   console.log("ansprechpartner", ansprechpartner);
@@ -100,6 +132,16 @@ const getAnsprechpartner = (ansprechpartner) => {
     );
 }
 
+const getSeparator = (name) => {
+  return (
+    <div style={{width: "100%", height: "12px", borderBottom: "1px solid #eeeeee", textAlign: "center", marginBottom: "15px", marginTop: "5px"}}>
+    <span style={{fontSize: "16px", backgroundColor: "#FFFFFF", xcolor: "#aaa",padding: "0 10px"}}>
+      {name}
+    </span>
+</div>                
+);
+}
+
 const getNewDistance = (distance, steps) => {
   if (distance % steps == 0) {
     return distance;
@@ -142,147 +184,12 @@ const InfoPanel = ({ hits }) => {
     };
 
     if (hits !== undefined) {
-      if (hitObject.trinkwasserbrunnen) {
-        var distance = null;
 
+      if (hitObject.wasserverbaende || hitObject.autobahnmeisterei || hitObject.strassenmeisterei || hitObject.stadtFlurstuecke) {
         subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='primary' header={"Trinkwasserbrunnen"}>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "baseline",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <div style={{width: "100%"}}>
-              <div>
-                <span style={{ display: 'inline-block', width: 70, marginBottom: 5}} ><b>Abstand</b></span>
-              </div>
+          <SecondaryInfoPanelSection key='standort' bsStyle='success' header={"Zuständigkeiten"}>
+            {hitObject.wasserverbaende && getSeparator('Wasserverband')}
 
-              {hitObject.trinkwasserbrunnen &&
-                hitObject.trinkwasserbrunnen.map((value, index) => {
-                  return (
-                    <div>
-                      { !(distance === null || distance > value.abstand) &&
-                      <span style={{ display: 'inline-block', width: 70}}>
-                      </span>
-                      }
-                      { (distance === null || distance > value.abstand) && (distance = getNewDistance(value.abstand, 10)) &&
-                      <span style={{ display: 'inline-block', width: 70}}>
-                        <b>bis {distance}m</b>
-                      </span>
-                      }
-                      <span key={"trinkwasserbrunnen_" + index} style={{ marginLeft: 70}}>
-                        <b>Adresse: </b>
-                        {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
-                      </span>
-                      <br />
-                      <br />
-                      <div key={"trinkwasser_anprechpa_" + index} style={{ marginLeft: 140, width: 'auto'}}>
-                        {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-          </SecondaryInfoPanelSection>
-        );
-      }
-
-      if (true || hitObject.bimschNrw || hitObject.bimschWuppertal) {
-        subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"BImschG-Anlagen"}>
-            {hitObject.bimschNrw &&
-              hitObject.bimschNrw.map((value, index) => {
-                return (
-                  <div key={"bimschNrw_"+index}>
-                    <div>
-                      <b>Anlagenbezeichnung: </b>
-                      {value.anlag_bez}
-                    </div>
-                    <div>
-                      <b>Firma: </b>
-                      {value.b_firma1}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                  </div>
-                );
-              })}
-
-            {hitObject.bimschNrw &&<br />}
-
-            {hitObject.bimschWuppertal &&
-              hitObject.bimschWuppertal.map((value, index) => {
-                return (
-                  <div key={"bimschWupp_"+index}>
-                    <div>
-                      <b>Betrieb: </b>
-                      {value.betrieb}
-                    </div>
-                    <div>
-                      <b>Lage: </b>
-                      {value.lage}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                  </div>
-                );
-              })}
-          </SecondaryInfoPanelSection>
-        );
-      }
-
-      if (true || hitObject.StoerfallBetriebeKlasse1 || hitObject.StoerfallBetriebeKlasse2) {
-        subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"Störfallbetriebe"}>
-            {hitObject.StoerfallBetriebeKlasse1 &&
-              hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
-                return (
-                  <div key={"stoer1_"+index}>
-                    <div>
-                      <b>Betrieb: </b>
-                      {value.betrieb}
-                    </div>
-                    <div>
-                      <b>Lage: </b>
-                      {value.lage}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                  </div>
-                );
-              })}
-
-              {hitObject.StoerfallBetriebeKlasse1 &&<br />}
-
-              {hitObject.StoerfallBetriebeKlasse2 &&
-              hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
-                return (
-                  <div key={"stoer2_"+index}>
-                    <div>
-                      <b>Betrieb: </b>
-                      {value.betrieb}
-                    </div>
-                    <div>
-                      <b>Lage: </b>
-                      {value.lage}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                  </div>
-                );
-              })}
-          </SecondaryInfoPanelSection>
-        );
-      }
-
-      if (true || hitObject.wasserverbaende) {
-        subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='info' header={"Wasserverbände"}>
             {hitObject.wasserverbaende &&
               hitObject.wasserverbaende.map((value, index) => {
                 return (
@@ -296,39 +203,25 @@ const InfoPanel = ({ hits }) => {
                   </div>
                 );
               })}
-          </SecondaryInfoPanelSection>
-        );
-      }
 
-      if (true || hitObject.stadtFlurstuecke) {
-        subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='warning' header={"Städtische Flurstücke"}>
-            {hitObject.stadtFlurstuecke &&
-              hitObject.stadtFlurstuecke.map((value, index) => {
+            {hitObject.autobahnmeisterei && getSeparator('Autobahnmeisterei')}
+            {/* mehrere möglich*/}
+            {hitObject.autobahnmeisterei &&
+              hitObject.autobahnmeisterei.map((value, index) => {
                 return (
-                  <div key={"stadtFlurstuecke_" + index}>
+                  <div key={"autm_"+index}>
+                    {index > 0 && <br></br>}
                     <div>
-                      <b>Flurstück: </b>
-                      {value.flurstueck}
-                    </div>
-                    <div>
-                      <b>Dienststelle: </b>
-                      {value.dienststellen.replace('#', ',')}
+                      <b>zuständige Autobahnmeisterei: </b>
+                      {value.default_name}
                     </div>
                     <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
-          </SecondaryInfoPanelSection>
-        );
-      }
-
-      if (true || hitObject.strassenmeisterei || hitObject.autobahnmeisterei) {
-        subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='success' header={"Straßen"}>
-            {/* Immer nur 1 möglich */}
-
+              
+            {hitObject.strassenmeisterei && getSeparator('Straßenmeisterei')}
             {hitObject.strassenmeisterei && (
               <div>
                 <div
@@ -358,15 +251,20 @@ const InfoPanel = ({ hits }) => {
               </div>
             )}
 
-            {hitObject.strassenmeisterei &&  <br></br>}
-            {/* mehrere möglich*/}
-            {hitObject.autobahnmeisterei &&
-              hitObject.autobahnmeisterei.map((value, index) => {
+            {hitObject.stadtFlurstuecke && getSeparator('Städtische Flurstücke')}
+
+            {hitObject.stadtFlurstuecke &&
+              hitObject.stadtFlurstuecke.map((value, index) => {
                 return (
-                  <div key={"autm_"+index}>
+                  <div key={"stadtFlurstuecke_" + index}>
+                    {index > 0 && <br></br>}
                     <div>
-                      <b>zuständige Autobahnmeisterei: </b>
-                      {value.default_name}
+                      <b>Flurstück: </b>
+                      {value.flurstueck}
+                    </div>
+                    <div>
+                      <b>Dienststelle: </b>
+                      {value.dienststellen.replace('#', ',')}
                     </div>
                     <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
@@ -377,57 +275,194 @@ const InfoPanel = ({ hits }) => {
         );
       }
 
-      if (true|| hitObject.landschaftsschutzgebiete || hitObject.naturschutzgebiete || hitObject.wasserschutzgebiete) {
+
+      if (hitObject.trinkwasserbrunnen || hitObject.bimschWuppertal || hitObject.bimschNrw || hitObject.wasserschutzgebiete 
+          || hitObject.naturschutzgebiete || hitObject.landschaftsschutzgebiete || hitObject.StoerfallBetriebeKlasse1 || hitObject.StoerfallBetriebeKlasse2) {
+        var distance = null;
+
         subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='muted' header={"Gewässerschutz und Landschaftsschutz"}>
-            {/* mehrere möglich*/}
-            {hitObject.wasserschutzgebiete &&
-              hitObject.wasserschutzgebiete.map((value, index) => {
+          <SecondaryInfoPanelSection key='standort' bsStyle='primary' header={"Schutzgebiete und Anlagen"}>
+            {hitObject.trinkwasserbrunnen && getSeparator('Trinkwasserbrunnen')}
+
+            {hitObject.trinkwasserbrunnen &&
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "baseline",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div style={{width: "100%"}}>
+                <div>
+                  <span style={{ display: 'inline-block', width: 70, marginBottom: 5}} ><b>Abstand</b></span>
+                </div>
+              
+                {hitObject.trinkwasserbrunnen &&
+                  hitObject.trinkwasserbrunnen.map((value, index) => {
+                    return (
+                      <div>
+                        {index > 0 && <br></br>}
+                        <span style={{ display: 'inline-block', width: 70}}>
+                          <b>{value.abstand} m</b>
+                        </span>
+                        <span key={"trinkwasserbrunnen_" + index} style={{ marginLeft: 70}}>
+                          <b>Adresse: </b>
+                          {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
+                        </span>
+                        <br />
+                        <br />
+                        <div key={"trinkwasser_anprechpa_" + index} style={{ marginLeft: 140, width: 'auto'}}>
+                          {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          }
+          {hitObject.bimschWuppertal && getSeparator('BImschG-Anlage Wuppertal')}
+
+          {hitObject.bimschWuppertal &&
+            hitObject.bimschWuppertal.map((value, index) => {
+              return (
+                <div key={"bimschWupp_"+index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Betrieb: </b>
+                    {value.betrieb}
+                  </div>
+                  <div>
+                    <b>Lage: </b>
+                    {value.lage}
+                  </div>
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}
+
+          {hitObject.bimschNrw && getSeparator('BImschG-Anlage NRW')}
+
+          {hitObject.bimschNrw &&
+              hitObject.bimschNrw.map((value, index) => {
                 return (
-                  <div key={"autm_"+index}>
+                  <div key={"bimschNrw_"+index}>
+                    {index > 0 && <br></br>}
                     <div>
-                      <b>Zone: </b>
-                      {value.zone}
+                      <b>Anlagenbezeichnung: </b>
+                      {value.anlag_bez}
+                    </div>
+                    <div>
+                      <b>Firma: </b>
+                      {value.b_firma1}
                     </div>
                     <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
-            {hitObject.wasserschutzgebiete &&  <br></br>}
-            {/* mehrere möglich*/}
-            {hitObject.landschaftsschutzgebiete &&
-              hitObject.landschaftsschutzgebiete.map((value, index) => {
-                return (
-                  <div key={"autm_"+index}>
-                    <div>
-                      <b>SG-Typ: </b>
-                      {value.sg_typ}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+
+          {hitObject.wasserschutzgebiete && getSeparator('Wasserschutzgebiet')}
+
+          {/* mehrere möglich*/}
+          {hitObject.wasserschutzgebiete &&
+            hitObject.wasserschutzgebiete.map((value, index) => {
+              return (
+                <div key={"wasser_"+index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Zone: </b>
+                    {value.zone}
                   </div>
-                );
-              })}
-            {hitObject.landschaftsschutzgebiete &&  <br></br>}
-            {/* mehrere möglich*/}
-            {hitObject.naturschutzgebiete &&
-              hitObject.naturschutzgebiete.map((value, index) => {
-                return (
-                  <div key={"autm_"+index}>
-                    <div>
-                      <b>SG-Typ: </b>
-                      {value.sg_typ}
-                    </div>
-                    <div>
-                      <b>SG-Nummer: </b>
-                      {value.sg_nummer}
-                    </div>
-                    <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}
+
+          {hitObject.naturschutzgebiete && getSeparator('Naturschutzgebiet')}
+
+          {/* mehrere möglich*/}
+          {hitObject.naturschutzgebiete &&
+            hitObject.naturschutzgebiete.map((value, index) => {
+              return (
+                <div key={"natur_"+index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Schutzgebietstyp: </b>
+                    {value.sg_typ === 'NS' ? 'Naturschutzgebiet' : value.sg_typ}
                   </div>
-                );
-              })}
+                  <div>
+                    <b>SG-Nummer: </b>
+                    {value.sg_nummer}
+                  </div>
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}            
+
+          {hitObject.landschaftsschutzgebiete && getSeparator('Landschaftsschutzgebiet')}
+
+          {/* mehrere möglich*/}
+          {hitObject.landschaftsschutzgebiete &&
+            hitObject.landschaftsschutzgebiete.map((value, index) => {
+              return (
+                <div key={"landschaft_" + index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Schutzgebietstyp: </b>
+                    {value.sg_typ === 'LS' ? 'Landschaftsschutzgebiet' : value.sg_typ}
+                  </div>
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}
+
+          {hitObject.StoerfallBetriebeKlasse1 && getSeparator('Störfallbetrieb Klasse 1')}
+
+          {hitObject.StoerfallBetriebeKlasse1 &&
+            hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
+              return (
+                <div key={"stoer1_"+index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Betrieb: </b>
+                    {value.betrieb}
+                  </div>
+                  <div>
+                    <b>Lage: </b>
+                    {value.lage}
+                  </div>
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}
+
+            {hitObject.StoerfallBetriebeKlasse2 && getSeparator('Störfallbetrieb Klasse 2')}
+
+            {hitObject.StoerfallBetriebeKlasse2 &&
+            hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
+              return (
+                <div key={"stoer2_"+index}>
+                  {index > 0 && <br></br>}
+                  <div>
+                    <b>Betrieb: </b>
+                    {value.betrieb}
+                  </div>
+                  <div>
+                    <b>Lage: </b>
+                    {value.lage}
+                  </div>
+                  <br />
+                  {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                </div>
+              );
+            })}
           </SecondaryInfoPanelSection>
         );
       }
@@ -483,6 +518,7 @@ const InfoPanel = ({ hits }) => {
           </div>
         }
         subSections={subSections}
+        footer={footer}
       />
     );
   } else {
