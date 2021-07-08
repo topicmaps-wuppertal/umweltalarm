@@ -100,6 +100,14 @@ const getAnsprechpartner = (ansprechpartner) => {
     );
 }
 
+const getNewDistance = (distance, steps) => {
+  if (distance % steps == 0) {
+    return distance;
+  } else {
+    return (steps - distance % steps) + distance;
+  }
+}
+
 const InfoPanel = ({ hits }) => {
   const { history } = useContext(TopicMapContext);
   const lat = new URLSearchParams(history.location.search).get("lat");
@@ -135,6 +143,8 @@ const InfoPanel = ({ hits }) => {
 
     if (hits !== undefined) {
       if (hitObject.trinkwasserbrunnen) {
+        var distance = null;
+
         subSections.push(
           <SecondaryInfoPanelSection key='standort' bsStyle='primary' header={"Trinkwasserbrunnen"}>
           <div
@@ -149,22 +159,28 @@ const InfoPanel = ({ hits }) => {
             <div style={{width: "100%"}}>
               <div>
                 <span style={{ display: 'inline-block', width: 70, marginBottom: 5}} ><b>Abstand</b></span>
-                {/* <span style={{ marginLeft: 70}} ><b>Trinkwasserbrunnen</b></span>  */}
               </div>
+
               {hitObject.trinkwasserbrunnen &&
                 hitObject.trinkwasserbrunnen.map((value, index) => {
                   return (
                     <div>
+                      { !(distance === null || distance > value.abstand) &&
                       <span style={{ display: 'inline-block', width: 70}}>
-                        <b>bis 10m</b>
                       </span>
+                      }
+                      { (distance === null || distance > value.abstand) && (distance = getNewDistance(value.abstand, 10)) &&
+                      <span style={{ display: 'inline-block', width: 70}}>
+                        <b>bis {distance}m</b>
+                      </span>
+                      }
                       <span key={"trinkwasserbrunnen_" + index} style={{ marginLeft: 70}}>
                         <b>Adresse: </b>
                         {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
                       </span>
                       <br />
                       <br />
-                      <div key={"trinkwasser_anprechp_" + index} style={{ marginLeft: 140, width: 'auto'}}>
+                      <div key={"trinkwasser_anprechpa_" + index} style={{ marginLeft: 140, width: 'auto'}}>
                         {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                       </div>
                     </div>
@@ -176,9 +192,9 @@ const InfoPanel = ({ hits }) => {
         );
       }
 
-      if (true || hitObject.bimschNrw || hitObject.bimschWuppertal || hitObject.StoerfallBetriebeKlasse1 || hitObject.StoerfallBetriebeKlasse2) {
+      if (true || hitObject.bimschNrw || hitObject.bimschWuppertal) {
         subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"BImschG-Anlagen und Störfallbetriebe"}>
+          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"BImschG-Anlagen"}>
             {hitObject.bimschNrw &&
               hitObject.bimschNrw.map((value, index) => {
                 return (
@@ -197,6 +213,8 @@ const InfoPanel = ({ hits }) => {
                 );
               })}
 
+            {hitObject.bimschNrw &&<br />}
+
             {hitObject.bimschWuppertal &&
               hitObject.bimschWuppertal.map((value, index) => {
                 return (
@@ -214,7 +232,13 @@ const InfoPanel = ({ hits }) => {
                   </div>
                 );
               })}
+          </SecondaryInfoPanelSection>
+        );
+      }
 
+      if (true || hitObject.StoerfallBetriebeKlasse1 || hitObject.StoerfallBetriebeKlasse2) {
+        subSections.push(
+          <SecondaryInfoPanelSection key='standort' bsStyle='danger' header={"Störfallbetriebe"}>
             {hitObject.StoerfallBetriebeKlasse1 &&
               hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
                 return (
@@ -234,6 +258,7 @@ const InfoPanel = ({ hits }) => {
               })}
 
               {hitObject.StoerfallBetriebeKlasse1 &&<br />}
+
               {hitObject.StoerfallBetriebeKlasse2 &&
               hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
                 return (
@@ -333,7 +358,7 @@ const InfoPanel = ({ hits }) => {
               </div>
             )}
 
-            <br></br>
+            {hitObject.strassenmeisterei &&  <br></br>}
             {/* mehrere möglich*/}
             {hitObject.autobahnmeisterei &&
               hitObject.autobahnmeisterei.map((value, index) => {

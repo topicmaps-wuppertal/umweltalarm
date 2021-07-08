@@ -72,7 +72,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                 if (booleanIntersects(geoj, geom)) {
                                     if (key === 'trinkwasserbrunnen') {
                                         var distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
@@ -86,7 +86,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         }
                                     } else if (key === 'bimschNrw' || key === 'bimschWuppertal') {
                                         distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (bimschDist === null || bimschDist > distanceInMeters) {
@@ -99,7 +99,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                             allBimsch.push(obj);
                                         }
                                     } else {
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);
                                     }
                                 }
