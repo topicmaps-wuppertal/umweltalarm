@@ -254,6 +254,9 @@ const InfoPanel = ({ hits }) => {
           </SecondaryInfoPanelSection>
         );
       }
+      if (showRawData) {
+        //remove the geometries
+        const hitsForRawDisplay = JSON.parse(JSON.stringify(hits));
 
       if (true || hitObject.wasserverbaende) {
         subSections.push(
