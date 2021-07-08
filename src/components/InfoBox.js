@@ -203,7 +203,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faExclamationCircle} />
             <div style={subtextStyle}>
               {hitsObject?.stoerfallbetriebe !== undefined
-                ? hitsObject?.stoerfallbetriebe[0].default_name  + (hitsObject?.stoerfallbetriebe.length > 1 ? ' (+' + (hitsObject?.stoerfallbetriebe.length - 1) + ')' : '')
+                ? hitsObject?.stoerfallbetriebe[0].default_name  + (hitsObject?.stoerfallbetriebe[0].typ === 'StoerfallBetriebeKlasse1' ?  '-A1' :  '-A2') + (hitsObject?.stoerfallbetriebe.length > 1 ? ' (+' + (hitsObject?.stoerfallbetriebe.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
