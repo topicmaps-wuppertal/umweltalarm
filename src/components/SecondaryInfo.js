@@ -20,6 +20,9 @@ const objectifyHits = (hits) => {
   if (hits) {
     for (const hit of hits) {
 //      hit.ansprechpartner = testAnsprechpartner;
+      if (hit.ansprechpartner === undefined) {
+        hit.ansprechpartner = {firma: '', name: ''};
+      }
       if (hitObject[hit.typ]) {
         hitObject[hit.typ].push(hit);
       } else {

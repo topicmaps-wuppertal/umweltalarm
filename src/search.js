@@ -66,7 +66,6 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                             if (o != null) {
                                 var obj = o.data;
                                 obj['typ'] = key;
-                                obj['default_name'] = obj[nameMapping[key]];
                                 var geoj = obj.geojson;
                             
                                 if (booleanIntersects(geoj, geom)) {
@@ -107,6 +106,8 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
 
                                             for (var stelle of dienststellen) {
                                                 obj.dienststellen = stelle;
+                                                //the field ansprechpartner should not be used for the next search
+                                                delete obj.ansprechpartner;
                                                 await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
 
                                                 if (obj.ansprechpartner != undefined) {
@@ -124,6 +125,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);
                                     }
+                                    obj['default_name'] = obj[nameMapping[key]];
                                 }
                             }
                         }
