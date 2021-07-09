@@ -193,7 +193,7 @@ const InfoPanel = ({ hits }) => {
             {hitObject.wasserverbaende &&
               hitObject.wasserverbaende.map((value, index) => {
                 return (
-                  <div key={"stadtFlurstuecke_" + index}>
+                  <div key={"wasserverbaende_" + index}>
                     <div>
                       <b>Name: </b>
                       {value.name}
@@ -382,7 +382,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}
 
-          {hitObject.naturschutzgebiete && getSeparator('Naturschutzgebiet')}
+          {hitObject.naturschutzgebiete && getSeparator('Schutzgebiet')}
 
           {/* mehrere möglich*/}
           {hitObject.naturschutzgebiete &&
@@ -395,7 +395,7 @@ const InfoPanel = ({ hits }) => {
                     {value.sg_typ === 'NS' ? 'Naturschutzgebiet' : value.sg_typ}
                   </div>
                   <div>
-                    <b>SG-Nummer: </b>
+                    <b>Schutzgebiet-Nummer: </b>
                     {value.sg_nummer}
                   </div>
                   <br />
@@ -404,7 +404,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}            
 
-          {hitObject.landschaftsschutzgebiete && getSeparator('Landschaftsschutzgebiet')}
+          {hitObject.landschaftsschutzgebiete && getSeparator('Schutzgebiet')}
 
           {/* mehrere möglich*/}
           {hitObject.landschaftsschutzgebiete &&
@@ -422,7 +422,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}
 
-          {hitObject.StoerfallBetriebeKlasse1 && getSeparator('Störfallbetrieb Klasse 1')}
+          {hitObject.StoerfallBetriebeKlasse1 && getSeparator('Störfallbetrieb Abstandsklasse 1')}
 
           {hitObject.StoerfallBetriebeKlasse1 &&
             hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
@@ -443,7 +443,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}
 
-            {hitObject.StoerfallBetriebeKlasse2 && getSeparator('Störfallbetrieb Klasse 2')}
+            {hitObject.StoerfallBetriebeKlasse2 && getSeparator('Störfallbetrieb Abstandsklasse 2')}
 
             {hitObject.StoerfallBetriebeKlasse2 &&
             hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
