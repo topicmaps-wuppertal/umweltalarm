@@ -98,6 +98,28 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         } else {
                                             allBimsch.push(obj);
                                         }
+                                    } else if (key === 'stadtFlurstuecke') {
+                                        var dienststellen = obj.dienststellen.split('#');
+
+                                        if (dienststellen.length > 1) {
+                                            var dienststellenOld = obj.dienststellen;
+                                            var ansprechpartnerArray = [];
+
+                                            for (var stelle of dienststellen) {
+                                                obj.dienststellen = stelle;
+                                                await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+
+                                                if (obj.ansprechpartner != undefined) {
+                                                    ansprechpartnerArray.push(obj.ansprechpartner);
+                                                }
+                                            }
+                                            obj.dienststellen = dienststellenOld;
+                                            obj.ansprechpartner = ansprechpartnerArray;
+                                            hits.push(obj);
+                                        } else {
+                                            await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                            hits.push(obj);
+                                        }
                                     } else {
                                         await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);

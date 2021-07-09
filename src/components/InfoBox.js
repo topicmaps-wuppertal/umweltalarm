@@ -24,6 +24,7 @@ const InfoBox = ({ hits }) => {
   const { collapsedInfoBox } = useContext(UIContext);
   const { setCollapsedInfoBox, setSecondaryInfoVisible } = useContext(UIDispatchContext);
   var hitsObject = {};
+  var flurstueckDienstStellenAnzahl = 0;
 
   if (Array.isArray(hits)) {
     for (var el of hits) {
@@ -83,6 +84,7 @@ const InfoBox = ({ hits }) => {
           if (hitsObject.stadtFlurstuecke === undefined) {
             hitsObject.stadtFlurstuecke = [];
           }
+          flurstueckDienstStellenAnzahl = flurstueckDienstStellenAnzahl + el.dienststellen.split('#').length;
           hitsObject.stadtFlurstuecke.push(el);
           break;
       }
@@ -212,6 +214,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faCity} />
             <div style={subtextStyle}>
               {hitsObject?.stadtFlurstuecke !== undefined
+                // ? hitsObject?.stadtFlurstuecke[0].default_name.split('#')[0] + (flurstueckDienstStellenAnzahl > 1 ? ' (+' + (flurstueckDienstStellenAnzahl- 1) + ')' : '')
                 ? hitsObject?.stadtFlurstuecke[0].default_name + (hitsObject?.stadtFlurstuecke.length > 1 ? ' (+' + (hitsObject?.stadtFlurstuecke.length - 1) + ')' : '')
                 : ""}
             </div>
