@@ -46,7 +46,7 @@ const getData = async (setGazData, setInfoData) => {
   setGazData(gazData);
 };
 
-function UmweltalarmMap({ loggedOut }) {
+function UmweltalarmMap({ loggedOut, initialised }) {
   const [gazData, setGazData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [hits, setHits] = useState([]);
@@ -56,7 +56,7 @@ function UmweltalarmMap({ loggedOut }) {
     getData(setGazData, setInfoData);
   }, []);
   return (
-    <div>
+    <div key={initialised != null ? initialised : 'init'}>
       <Crosshair />
       <TopicMapComponent
         gazData={gazData}

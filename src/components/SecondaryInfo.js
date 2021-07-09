@@ -106,30 +106,83 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
 };
 
 const getAnsprechpartner = (ansprechpartner) => {
+  if (Array.isArray(ansprechpartner)) {
+    return (
+    <div>
+      {
+    ansprechpartner.map((value, index) => {
+      return (
+        <div key={'ansprech_' + index}>
+          {index > 0 && <br></br>}
+          {/* <div style={{paddingLeft: "auto", paddingRight: "auto"}}>
+            <b>Ansprechpartner</b>
+          </div> */}
+          <div style={{
+            paddingLeft: 10,
+            paddingRight: 10,
+            float: "right",
+            paddingBottom: "5px",
+          }}> 
+            {getAnsprechpartnerLinks(value)}
+          </div>
+          <div>
+            {value.firma}
+          </div>
+          <div>
+            {value.name}
+          </div>
+          <div>
+            {value.bemerkung}
+          </div>
+        </div>
+
+      );
+    })}
+    </div>)
+  } else {
+    return (
+        <div>
+          {/* <div style={{paddingLeft: "auto", paddingRight: "auto"}}>
+            <b>Ansprechpartner</b>
+          </div> */}
+          <div style={{
+            paddingLeft: 10,
+            paddingRight: 10,
+            float: "right",
+            paddingBottom: "5px",
+          }}> 
+            {getAnsprechpartnerLinks(ansprechpartner)}
+          </div>
+          <div>
+            {ansprechpartner.firma}
+          </div>
+          <div>
+            {ansprechpartner.name}
+          </div>
+          <div>
+            {ansprechpartner.bemerkung}
+          </div>
+        </div>
+      );
+  }
+}
+
+const getDienststellen = (dienststellen, ansprechpartner) => {
+  var dienststellenArray = dienststellen.split('#');
+
   return (
-      <div>
-        <div style={{paddingLeft: "auto", paddingRight: "auto"}}>
-          <b>Ansprechpartner</b>
-        </div>
-        <div style={{
-          paddingLeft: 10,
-          paddingRight: 10,
-          float: "right",
-          paddingBottom: "5px",
-        }}> 
-          {getAnsprechpartnerLinks(ansprechpartner)}
-        </div>
-        <div>
-          {ansprechpartner.firma}
-        </div>
-        <div>
-          {ansprechpartner.name}
-        </div>
-        <div>
-          {ansprechpartner.bemerkung}
-        </div>
-      </div>
-    );
+    <span>
+      {
+        dienststellenArray.map((value, index) => {
+          var styleParam = (value === ansprechpartner.firma.trim() && dienststellenArray.length > 1 ? {borderBottom: "1px solid black"} : {});
+
+          return (
+            <span style={styleParam}>{index > 0 ? ', ' : ''}{value}</span>          
+          )
+        })
+      }
+    </span>
+  )
 }
 
 const getSeparator = (name) => {
@@ -194,11 +247,6 @@ const InfoPanel = ({ hits }) => {
               hitObject.wasserverbaende.map((value, index) => {
                 return (
                   <div key={"wasserverbaende_" + index}>
-                    <div>
-                      <b>Name: </b>
-                      {value.name}
-                    </div>
-                    <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
@@ -211,11 +259,6 @@ const InfoPanel = ({ hits }) => {
                 return (
                   <div key={"autm_"+index}>
                     {index > 0 && <br></br>}
-                    <div>
-                      <b>zuständige Autobahnmeisterei: </b>
-                      {value.default_name}
-                    </div>
-                    <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
@@ -224,34 +267,11 @@ const InfoPanel = ({ hits }) => {
             {hitObject.strassenmeisterei && getSeparator('Straßenmeisterei')}
             {hitObject.strassenmeisterei && (
               <div>
-                <div
-                  style={{
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    float: "right",
-                    paddingBottom: "5px",
-                  }}
-                >
-                </div>
-                <div
-                  style={{
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    float: "right",
-                    paddingBottom: "5px",
-                  }}
-                ></div>
-
-                <div>
-                  <b>zuständige Straßenmeisterei: </b>
-                  {hitObject.strassenmeisterei[0].default_name}
-                </div>
-                <br />
                 {hitObject.strassenmeisterei[0].ansprechpartner && getAnsprechpartner(hitObject.strassenmeisterei[0].ansprechpartner)}
               </div>
             )}
 
-            {hitObject.stadtFlurstuecke && getSeparator('Städtische Flurstücke')}
+            {hitObject.stadtFlurstuecke && getSeparator('Stadt Wuppertal')}
 
             {hitObject.stadtFlurstuecke &&
               hitObject.stadtFlurstuecke.map((value, index) => {
@@ -263,11 +283,17 @@ const InfoPanel = ({ hits }) => {
                       {value.flurstueck}
                     </div>
                     <div>
-                      <b>Dienststelle: </b>
-                      {value.dienststellen.replace('#', ',')}
+                      {value.dienststellen.split('#').length > 1 && 
+                        <b>Dienststellen: </b>
+                      }
+                      {value.dienststellen.split('#').length <= 1 && 
+                        <b>Dienststelle: </b>
+                      }
+                      {getDienststellen(value.dienststellen, Array.isArray(value.ansprechpartner) ? value.ansprechpartner[0] : value.ansprechpartner)}
+                      {/* {value.dienststellen.replace('#', ', ')} */}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner && getAnsprechpartner(Array.isArray(value.ansprechpartner) ? value.ansprechpartner[0] : value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -382,7 +408,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}
 
-          {hitObject.naturschutzgebiete && getSeparator('Schutzgebiet')}
+          {hitObject.naturschutzgebiete && getSeparator('Naturschutzgebiet')}
 
           {/* mehrere möglich*/}
           {hitObject.naturschutzgebiete &&
@@ -404,7 +430,7 @@ const InfoPanel = ({ hits }) => {
               );
             })}            
 
-          {hitObject.landschaftsschutzgebiete && getSeparator('Schutzgebiet')}
+          {hitObject.landschaftsschutzgebiete && getSeparator('Landschaftsschutzgebiet')}
 
           {/* mehrere möglich*/}
           {hitObject.landschaftsschutzgebiete &&
