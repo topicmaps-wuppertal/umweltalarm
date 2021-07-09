@@ -221,7 +221,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faTree} />
             <div style={subtextStyle}>
               {hitsObject?.schutzgebiete !== undefined
-                ? hitsObject?.schutzgebiete[0].default_name + (hitsObject?.schutzgebiete.length > 1 ? ' (+' + (hitsObject?.schutzgebiete.length - 1) + ')' : '')
+                ? (hitsObject?.schutzgebiete[0].typ === 'naturschutzgebiete' ? 'NSG' : 'LSG') + (hitsObject?.schutzgebiete.length > 1 ? ' (+' + (hitsObject?.schutzgebiete.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
