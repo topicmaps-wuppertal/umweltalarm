@@ -147,6 +147,23 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
         Array.prototype.push.apply(hits, allBimsch);
     }
 
+  
+    if (hits) {
+        hits = hits.filter((value, index, arr) => {
+            if (value.typ === 'StoerfallBetriebeKlasse2') {
+                for (let elA1 of hits) {
+                    if (elA1.typ === 'StoerfallBetriebeKlasse1' && elA1.betrieb === value.betrieb) {
+                        return false;
+                    }
+                }
+
+                return true;
+            } else {
+                return true;
+            }
+        })
+    }
+
     return hits;
 }
 
