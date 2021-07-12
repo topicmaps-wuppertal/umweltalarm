@@ -381,7 +381,7 @@ const InfoPanel = ({ hits }) => {
                 <div key={"wasser_"+index}>
                   {index > 0 && <br></br>}
                   <div>
-                    <b>Zone: </b>
+                    <b>Schutzzone: </b>
                     {value.zone}
                   </div>
                   <br />
@@ -399,12 +399,11 @@ const InfoPanel = ({ hits }) => {
                 <div key={"natur_"+index}>
                   {index > 0 && <br></br>}
                   <div>
-                    <b>Schutzgebietstyp: </b>
-                    {value.sg_typ === 'NS' ? 'Naturschutzgebiet' : value.sg_typ}
+                    {value.nrw_name}
                   </div>
                   <div>
-                    <b>Schutzgebiet-Nummer: </b>
-                    {value.sg_nummer}
+                    <b>Objektkennung: </b>
+                    {value.nrw_nummer}
                   </div>
                   <br />
                   {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}

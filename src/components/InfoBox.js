@@ -189,7 +189,7 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faHandHoldingWater} />
             <div style={subtextStyle}>
               {hitsObject?.wasserschutzgebiete !== undefined
-                ? hitsObject?.wasserschutzgebiete[0].default_name  + (hitsObject?.wasserschutzgebiete.length > 1 ? ' (+' + (hitsObject?.wasserschutzgebiete.length - 1) + ')' : '')
+                ? 'Zone: ' + hitsObject?.wasserschutzgebiete[0].default_name  + (hitsObject?.wasserschutzgebiete.length > 1 ? ' (+' + (hitsObject?.wasserschutzgebiete.length - 1) + ')' : '')
                 : ""}
             </div>
           </div>
