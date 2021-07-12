@@ -64,8 +64,6 @@ const footer = (
 );
 
 const getAnsprechpartnerLinks = (ansprechpartner) => {
-  console.log("ansprechpartner", ansprechpartner);
-
   let links = [];
   if (ansprechpartner.tel) {
     links.push(
@@ -314,43 +312,24 @@ const InfoPanel = ({ hits }) => {
             {hitObject.trinkwasserbrunnen && getSeparator('Trinkwasserbrunnen')}
 
             {hitObject.trinkwasserbrunnen &&
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "baseline",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div style={{width: "100%"}}>
-                <div>
-                  <span style={{ display: 'inline-block', width: 70, marginBottom: 5}} ><b>Abstand</b></span>
-                </div>
-              
-                {hitObject.trinkwasserbrunnen &&
                   hitObject.trinkwasserbrunnen.map((value, index) => {
                     return (
+                      <div key={"trinkwasserbrunnen_" + index}>
+                      {index > 0 && <br></br>}
                       <div>
-                        {index > 0 && <br></br>}
-                        <span style={{ display: 'inline-block', width: 70}}>
-                          <b>{value.abstand} m</b>
-                        </span>
-                        <span key={"trinkwasserbrunnen_" + index} style={{ marginLeft: 70}}>
-                          <b>Adresse: </b>
-                          {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
-                        </span>
-                        <br />
-                        <br />
-                        <div key={"trinkwasser_anprechpa_" + index} style={{ marginLeft: 140, width: 'auto'}}>
-                          {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
-                        </div>
+                        <b>Abstand: </b>
+                        {value.abstand} m
                       </div>
+                      <div>
+                        <b>Adresse: </b>
+                        {value.str_name + ' ' + value.hsnr + (value.zusatz ? value.zusatz : '')}
+                      </div>
+                      <br />
+                      {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    </div>
                     );
-                  })}
-              </div>
-            </div>
-          }
+                  })
+            }
           {hitObject.bimschWuppertal && getSeparator('BImschG-Anlage Wuppertal')}
 
           {hitObject.bimschWuppertal &&
@@ -359,13 +338,13 @@ const InfoPanel = ({ hits }) => {
                 <div key={"bimschWupp_"+index}>
                   {index > 0 && <br></br>}
                   <div>
-                    <b>Betrieb: </b>
-                    {value.betrieb}
-                  </div>
+                      <b>Betrieb: </b>
+                      {value.b_firma1}
+                    </div>
                   <div>
-                    <b>Lage: </b>
-                    {value.lage}
-                  </div>
+                      <b>Anlage: </b>
+                      {value.anlag_bez}
+                    </div>
                   <br />
                   {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
                 </div>
@@ -380,12 +359,12 @@ const InfoPanel = ({ hits }) => {
                   <div key={"bimschNrw_"+index}>
                     {index > 0 && <br></br>}
                     <div>
-                      <b>Anlagenbezeichnung: </b>
-                      {value.anlag_bez}
+                      <b>Betrieb: </b>
+                      {value.b_firma1}
                     </div>
                     <div>
-                      <b>Firma: </b>
-                      {value.b_firma1}
+                      <b>Anlage: </b>
+                      {value.anlag_bez}
                     </div>
                     <br />
                     {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
