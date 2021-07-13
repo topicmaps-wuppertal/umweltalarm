@@ -380,6 +380,10 @@ const InfoPanel = ({ hits }) => {
               return (
                 <div key={"wasser_"+index}>
                   {index > 0 && <br></br>}
+                  {value.name &&
+                  <div>
+                    {value.name}
+                  </div>}
                   <div>
                     <b>Schutzzone: </b>
                     {value.zone}
