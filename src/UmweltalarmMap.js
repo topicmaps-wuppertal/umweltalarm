@@ -16,8 +16,7 @@ import Crosshair from "./Crosshair";
 import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
 import { searchForFeatures } from "./search";
 import { appKey, daqKeys, db } from "./App";
-import buffer from "@turf/buffer";
-import circle from "@turf/circle";
+
 import InfoBox from "./components/InfoBox";
 import InfoPanel from "./components/SecondaryInfo";
 import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
@@ -56,7 +55,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
     getData(setGazData, setInfoData);
   }, []);
   return (
-    <div key={initialised != null ? initialised : 'init'}>
+    <div key={initialised != null ? initialised : "init"}>
       <Crosshair />
       <TopicMapComponent
         gazData={gazData}
