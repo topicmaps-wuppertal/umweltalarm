@@ -84,7 +84,8 @@ const InfoBox = ({ hits }) => {
           if (hitsObject.stadtFlurstuecke === undefined) {
             hitsObject.stadtFlurstuecke = [];
           }
-          flurstueckDienstStellenAnzahl = flurstueckDienstStellenAnzahl + el.dienststellen.split('#').length;
+          flurstueckDienstStellenAnzahl =
+            flurstueckDienstStellenAnzahl + el.dienststellen.split("#").length;
           hitsObject.stadtFlurstuecke.push(el);
           break;
       }
@@ -102,7 +103,7 @@ const InfoBox = ({ hits }) => {
               background: "grey",
               color: "black",
               opacity: "0.9",
-              paddingLeft: "0px",
+              paddingLeft: "4px",
               paddingTop: "0px",
               paddingBottom: "0px",
             }}
@@ -147,7 +148,6 @@ const InfoBox = ({ hits }) => {
 
   let symbols = (
     <div
-      style={{ paddingRight: 9 }}
       onClick={() => {
         setSecondaryInfoVisible(true);
       }}
@@ -159,7 +159,11 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faFaucet} />
             <div style={subtextStyle}>
               {hitsObject?.brunnen !== undefined
-                ? hitsObject?.brunnen[0].abstand + " m" + (hitsObject?.brunnen.length > 1 ? ' (+' + (hitsObject?.brunnen.length - 1) + ')' : '')
+                ? hitsObject?.brunnen[0].abstand +
+                  " m" +
+                  (hitsObject?.brunnen.length > 1
+                    ? " (+" + (hitsObject?.brunnen.length - 1) + ")"
+                    : "")
                 : ""}
             </div>
           </div>
@@ -180,7 +184,10 @@ const InfoBox = ({ hits }) => {
               {hitsObject?.bimsch !== undefined
                 ? (hitsObject?.bimsch[0].typ === "bimschNrw" ? "BRD - " : "UIB - ") +
                   hitsObject?.bimsch[0].abstand +
-                  " m"  + (hitsObject?.bimsch.length > 1 ? ' (+' + (hitsObject?.bimsch.length - 1) + ')' : '')
+                  " m" +
+                  (hitsObject?.bimsch.length > 1
+                    ? " (+" + (hitsObject?.bimsch.length - 1) + ")"
+                    : "")
                 : ""}
             </div>
           </div>
@@ -189,7 +196,11 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faHandHoldingWater} />
             <div style={subtextStyle}>
               {hitsObject?.wasserschutzgebiete !== undefined
-                ? 'Zone: ' + hitsObject?.wasserschutzgebiete[0].default_name  + (hitsObject?.wasserschutzgebiete.length > 1 ? ' (+' + (hitsObject?.wasserschutzgebiete.length - 1) + ')' : '')
+                ? "Zone: " +
+                  hitsObject?.wasserschutzgebiete[0].default_name +
+                  (hitsObject?.wasserschutzgebiete.length > 1
+                    ? " (+" + (hitsObject?.wasserschutzgebiete.length - 1) + ")"
+                    : "")
                 : ""}
             </div>
           </div>
@@ -205,7 +216,13 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faExclamationCircle} />
             <div style={subtextStyle}>
               {hitsObject?.stoerfallbetriebe !== undefined
-                ? hitsObject?.stoerfallbetriebe[0].default_name  + (hitsObject?.stoerfallbetriebe[0].typ === 'StoerfallBetriebeKlasse1' ?  '-A1' :  '-A2') + (hitsObject?.stoerfallbetriebe.length > 1 ? ' (+' + (hitsObject?.stoerfallbetriebe.length - 1) + ')' : '')
+                ? hitsObject?.stoerfallbetriebe[0].default_name +
+                  (hitsObject?.stoerfallbetriebe[0].typ === "StoerfallBetriebeKlasse1"
+                    ? "-A1"
+                    : "-A2") +
+                  (hitsObject?.stoerfallbetriebe.length > 1
+                    ? " (+" + (hitsObject?.stoerfallbetriebe.length - 1) + ")"
+                    : "")
                 : ""}
             </div>
           </div>
@@ -214,9 +231,12 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faCity} />
             <div style={subtextStyle}>
               {hitsObject?.stadtFlurstuecke !== undefined
-                ? hitsObject?.stadtFlurstuecke[0].default_name.split('#')[0] + (flurstueckDienstStellenAnzahl > 1 ? ' (+' + (flurstueckDienstStellenAnzahl- 1) + ')' : '')
-//                ? hitsObject?.stadtFlurstuecke[0].default_name + (hitsObject?.stadtFlurstuecke.length > 1 ? ' (+' + (hitsObject?.stadtFlurstuecke.length - 1) + ')' : '')
-                : ""}
+                ? hitsObject?.stadtFlurstuecke[0].default_name.split("#")[0] +
+                  (flurstueckDienstStellenAnzahl > 1
+                    ? " (+" + (flurstueckDienstStellenAnzahl - 1) + ")"
+                    : "")
+                : //                ? hitsObject?.stadtFlurstuecke[0].default_name + (hitsObject?.stadtFlurstuecke.length > 1 ? ' (+' + (hitsObject?.stadtFlurstuecke.length - 1) + ')' : '')
+                  ""}
             </div>
           </div>
           {/* Landschafts und Naturschutzgebiete */}
@@ -224,7 +244,10 @@ const InfoBox = ({ hits }) => {
             <FontAwesomeIcon style={{ fontSize }} icon={faTree} />
             <div style={subtextStyle}>
               {hitsObject?.schutzgebiete !== undefined
-                ? (hitsObject?.schutzgebiete[0].typ === 'naturschutzgebiete' ? 'NSG' : 'LSG') + (hitsObject?.schutzgebiete.length > 1 ? ' (+' + (hitsObject?.schutzgebiete.length - 1) + ')' : '')
+                ? (hitsObject?.schutzgebiete[0].typ === "naturschutzgebiete" ? "NSG" : "LSG") +
+                  (hitsObject?.schutzgebiete.length > 1
+                    ? " (+" + (hitsObject?.schutzgebiete.length - 1) + ")"
+                    : "")
                 : ""}
             </div>
           </div>
@@ -240,11 +263,12 @@ const InfoBox = ({ hits }) => {
       collapsedInfoBox={collapsedInfoBox}
       setCollapsedInfoBox={setCollapsedInfoBox}
       isCollapsible={true}
+      collapsibleStyle={{ paddingLeft: 0 }}
       handleResponsiveDesign={true}
       infoStyle={{ padding: "0px" }}
       secondaryInfoBoxElements={undefined}
-      alwaysVisibleDiv={collapsedInfoBox ? symbols : <div />}
-      collapsibleDiv={!collapsedInfoBox ? symbols : <div />}
+      alwaysVisibleDiv={collapsedInfoBox ? symbols : null}
+      collapsibleDiv={!collapsedInfoBox ? symbols : null}
       fixedRow={true}
     />
   );
