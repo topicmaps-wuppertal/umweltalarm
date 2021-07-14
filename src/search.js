@@ -17,7 +17,7 @@ nameMapping['strassenmeisterei']='bezirk';
 nameMapping['bimschNrw']='astnr';
 nameMapping['bimschWuppertal']='astnr';
 nameMapping['trinkwasserbrunnen']='str_name';
-nameMapping['stadtFlurstuecke']='flurstueck';
+nameMapping['stadtFlurstuecke']='dienststellen';
 
 export const daqTableMapping = {};
 daqTableMapping['StoerfallBetriebeKlasse1']='stoerfallbetriebe_klasse1';
@@ -26,7 +26,7 @@ daqTableMapping['wasserverbaende']='wasserverbaende';
 daqTableMapping['wasserschutzgebiete']='wasserschutzgebiete';
 daqTableMapping['autobahnmeisterei']='autobahnmeisterei';
 daqTableMapping['landschaftsschutzgebiete']='landschaftsschutzgebiete';
-daqTableMapping['naturschutzgebiete']='sg_naturschutzgebietetyp';
+daqTableMapping['naturschutzgebiete']='naturschutzgebiete';
 daqTableMapping['strassenmeisterei']='strassenmeisterei';
 daqTableMapping['bimschNrw']='bimsch_nrw';
 daqTableMapping['bimschWuppertal']='bimsch_wuppertal';
@@ -66,13 +66,12 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                             if (o != null) {
                                 var obj = o.data;
                                 obj['typ'] = key;
-                                obj['default_name'] = obj[nameMapping[key]];
                                 var geoj = obj.geojson;
                             
                                 if (booleanIntersects(geoj, geom)) {
                                     if (key === 'trinkwasserbrunnen') {
                                         var distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (trinkwasserbrunnenDist === null || trinkwasserbrunnenDist > distanceInMeters) {
@@ -86,7 +85,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         }
                                     } else if (key === 'bimschNrw' || key === 'bimschWuppertal') {
                                         distanceInMeters = getDistance(geom, geoj);
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         obj['abstand'] = Math.round(distanceInMeters);
 
                                         if (bimschDist === null || bimschDist > distanceInMeters) {
@@ -98,10 +97,35 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                                         } else {
                                             allBimsch.push(obj);
                                         }
+                                    } else if (key === 'stadtFlurstuecke') {
+                                        var dienststellen = obj.dienststellen.split('#');
+
+                                        if (dienststellen.length > 1) {
+                                            var dienststellenOld = obj.dienststellen;
+                                            var ansprechpartnerArray = [];
+
+                                            for (var stelle of dienststellen) {
+                                                obj.dienststellen = stelle;
+                                                //the field ansprechpartner should not be used for the next search
+                                                delete obj.ansprechpartner;
+                                                await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+
+                                                if (obj.ansprechpartner != undefined) {
+                                                    ansprechpartnerArray.push(obj.ansprechpartner);
+                                                }
+                                            }
+                                            obj.dienststellen = dienststellenOld;
+                                            obj.ansprechpartner = ansprechpartnerArray;
+                                            hits.push(obj);
+                                        } else {
+                                            await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                            hits.push(obj);
+                                        }
                                     } else {
-                                        addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
+                                        await addAnsprechpartner(key, obj, ansprechpartner, ansprechpartnerZustaendigkeit)
                                         hits.push(obj);
                                     }
+                                    obj['default_name'] = obj[nameMapping[key]];
                                 }
                             }
                         }
@@ -113,15 +137,44 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
 
     if (trinkwasserbrunnen !== null) {
         hits.push(trinkwasserbrunnen);
+        allTrinkwasserbrunnen.sort(compareDist);
         Array.prototype.push.apply(hits, allTrinkwasserbrunnen);
     } 
 
     if (bimsch !== null) {
         hits.push(bimsch);
+        allBimsch.sort(compareDist);
         Array.prototype.push.apply(hits, allBimsch);
     }
 
+  
+    if (hits) {
+        hits = hits.filter((value, index, arr) => {
+            if (value.typ === 'StoerfallBetriebeKlasse2') {
+                for (let elA1 of hits) {
+                    if (elA1.typ === 'StoerfallBetriebeKlasse1' && elA1.betrieb === value.betrieb) {
+                        return false;
+                    }
+                }
+
+                return true;
+            } else {
+                return true;
+            }
+        })
+    }
+
     return hits;
+}
+
+const compareDist = (a, b) => {
+    if (a.abstand < b.abstand) {
+        return -1;
+    } else if (a.abstand > b.abstand) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 export const getDistance = (geom, geojson) => {
@@ -150,7 +203,7 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
 
                 if (anspr) {
                     removeNullValues(anspr.data);
-                    dataObject['Anprechpartner'] = anspr.data;
+                    dataObject['ansprechpartner'] = anspr.data;
                     found = true;
                 }
                 break;
@@ -166,7 +219,7 @@ export const addAnsprechpartner = async (daqKey, dataObject, ansprechpartner, an
             
             if (anspr) {
                 removeNullValues(anspr.data);
-                dataObject['Anprechpartner'] = anspr.data;
+                dataObject['ansprechpartner'] = anspr.data;
             }
         }
     }

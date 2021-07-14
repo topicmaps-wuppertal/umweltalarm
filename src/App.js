@@ -50,6 +50,9 @@ function App() {
   const [loggedOut, setLoggedOut] = useState();
   const [waiting, setWaiting] = useState();
   const [loginInfo, setLoginInfo] = useState();
+  const [initialised, setInitialised] = useState();
+  var keysChecked = 0;
+  var newDataRetrieved = false;
 
   const setJWT = (jwt) => {
     localforage.setItem("@" + appKey + "." + "auth" + "." + "jwt", jwt);
@@ -75,7 +78,16 @@ function App() {
         md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db)
           .then(
             (stoerfallResult) => {
-              //              alert('drin ' + daqKey);
+              ++keysChecked;
+
+              if (stoerfallResult.data && Array.isArray(stoerfallResult.data)) {
+                newDataRetrieved = true;
+              }
+
+              if (keysChecked > daqKeys.length - 1 && newDataRetrieved === true) {
+                //reload the hits after the data retrieval is complete
+                setInitialised('initialised complete')
+              }
             },
             (problem) => {
               if (problem.status === 401) {
@@ -85,7 +97,6 @@ function App() {
                   setLoginInfo();
                 }, 2500);
               }
-              //              setDynGazData([]);
             }
           )
           .catch((e) => {
@@ -293,7 +304,7 @@ function App() {
       )}
       <Waiting waiting={waiting} />
 
-      <UmweltalarmMap loggedOut={loggedOut} />
+      <UmweltalarmMap loggedOut={loggedOut} initialised={initialised}/>
     </TopicMapContextProvider>
   );
 }
