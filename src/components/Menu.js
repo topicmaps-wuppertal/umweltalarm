@@ -41,7 +41,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Wupperverband.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Wupperverband.png"}
                   ></img>
                   Gewässer Wupperverband
                 </li>
@@ -50,7 +50,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_BRWasserverband.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_BRWasserverband.png"}
                   ></img>
                   Gewässer Bergisch-Rheinischer Wasserverband / Ruhrverband
                 </li>
@@ -59,7 +59,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Verrohrung.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Verrohrung.png"}
                   ></img>
                   Gewässerverrohrungen
                 </li>
@@ -68,7 +68,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Schmutzkanal.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Schmutzkanal.png"}
                   ></img>
                   Schmutzwasserkanal
                 </li>
@@ -77,7 +77,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Regenkanal.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Regenkanal.png"}
                   ></img>
                   Regenwasserkanal
                 </li>
@@ -86,7 +86,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Mischkanal.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Mischkanal.png"}
                   ></img>
                   Mischwasserkanal
                 </li>
@@ -95,7 +95,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Privatkanal.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Privatkanal.png"}
                   ></img>
                   Privatkanal
                 </li>
@@ -104,7 +104,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Schachtdeckel.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Schachtdeckel.png"}
                   ></img>
                   Schachtdeckel
                 </li>
@@ -113,7 +113,7 @@ const MyMenu = () => {
                     style={{ padding: 5 }}
                     width='50px'
                     alt='Legendenbild'
-                    src='/images/Legende_Trinkwasserbrunnen.png'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Trinkwasserbrunnen.png"}
                   ></img>
                   Trinkwasserbrunnen
                 </li>
