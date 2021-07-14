@@ -28,7 +28,99 @@ const MyMenu = () => {
           skipClusteringSettings={true}
           skipSymbolsizeSetting={true}
         />,
-
+        <Section
+          key='legend'
+          sectionKey='legend'
+          sectionTitle='Legende der Fachdaten'
+          sectionBsStyle='info'
+          sectionContent={
+            <div>
+              <ul>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Wupperverband.png'
+                  ></img>
+                  Gewässer Wupperverband
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_BRWasserverband.png'
+                  ></img>
+                  Gewässer Bergisch-Rheinischer Wasserverband / Ruhrverband
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Verrohrung.png'
+                  ></img>
+                  Gewässerverrohrungen
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Schmutzkanal.png'
+                  ></img>
+                  Schmutzwasserkanal
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Regenkanal.png'
+                  ></img>
+                  Regenwasserkanal
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Mischkanal.png'
+                  ></img>
+                  Mischwasserkanal
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Privatkanal.png'
+                  ></img>
+                  Privatkanal
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Schachtdeckel.png'
+                  ></img>
+                  Schachtdeckel
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src='/images/Legende_Trinkwasserbrunnen.png'
+                  ></img>
+                  Trinkwasserbrunnen
+                </li>
+              </ul>
+            </div>
+          }
+        />,
         <Section
           key='help'
           sectionKey='help'
