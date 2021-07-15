@@ -35,10 +35,10 @@ const MyMenu = () => {
           sectionBsStyle='info'
           sectionContent={
             <div>
-              <ul>
+              <ul style={{ listStyleType: "none" }}>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Wupperverband.png"}
@@ -47,7 +47,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_BRWasserverband.png"}
@@ -56,7 +56,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Verrohrung.png"}
@@ -65,7 +65,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Schmutzkanal.png"}
@@ -74,7 +74,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Regenkanal.png"}
@@ -83,7 +83,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Mischkanal.png"}
@@ -92,7 +92,7 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Privatkanal.png"}
@@ -101,17 +101,26 @@ const MyMenu = () => {
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
+                    style={{ padding: 5, marginRight: 15 }}
+                    width='50px'
+                    alt='Legendenbild'
+                    src={process.env.PUBLIC_URL + "/images/Legende_Fliessrichtung.png"}
+                  ></img>
+                  Fließrichtungspfeil (jeweils in der Farbe des zugehörigen Kanalnetzes)
+                </li>
+                <li>
+                  <img
+                    style={{ padding: 5, marginRight: 15 }}
                     width='50px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Schachtdeckel.png"}
                   ></img>
-                  Schachtdeckel
+                  Schachtdeckel (jeweils in der Farbe des zugehörigen Kanalnetzes)
                 </li>
                 <li>
                   <img
-                    style={{ padding: 5 }}
-                    width='50px'
+                    style={{ padding: 5, margin: 10, marginRight: 24, marginTop: 10 }}
+                    width='30px'
                     alt='Legendenbild'
                     src={process.env.PUBLIC_URL + "/images/Legende_Trinkwasserbrunnen.png"}
                   ></img>
