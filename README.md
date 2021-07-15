@@ -6,7 +6,7 @@
 
 ## Screenshot
 
-<img width="1072" alt="Screenshot 2021-06-24 at 09 20 08" src="https://user-images.githubusercontent.com/837211/123219637-67cffc00-d4cd-11eb-8c36-df7a51a2c6e5.png">
+<img width="1016" alt="Screenshot 2021-07-15 at 18 39 27" src="https://user-images.githubusercontent.com/837211/125825370-01a34088-503c-4e5d-8ed8-4927a8e301e7.png">
 
 ## Datengrundlage
 
