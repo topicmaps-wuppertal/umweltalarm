@@ -20,10 +20,14 @@ import { appKey, daqKeys, db } from "./App";
 import InfoBox from "./components/InfoBox";
 import InfoPanel from "./components/SecondaryInfo";
 import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
+import FeatureCollection, { getDefaultFeatureStyler } from "react-cismap/FeatureCollection";
+import { FeatureCollectionDisplay } from "react-cismap";
+
+import Color from "color";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
-const getData = async (setGazData, setInfoData) => {
+const getData = async (setGazData) => {
   const prefix = "GazDataForStories";
   const sources = {};
 
@@ -45,15 +49,120 @@ const getData = async (setGazData, setInfoData) => {
   setGazData(gazData);
 };
 
+const convertToFeature = (_item) => {
+  const item = JSON.parse(JSON.stringify(_item));
+
+  const geometry = item?.geojson;
+  const selected = false;
+  const type = "Feature";
+  let text = item?.bezeichnung;
+  switch (item.typ) {
+    case "naturschutzgebiete":
+      text = item?.nrw_name;
+      item.color = "#649351";
+      break;
+    case "landschaftsschutzgebiete":
+      text = "Landschaftsschutzgebiet";
+      item.color = "#97C146";
+
+      break;
+    case "stadtFlurstuecke":
+      text = item?.flurstueck;
+      item.color = "#dddddd";
+      item.opcaity = 0.3;
+      break;
+    case "trinkwasserbrunnen":
+      text = item?.str_name + " " + item?.hsnr;
+      item.color = "#A7DBD8";
+      item.opcaity = 0.3;
+
+      break;
+    case "bimschWuppertal":
+      text = item?.b_firma1;
+      item.color = "#774F38";
+
+      break;
+    case "bimschNrw":
+      text = item?.b_firma1;
+      item.color = "#774F38";
+
+      break;
+    case "wasserschutzgebiete":
+      text = item?.zone;
+      item.color = "#69D2E7";
+
+      break;
+    case "StoerfallBetriebeKlasse1":
+      text = item?.betrieb;
+      item.color = "#DD4A36";
+      break;
+    case "StoerfallBetriebeKlasse2":
+      text = item?.betrieb;
+      item.color = "#DD4A36";
+      item.opacity = 0.3;
+
+      break;
+
+    default:
+      return undefined;
+      break;
+  }
+
+  return {
+    id: item.typ + "." + item.id,
+    text,
+    type,
+    selected,
+    geometry,
+    crs: geometry?.crs || {
+      type: "name",
+      properties: {
+        name: "urn:ogc:def:crs:EPSG::25832",
+      },
+    },
+    properties: item,
+  };
+};
+
+const style = (feature) => {
+  let color = new Color(feature?.properties?.color || "#ff0000");
+  let linecolor = new Color(feature?.properties?.color || "#ff0000").darken(0.5);
+
+  return {
+    fillColor: color,
+    color: linecolor,
+    opacity: 0.5,
+    fillOpacity: feature?.properties?.opacity || 0.6,
+
+    weight: 0.5,
+  };
+};
+
 function UmweltalarmMap({ loggedOut, initialised }) {
   const [gazData, setGazData] = useState([]);
-  const [infoData, setInfoData] = useState([]);
+  const [isFeatureCollectionVisible, setFeatureCollectionVisible] = useState(false);
+
   const [hits, setHits] = useState([]);
+  const [featureCollection, setFeatureCollection] = useState([]);
   const { windowSize } = useContext(ResponsiveTopicMapContext);
 
   useEffect(() => {
-    getData(setGazData, setInfoData);
+    getData(setGazData);
   }, []);
+
+  useEffect(() => {
+    const features = [];
+    for (const hit of hits || []) {
+      const f = convertToFeature(hit);
+      if (f) {
+        features.push(f);
+      }
+    }
+    setFeatureCollection(features);
+  }, [hits]);
+  console.log("featureCollection", featureCollection);
+  console.log("hiots", hits);
+
   return (
     <div key={initialised != null ? initialised : "init"}>
       <Crosshair />
@@ -70,13 +179,24 @@ function UmweltalarmMap({ loggedOut, initialised }) {
           let bbPoly = bboxPolygon(bbox);
           //   console.log("xxx mappingBoundsChanged", center);
           let center = turfCenter(bbPoly);
-          //          console.log(center.geometry.coordinates);
-          const hits = searchForFeatures(db, daqKeys, center).then((hits) => {
+          console.log("sss bbPoly", bbPoly);
+          console.log("sss center", center);
+
+          searchForFeatures(db, daqKeys, center).then((hits) => {
             setHits(hits);
           });
         }}
       >
-        {!loggedOut && <InfoBox hits={hits} />}
+        {!loggedOut && (
+          <InfoBox
+            isFeatureCollectionVisible={isFeatureCollectionVisible}
+            setFeatureCollectionVisible={setFeatureCollectionVisible}
+            hits={hits}
+          />
+        )}
+        {isFeatureCollectionVisible && (
+          <FeatureCollectionDisplay style={style} featureCollection={featureCollection} />
+        )}
       </TopicMapComponent>
     </div>
   );

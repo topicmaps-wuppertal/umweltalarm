@@ -14,13 +14,17 @@ import {
   faWater,
   faTree,
   faExclamationCircle,
+  faMap,
+  faToggleOff,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 import { Icon } from "react-fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Loadable from "react-loading-overlay";
+import { Button } from "react-bootstrap";
 
-const InfoBox = ({ hits }) => {
+const InfoBox = ({ hits, setFeatureCollectionVisible, isFeatureCollectionVisible }) => {
   const { collapsedInfoBox } = useContext(UIContext);
   const { setCollapsedInfoBox, setSecondaryInfoVisible } = useContext(UIDispatchContext);
   var hitsObject = {};
@@ -266,10 +270,22 @@ const InfoBox = ({ hits }) => {
       collapsibleStyle={{ paddingLeft: 0 }}
       handleResponsiveDesign={true}
       infoStyle={{ padding: "0px" }}
-      secondaryInfoBoxElements={undefined}
       alwaysVisibleDiv={collapsedInfoBox ? symbols : null}
       collapsibleDiv={!collapsedInfoBox ? symbols : null}
       fixedRow={true}
+      secondaryInfoBoxElements={[
+        <div>
+          <Button
+            variant={isFeatureCollectionVisible ? "success" : "secondary"}
+            style={{ marginBottom: 5 }}
+            onClick={() => {
+              setFeatureCollectionVisible(!isFeatureCollectionVisible);
+            }}
+          >
+            <FontAwesomeIcon icon={faMap} />
+          </Button>
+        </div>,
+      ]}
     />
   );
 };
