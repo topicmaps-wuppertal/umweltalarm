@@ -24,7 +24,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Loadable from "react-loading-overlay";
 import { Button } from "react-bootstrap";
 
-const InfoBox = ({ hits, setFeatureCollectionVisible, isFeatureCollectionVisible }) => {
+export const modes = {
+  WINDOW: "WINDOW",
+  CENTER: "CENTER",
+};
+const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionVisible }) => {
   const { collapsedInfoBox } = useContext(UIContext);
   const { setCollapsedInfoBox, setSecondaryInfoVisible } = useContext(UIDispatchContext);
   var hitsObject = {};
@@ -112,7 +116,11 @@ const InfoBox = ({ hits, setFeatureCollectionVisible, isFeatureCollectionVisible
               paddingBottom: "0px",
             }}
           >
-            <span> Analyseergebnis: ({Array.isArray(hits) ? hits.length : "-"})</span>
+            <span>
+              {" "}
+              Analyseergebnis {mode === modes.CENTER ? "(Fadenkreuz)" : "(Kartenfenster)"}:{" "}
+              {Array.isArray(hits) ? hits.length : "-"} Treffer
+            </span>
           </td>
         </tr>
       </tbody>

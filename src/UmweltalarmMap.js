@@ -17,7 +17,7 @@ import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
 import Control from "react-leaflet-control";
 import { daqKeys, db } from "./App";
 import "./App.css";
-import InfoBox from "./components/InfoBox";
+import InfoBox, { modes } from "./components/InfoBox";
 import MyMenu from "./components/Menu";
 import InfoPanel from "./components/SecondaryInfo";
 import Crosshair from "./Crosshair";
@@ -144,6 +144,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
   const [isFeatureCollectionVisible, setFeatureCollectionVisible] = useState(false);
 
   const [hits, setHits] = useState([]);
+  const [searchMode, setSearchMode] = useState(modes.CENTER);
   const [featureCollection, setFeatureCollection] = useState([]);
   const [bbPoly, setBBPoly] = useState();
   const { windowSize } = useContext(ResponsiveTopicMapContext);
@@ -187,6 +188,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
           console.log("sss center", center);
 
           searchForFeatures(db, daqKeys, center).then((hits) => {
+            setSearchMode(modes.CENTER);
             setHits(hits);
             setBBPoly(bbPoly);
           });
@@ -194,6 +196,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
       >
         {!loggedOut && (
           <InfoBox
+            mode={searchMode}
             isFeatureCollectionVisible={isFeatureCollectionVisible}
             setFeatureCollectionVisible={setFeatureCollectionVisible}
             hits={hits}
@@ -210,6 +213,8 @@ function UmweltalarmMap({ loggedOut, initialised }) {
               setHits();
 
               searchForFeatures(db, daqKeys, bbPoly).then((hits) => {
+                setSearchMode(modes.WINDOW);
+
                 setHits(hits);
               });
             }}
