@@ -86,7 +86,7 @@ function App() {
 
               if (keysChecked > daqKeys.length - 1 && newDataRetrieved === true) {
                 //reload the hits after the data retrieval is complete
-                setInitialised('initialised complete')
+                setInitialised("initialised complete");
               }
             },
             (problem) => {
@@ -304,7 +304,7 @@ function App() {
       )}
       <Waiting waiting={waiting} />
 
-      <UmweltalarmMap loggedOut={loggedOut} initialised={initialised}/>
+      <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>
   );
 }
