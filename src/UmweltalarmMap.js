@@ -1,29 +1,27 @@
+import { faSearch, faMap, faSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import bboxPolygon from "@turf/bbox-polygon";
-import booleanIntersects from "@turf/boolean-intersects";
 import turfCenter from "@turf/center";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Color from "color";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { md5FetchJSON, md5FetchText } from "react-cismap/tools/fetching";
+import { FeatureCollectionDisplay } from "react-cismap";
+import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
+import { TopicMapContext } from "react-cismap/contexts/TopicMapContextProvider";
+import { md5FetchText } from "react-cismap/tools/fetching";
 import { getGazDataForTopicIds } from "react-cismap/tools/gazetteerHelper";
 import "react-cismap/topicMaps.css";
-import ResponsiveInfoBox from "react-cismap/topicmaps/ResponsiveInfoBox";
 import TopicMapComponent from "react-cismap/topicmaps/TopicMapComponent";
+import Control from "react-leaflet-control";
+import { daqKeys, db } from "./App";
 import "./App.css";
-import MyMenu from "./components/Menu";
-import Crosshair from "./Crosshair";
-import { md5ActionFetchDAQ4Dexie, initTables } from "./md5Fetching";
-import { searchForFeatures } from "./search";
-import { appKey, daqKeys, db } from "./App";
-
 import InfoBox from "./components/InfoBox";
+import MyMenu from "./components/Menu";
 import InfoPanel from "./components/SecondaryInfo";
-import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
-import FeatureCollection, { getDefaultFeatureStyler } from "react-cismap/FeatureCollection";
-import { FeatureCollectionDisplay } from "react-cismap";
-
-import Color from "color";
+import Crosshair from "./Crosshair";
+import { searchForFeatures } from "./search";
 
 const host = "https://wupp-topicmaps-data.cismet.de";
 
@@ -139,11 +137,15 @@ const style = (feature) => {
 };
 
 function UmweltalarmMap({ loggedOut, initialised }) {
+  const { routedMapRef } = useContext(TopicMapContext);
+  const mapRef = routedMapRef?.leafletMap?.leafletElement;
+  const currentZoom = mapRef?.getZoom();
   const [gazData, setGazData] = useState([]);
   const [isFeatureCollectionVisible, setFeatureCollectionVisible] = useState(false);
 
   const [hits, setHits] = useState([]);
   const [featureCollection, setFeatureCollection] = useState([]);
+  const [bbPoly, setBBPoly] = useState();
   const { windowSize } = useContext(ResponsiveTopicMapContext);
 
   useEffect(() => {
@@ -163,6 +165,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
   console.log("featureCollection", featureCollection);
   console.log("hiots", hits);
 
+  const searchInWholeWindowEnabled = currentZoom && currentZoom >= 16;
   return (
     <div key={initialised != null ? initialised : "init"}>
       <Crosshair />
@@ -177,6 +180,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
           setHits(undefined);
           let bbox = [boundingBox.left, boundingBox.bottom, boundingBox.right, boundingBox.top];
           let bbPoly = bboxPolygon(bbox);
+
           //   console.log("xxx mappingBoundsChanged", center);
           let center = turfCenter(bbPoly);
           console.log("sss bbPoly", bbPoly);
@@ -184,6 +188,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
 
           searchForFeatures(db, daqKeys, center).then((hits) => {
             setHits(hits);
+            setBBPoly(bbPoly);
           });
         }}
       >
@@ -197,6 +202,28 @@ function UmweltalarmMap({ loggedOut, initialised }) {
         {isFeatureCollectionVisible && (
           <FeatureCollectionDisplay style={style} featureCollection={featureCollection} />
         )}
+
+        <Control className='leaflet-bar' position={"topleft"}>
+          <button
+            disabled={!searchInWholeWindowEnabled}
+            onClick={() => {
+              setHits();
+
+              searchForFeatures(db, daqKeys, bbPoly).then((hits) => {
+                setHits(hits);
+              });
+            }}
+            className='easy-button-button leaflet-bar-part leaflet-interactive unnamed-state-active'
+          >
+            <span
+              style={{ color: searchInWholeWindowEnabled ? "#444444" : "#bbbbbb" }}
+              className='fa-layers fa-fw '
+            >
+              <FontAwesomeIcon transform='grow-9' icon={faSearch} size='lg' />
+              <FontAwesomeIcon transform='shrink-8 up-2 left-2.3' icon={faSquare} size='lg' />
+            </span>
+          </button>
+        </Control>
       </TopicMapComponent>
     </div>
   );
