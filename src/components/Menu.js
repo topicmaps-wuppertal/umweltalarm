@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import { UIDispatchContext } from "react-cismap/contexts/UIContextProvider";
 import { getSimpleHelpForTM } from "react-cismap/tools/uiHelper";
 import ConfigurableDocBlocks from "react-cismap/topicmaps/ConfigurableDocBlocks";
 import DefaultSettingsPanel from "react-cismap/topicmaps/menu/DefaultSettingsPanel";
@@ -8,7 +6,6 @@ import Section from "react-cismap/topicmaps/menu/Section";
 import MenuFooter from "./MenuFooter";
 
 const MyMenu = () => {
-  const { setAppMenuActiveMenuSection } = useContext(UIDispatchContext);
   const simpleHelp = undefined;
   return (
     <ModalApplicationMenu

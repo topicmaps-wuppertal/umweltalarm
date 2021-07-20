@@ -1,28 +1,18 @@
-import ResponsiveInfoBox from "react-cismap/topicmaps/ResponsiveInfoBox";
-import { useContext } from "react";
-import { UIContext, UIDispatchContext } from "react-cismap/contexts/UIContextProvider";
-import IconComp from "react-cismap/commons/Icon";
 import {
-  faArchive,
-  faBiohazard,
   faCity,
+  faExclamationCircle,
   faFaucet,
   faHandHoldingWater,
   faIndustry,
-  faLeaf,
-  faRoad,
-  faWater,
-  faTree,
-  faExclamationCircle,
   faMap,
-  faToggleOff,
-  faToggleOn,
+  faTree,
 } from "@fortawesome/free-solid-svg-icons";
-import { Icon } from "react-fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import Loadable from "react-loading-overlay";
+import { useContext } from "react";
 import { Button } from "react-bootstrap";
+import { UIContext, UIDispatchContext } from "react-cismap/contexts/UIContextProvider";
+import ResponsiveInfoBox from "react-cismap/topicmaps/ResponsiveInfoBox";
+import Loadable from "react-loading-overlay";
 
 export const modes = {
   WINDOW: "WINDOW",
@@ -96,6 +86,7 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             flurstueckDienstStellenAnzahl + el.dienststellen.split("#").length;
           hitsObject.stadtFlurstuecke.push(el);
           break;
+        default:
       }
     }
   }

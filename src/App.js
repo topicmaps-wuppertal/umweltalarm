@@ -1,27 +1,25 @@
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "leaflet/dist/leaflet.css";
+import localforage from "localforage";
+import { useEffect, useState } from "react";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import "react-cismap/topicMaps.css";
-import TopicMapContextProvider from "react-cismap/contexts/TopicMapContextProvider";
-import UmweltalarmMap from "./UmweltalarmMap";
 import { MappingConstants } from "react-cismap";
+import TopicMapContextProvider from "react-cismap/contexts/TopicMapContextProvider";
 import { getInternetExplorerVersion } from "react-cismap/tools/browserHelper";
 import { defaultLayerConf } from "react-cismap/tools/layerFactory";
-import { useEffect, useState } from "react";
-import localforage from "localforage";
+import "react-cismap/topicMaps.css";
+import MapLibreLayer from "react-cismap/vector/MapLibreLayer";
+import "./App.css";
+import LoginForm from "./components/LoginForm";
+import Title from "./components/TitleControl";
 import {
-  md5ActionFetchDAQ4Dexie,
-  initTables,
   indexAnsprechpartner,
   indexAnsprechpartnerZustaendigkeit,
+  initTables,
+  md5ActionFetchDAQ4Dexie,
 } from "./md5Fetching";
-import LoginForm from "./components/LoginForm";
-import Waiting from "./components/Waiting";
-import Title from "./components/TitleControl";
-import MapLibreLayer from "react-cismap/vector/MapLibreLayer";
+import UmweltalarmMap from "./UmweltalarmMap";
 
-const host = "https://wupp-topicmaps-data.cismet.de";
 export const appKey = "umweltalarm.Online.Wuppertal";
 export const apiUrl = "https://umweltalarm-api.cismet.de";
 export const daqKeys = [
@@ -48,32 +46,35 @@ function App() {
 
   const [jwt, _setJWT] = useState();
   const [loggedOut, setLoggedOut] = useState();
-  const [waiting, setWaiting] = useState();
   const [loginInfo, setLoginInfo] = useState();
   const [initialised, setInitialised] = useState();
-  var keysChecked = 0;
-  var newDataRetrieved = false;
-
+  const [checkedForJWT, setCheckedForJWT] = useState(false);
   const setJWT = (jwt) => {
+    // eslint-disable-next-line
     localforage.setItem("@" + appKey + "." + "auth" + "." + "jwt", jwt);
     _setJWT(jwt);
   };
 
   useEffect(() => {
     (async () => {
+      // eslint-disable-next-line
       const jwtInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "jwt");
       if (jwtInCache) {
         setJWT(jwtInCache);
         setLoggedOut(false);
+        setCheckedForJWT(true);
       } else {
         setJWT(undefined);
         setLoggedOut(true);
+        setCheckedForJWT(true);
       }
     })();
   }, []);
 
   useEffect(() => {
     if (jwt) {
+      let newDataRetrieved = false;
+      let keysChecked = 0;
       for (const daqKey of daqKeys) {
         md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db)
           .then(
@@ -207,19 +208,25 @@ function App() {
   // TODO problems in settings preview map wehen doing the immutable way
   const baseLayerConf = { ...defaultLayerConf };
 
-  if (baseLayerConf.namedLayers.cismetLight == undefined) {
+  if (baseLayerConf.namedLayers.cismetLight === undefined) {
     baseLayerConf.namedLayers.cismetLight = {
       type: "vector",
       style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
       pane: "backgroundvectorLayers",
     };
   }
-  if (baseLayerConf.namedLayers.cismetText == undefined) {
+  if (baseLayerConf.namedLayers.cismetText === undefined) {
     baseLayerConf.namedLayers.cismetText = {
       type: "vector",
       style: "https://omt.map-hosting.de/styles/cismet-text/style.json",
       pane: "backgroundlayerTooltips",
     };
+  }
+  let loginForm = null;
+  if (loggedOut && checkedForJWT === true && jwt === undefined) {
+    loginForm = (
+      <LoginForm key={"login."} setJWT={setJWT} loginInfo={loginInfo} setLoginInfo={setLoginInfo} />
+    );
   }
 
   return (
@@ -281,14 +288,15 @@ function App() {
       referenceSystemDefinition={MappingConstants.proj4crs3857def}
       maskingPolygon='POLYGON((668010.063156992 6750719.23021889,928912.612468322 6757273.20343972,930494.610325512 6577553.43685138,675236.835570551 6571367.64964125,668010.063156992 6750719.23021889))'
     >
-      {loggedOut && jwt === undefined && (
+      {/* {loggedOut && checkedForJWT === true && jwt === undefined && (
         <LoginForm
           key={"login."}
           setJWT={setJWT}
           loginInfo={loginInfo}
           setLoginInfo={setLoginInfo}
         />
-      )}
+      )} */}
+      {loginForm}
       {!loggedOut && (
         <Title
           logout={() => {
@@ -302,7 +310,6 @@ function App() {
           jwt={jwt}
         />
       )}
-      <Waiting waiting={waiting} />
 
       <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>

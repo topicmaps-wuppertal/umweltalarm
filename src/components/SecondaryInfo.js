@@ -1,11 +1,10 @@
 import React, { useContext } from "react";
-import { FeatureCollectionContext } from "react-cismap/contexts/FeatureCollectionContextProvider";
-import SecondaryInfoPanelSection from "react-cismap/topicmaps/SecondaryInfoPanelSection";
-import SecondaryInfo from "react-cismap/topicmaps/SecondaryInfo";
-import { TopicMapContext } from "react-cismap/contexts/TopicMapContextProvider";
 import IconLink from "react-cismap/commons/IconLink";
-import { getApplicationVersion } from "../version";
+import { TopicMapContext } from "react-cismap/contexts/TopicMapContextProvider";
 import { version as reactCismapVersion } from "react-cismap/meta";
+import SecondaryInfo from "react-cismap/topicmaps/SecondaryInfo";
+import SecondaryInfoPanelSection from "react-cismap/topicmaps/SecondaryInfoPanelSection";
+import { getApplicationVersion } from "../version";
 
 const objectifyHits = (hits) => {
   const hitObject = {};
@@ -65,11 +64,12 @@ const footer = (
 
 const getAnsprechpartnerLinks = (ansprechpartner) => {
   let links = [];
+  const keyPostfix = +JSON.stringify(ansprechpartner);
   if (ansprechpartner.tel) {
     links.push(
-      <span style={{ padding: 4 }}>
+      <span key={`span.tel` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
-          key={`IconLink.tel`}
+          key={`IconLink.tel` + keyPostfix}
           tooltip='Ansprechpartner Anrufen'
           href={"tel:" + ansprechpartner.tel}
           iconname='phone'
@@ -79,9 +79,9 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
   }
   if (ansprechpartner.email) {
     links.push(
-      <span style={{ padding: 4 }}>
+      <span key={`span.email` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
-          key={`IconLink.email`}
+          key={`IconLink.email` + keyPostfix}
           tooltip='E-Mail an Ansprechpartner schreiben'
           href={"mailto:" + ansprechpartner.email}
           iconname='envelope-square'
@@ -92,9 +92,9 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
   }
   if (ansprechpartner.url) {
     links.push(
-      <span style={{ padding: 4 }}>
+      <span key={`span.web` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
-          key={`IconLink.web`}
+          key={`IconLink.web` + keyPostfix}
           tooltip='Webseite'
           href={ansprechpartner.url}
           target='_blank'
@@ -171,7 +171,7 @@ const getDienststellen = (dienststellen, ansprechpartner) => {
             : {};
 
         return (
-          <span style={styleParam}>
+          <span key={"dienstst.span." + index} style={styleParam}>
             {index > 0 ? ", " : ""}
             {value}
           </span>
@@ -200,14 +200,6 @@ const getSeparator = (name) => {
       </span>
     </div>
   );
-};
-
-const getNewDistance = (distance, steps) => {
-  if (distance % steps == 0) {
-    return distance;
-  } else {
-    return steps - (distance % steps) + distance;
-  }
 };
 
 const InfoPanel = ({ hits }) => {
@@ -251,7 +243,11 @@ const InfoPanel = ({ hits }) => {
         hitObject.stadtFlurstuecke
       ) {
         subSections.push(
-          <SecondaryInfoPanelSection key='standort' bsStyle='success' header={"Zuständigkeiten"}>
+          <SecondaryInfoPanelSection
+            key={"standort" + hitObject.id}
+            bsStyle='success'
+            header={"Zuständigkeiten"}
+          >
             {hitObject.wasserverbaende && getSeparator("Wasserverband")}
 
             {hitObject.wasserverbaende &&
@@ -287,7 +283,8 @@ const InfoPanel = ({ hits }) => {
             {hitObject.stadtFlurstuecke && hitObject.stadtFlurstuecke.length > 1 && (
               <div>
                 <div>
-                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Folgend wird das Flurstück mit dem geringsten Abstand zur Mitte angezeigt.
+                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Folgend wird
+                  das Flurstück mit dem geringsten Abstand zur Mitte angezeigt.
                 </div>
                 <br></br>
                 <div>
@@ -296,8 +293,12 @@ const InfoPanel = ({ hits }) => {
                     {hitObject.stadtFlurstuecke[0].flurstueck}
                   </div>
                   <div>
-                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length > 1 && <b>Dienststellen: </b>}
-                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length <= 1 && <b>Dienststelle: </b>}
+                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length > 1 && (
+                      <b>Dienststellen: </b>
+                    )}
+                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length <= 1 && (
+                      <b>Dienststelle: </b>
+                    )}
                     {getDienststellen(
                       hitObject.stadtFlurstuecke[0].dienststellen,
                       Array.isArray(hitObject.stadtFlurstuecke[0].ansprechpartner)
@@ -315,7 +316,7 @@ const InfoPanel = ({ hits }) => {
                     )}
                 </div>
               </div>
-          )}
+            )}
             {hitObject.stadtFlurstuecke &&
               hitObject.stadtFlurstuecke.length === 1 &&
               hitObject.stadtFlurstuecke.map((value, index) => {
@@ -361,8 +362,6 @@ const InfoPanel = ({ hits }) => {
         hitObject.StoerfallBetriebeKlasse1 ||
         hitObject.StoerfallBetriebeKlasse2
       ) {
-        var distance = null;
-
         subSections.push(
           <SecondaryInfoPanelSection
             key='standort'

@@ -25,10 +25,10 @@ const Title = ({ logout, jwt }) => {
       actiontext = "abmelden";
     } catch (e) {}
   }
+  /*eslint jsx-a11y/anchor-is-valid: "off"*/
   const titleContent = (
     <div>
-      <b>Umweltalarm</b> (
-      {secondaryInfo + (dateInfo !== undefined ? ", " + dateInfo : "")})
+      <b>Umweltalarm</b> ({secondaryInfo + (dateInfo !== undefined ? ", " + dateInfo : "")})
       <div style={{ float: "right", paddingRight: 10 }}>
         <a
           style={{ color: "#337ab7" }}

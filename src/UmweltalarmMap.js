@@ -1,4 +1,4 @@
-import { faSearch, faMap, faSquare } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import bboxPolygon from "@turf/bbox-polygon";
 import turfCenter from "@turf/center";
@@ -103,7 +103,6 @@ const convertToFeature = (_item) => {
 
     default:
       return undefined;
-      break;
   }
 
   return {
@@ -163,8 +162,6 @@ function UmweltalarmMap({ loggedOut, initialised }) {
     }
     setFeatureCollection(features);
   }, [hits]);
-  console.log("featureCollection", featureCollection);
-  console.log("hiots", hits);
 
   const searchInWholeWindowEnabled = currentZoom && currentZoom >= 16;
   return (
@@ -184,8 +181,6 @@ function UmweltalarmMap({ loggedOut, initialised }) {
 
           //   console.log("xxx mappingBoundsChanged", center);
           let center = turfCenter(bbPoly);
-          console.log("sss bbPoly", bbPoly);
-          console.log("sss center", center);
 
           searchForFeatures(db, daqKeys, center).then((hits) => {
             setSearchMode(modes.CENTER);
