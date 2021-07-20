@@ -6,6 +6,7 @@ import { getApplicationVersion } from "../version";
 
 const Footer = () => {
   const { setAppMenuActiveMenuSection } = useContext(UIDispatchContext);
+  /*eslint jsx-a11y/anchor-is-valid: "off"*/
 
   return (
     <div style={{ fontSize: "11px" }}>
