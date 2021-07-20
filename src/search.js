@@ -267,7 +267,7 @@ export const addAnsprechpartner = async (
   let found = false;
 
   for (const key of keys) {
-    if (key !== "geojson" && dataObject[key] !== undefined) {
+    if (key !== "geojson" && dataObject[key] !== undefined && dataObject[key] !== null) {
       const anprechreferenz = await ansprechpartnerZustaendigkeit.get({
         tabelle: table,
         referenz: dataObject[key],

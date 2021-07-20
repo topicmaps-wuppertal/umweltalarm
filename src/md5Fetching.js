@@ -107,14 +107,13 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
           }
 
           return new Promise((resolve, reject) => {
-            resolve({ data, time });
+            resolve({ data, daqKey, time });
           });
         } catch (e) {
           return new Promise((resolve, reject) => {
             reject({
               status: 500,
-              desc:
-                "error when parsing the server result. probably the content has the wrong structure",
+              desc: "error when parsing the server result. probably the content has the wrong structure",
               content,
               exception: e,
             });
@@ -131,11 +130,11 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
       }
     } else if (response.status === 401) {
       return new Promise((resolve, reject) => {
-        reject({ status: response.status, desc: "unauthorized" });
+        reject({ status: response.status, daqKey, desc: "unauthorized" });
       });
     } else {
       return new Promise((resolve, reject) => {
-        reject({ status: response.status, desc: "unknown" });
+        reject({ status: response.status, daqKey, desc: "unknown" });
       });
     }
   }
