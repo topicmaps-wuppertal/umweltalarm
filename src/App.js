@@ -82,8 +82,6 @@ function App() {
 
       Promise.all(tasks).then(
         (results) => {
-          console.log("xxx result", results);
-
           for (const result of results) {
             if (result.daqKey === "ansprechpartner" && Array.isArray(result.data)) {
               indexAnsprechpartner(result.data, "ansprechpartner", db);
@@ -110,93 +108,6 @@ function App() {
     }
   }, [jwt]);
 
-  // useEffect(() => {
-  //   if (jwt) {
-  //     let newDataRetrieved = false;
-  //     let keysChecked = 0;
-  //     for (const daqKey of daqKeys) {
-  //       md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db)
-  //         .then(
-  //           (result) => {
-  //             ++keysChecked;
-
-  //             if (result.data && Array.isArray(result.data)) {
-  //               newDataRetrieved = true;
-  //             }
-
-  //             if (keysChecked > daqKeys.length - 1 && newDataRetrieved === true) {
-  //               //reload the hits after the data retrieval is complete
-  //               setInitialised("initialised complete");
-  //             }
-  //           },
-  //           (problem) => {
-  //             if (problem.status === 401) {
-  //               setJWT(undefined);
-  //               setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
-  //               setTimeout(() => {
-  //                 setLoginInfo();
-  //               }, 2500);
-  //             }
-  //           }
-  //         )
-  //         .catch((e) => {
-  //           console.log("xxx error ", e);
-  //         });
-  //     }
-
-  //     md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartner", db)
-  //       .then(
-  //         (stoerfallResult) => {
-  //           if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
-  //             indexAnsprechpartner(stoerfallResult.data, "ansprechpartner", db);
-  //           }
-  //         },
-  //         (problem) => {
-  //           if (problem.status === 401) {
-  //             setJWT(undefined);
-  //             setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
-  //             setTimeout(() => {
-  //               setLoginInfo();
-  //             }, 2500);
-  //           }
-  //         }
-  //       )
-  //       .catch((e) => {
-  //         console.log("xxx error ", e);
-  //       });
-
-  //     md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartnerZustaendigkeit", db)
-  //       .then(
-  //         (stoerfallResult) => {
-  //           if (stoerfallResult !== undefined && Array.isArray(stoerfallResult.data)) {
-  //             console.log("Ansprechpartner referenz");
-  //             indexAnsprechpartnerZustaendigkeit(
-  //               stoerfallResult.data,
-  //               "ansprechpartnerZustaendigkeit",
-  //               db
-  //             );
-  //           }
-  //         },
-  //         (problem) => {
-  //           if (problem.status === 401) {
-  //             setJWT(undefined);
-  //             setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
-  //             setTimeout(() => {
-  //               setLoginInfo();
-  //             }, 2500);
-  //           }
-  //         }
-  //       )
-  //       .catch((e) => {
-  //         console.log("xxx error ", e);
-  //       });
-
-  //     setLoggedOut(false);
-  //   } else {
-  //     setLoggedOut(true);
-  //     //      setDynGazData([]);
-  //   }
-  // }, [jwt]);
 
   if (getInternetExplorerVersion() === -1) {
     backgroundModes = [
@@ -264,7 +175,7 @@ function App() {
   let loginForm = null;
   if (loggedOut && checkedForJWT === true && jwt === undefined) {
     loginForm = (
-      <LoginForm key={"login."} setJWT={setJWT} loginInfo={loginInfo} setLoginInfo={setLoginInfo} />
+      <LoginForm key={"login."} setJWT={setJWT} loginInfo={loginInfo} setLoginInfo={setLoginInfo}  setLoggedOut={setLoggedOut} />
     );
   }
 

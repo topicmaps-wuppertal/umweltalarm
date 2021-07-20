@@ -18,6 +18,7 @@ const LoginForm = ({
   },
   loginInfo,
   setLoginInfo = () => {},
+  setLoggedOut,
 }) => {
   console.log("xxx loginform mounted");
 
@@ -82,6 +83,7 @@ const LoginForm = ({
             });
             setTimeout(() => {
               setJWT(jwt);
+              setLoggedOut(false);
               setLoginInfo();
             }, 500);
           });
@@ -190,6 +192,7 @@ const LoginForm = ({
                     });
                     setTimeout(() => {
                       setJWT(CACHE_JWT);
+                      setLoggedOut(false);
                       setLoginInfo();
                     }, 500);
                   }}
