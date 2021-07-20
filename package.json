@@ -1,6 +1,6 @@
 {
   "name": "umweltalarm",
-  "version": "0.7.20",
+  "version": "0.7.21",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.4",

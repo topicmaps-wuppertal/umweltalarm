@@ -244,8 +244,8 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             <div style={subtextStyle}>
               {hitsObject?.stadtFlurstuecke !== undefined
                 ? hitsObject?.stadtFlurstuecke[0].default_name.split("#")[0] +
-                  (flurstueckDienstStellenAnzahl > 1
-                    ? " (+" + (flurstueckDienstStellenAnzahl - 1) + ")"
+                  (hitsObject?.stadtFlurstuecke.length > 1
+                    ? " (+" + (hitsObject?.stadtFlurstuecke.length - 1) + ")"
                     : "")
                 : //                ? hitsObject?.stadtFlurstuecke[0].default_name + (hitsObject?.stadtFlurstuecke.length > 1 ? ' (+' + (hitsObject?.stadtFlurstuecke.length - 1) + ')' : '')
                   ""}

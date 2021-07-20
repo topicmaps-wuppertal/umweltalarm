@@ -286,11 +286,36 @@ const InfoPanel = ({ hits }) => {
             {hitObject.stadtFlurstuecke && getSeparator("Stadt Wuppertal")}
             {hitObject.stadtFlurstuecke && hitObject.stadtFlurstuecke.length > 1 && (
               <div>
-                Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Um
-                Ansprechpartner für einzelne Flurstücke anzuzeigen, verwenden Sie bitte das
-                Fadenkreuz.
+                <div>
+                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Folgend wird das Flurstück mit dem geringsten Abstand zur Mitte angezeigt.
+                </div>
+                <br></br>
+                <div>
+                  <div>
+                    <b>Flurstück: </b>
+                    {hitObject.stadtFlurstuecke[0].flurstueck}
+                  </div>
+                  <div>
+                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length > 1 && <b>Dienststellen: </b>}
+                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length <= 1 && <b>Dienststelle: </b>}
+                    {getDienststellen(
+                      hitObject.stadtFlurstuecke[0].dienststellen,
+                      Array.isArray(hitObject.stadtFlurstuecke[0].ansprechpartner)
+                        ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
+                        : hitObject.stadtFlurstuecke[0].ansprechpartner
+                    )}
+                    {/* {value.dienststellen.replace('#', ', ')} */}
+                  </div>
+                  <br />
+                  {hitObject.stadtFlurstuecke[0].ansprechpartner &&
+                    getAnsprechpartner(
+                      Array.isArray(hitObject.stadtFlurstuecke[0].ansprechpartner)
+                        ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
+                        : hitObject.stadtFlurstuecke[0].ansprechpartner
+                    )}
+                </div>
               </div>
-            )}
+          )}
             {hitObject.stadtFlurstuecke &&
               hitObject.stadtFlurstuecke.length === 1 &&
               hitObject.stadtFlurstuecke.map((value, index) => {

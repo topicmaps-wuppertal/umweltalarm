@@ -5,8 +5,8 @@ import turfBbox from "@turf/bbox";
 export const CACHE_JWT = "--cached--data--";
 
 export const initTables = (prefix, daqKeys) => {
-  var db = new Dexie(prefix);
-  var schema = {};
+  const db = new Dexie(prefix);
+  const schema = {};
   for (const key of daqKeys) {
     schema[key] = "gid";
   }
@@ -21,7 +21,7 @@ export const initTables = (prefix, daqKeys) => {
 
 export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) => {
   const allObjects = await db.table("daq_meta").get({ name: daqKey });
-  var md5InCache = null;
+  let md5InCache = null;
 
   if (allObjects != null) {
     md5InCache = allObjects.md5;
@@ -80,7 +80,7 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
 
             data = JSON.parse(result.content);
             time = result.time;
-            var newData = {};
+            const newData = {};
             newData["md5"] = result.md5;
             newData["time"] = time;
             newData["name"] = daqKey;
@@ -150,8 +150,8 @@ export const indexGeometries = async (content, table, prefix, db) => {
 
   for (const el of content) {
     const geo = getBoundsFromArea(el.geojson);
-    var i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
-    var newData = {};
+    const i = index.add(geo[0][1], geo[0][0], geo[1][1], geo[1][0]);
+    const newData = {};
     newData["gid"] = i;
     newData["data"] = el;
     data.push(newData);
@@ -161,7 +161,7 @@ export const indexGeometries = async (content, table, prefix, db) => {
   index.finish();
 
   const allObjects = await db.table("daq_meta").get({ name: table });
-  var changes = {};
+  const changes = {};
   changes["pol_index"] = index.data;
   await db.table("daq_meta").update(allObjects.id, changes);
 };
@@ -171,10 +171,9 @@ export const indexAnsprechpartner = async (content, table, db) => {
   await tableObject.clear();
 
   const data = [];
-  var i = 0;
 
   for (const el of content) {
-    var newData = {};
+    const newData = {};
     newData["id"] = el.id;
     newData["data"] = el;
     data.push(newData);
@@ -188,10 +187,9 @@ export const indexAnsprechpartnerZustaendigkeit = async (content, table, db) => 
   await tableObject.clear();
 
   const data = [];
-  var i = 0;
 
   for (const el of content) {
-    var newData = {};
+    const newData = {};
     newData["id"] = el.id;
     newData["tabelle"] = el.tabelle;
     newData["referenz"] = el.referenz;
@@ -207,7 +205,7 @@ export const getBoundsFromArea = (area) => {
   const bboxArray = turfBbox(area);
   const corner1 = [bboxArray[1], bboxArray[0]];
   const corner2 = [bboxArray[3], bboxArray[2]];
-  var bounds = [corner1, corner2];
+  const bounds = [corner1, corner2];
 
   return bounds;
 };
