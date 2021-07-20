@@ -268,6 +268,10 @@ function App() {
     );
   }
 
+  //MapLibreLayer has a style attribute wich isn't liked by the linter
+  //will be fixed soon
+  /*eslint react/style-prop-object: "off"*/
+
   return (
     <TopicMapContextProvider
       persistenceSettings={{
