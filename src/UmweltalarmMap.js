@@ -82,12 +82,21 @@ const convertToFeature = (_item) => {
       break;
     case "bimschNrw":
       text = item?.b_firma1;
+
       item.color = "#774F38";
 
       break;
     case "wasserschutzgebiete":
       text = item?.zone;
-      item.color = "#69D2E7";
+      if (item?.zone === "I") {
+        item.color = "#F4C900";
+      } else if (item?.zone === "II") {
+        item.color = "#FAE842";
+      } else if (item?.zone === "III") {
+        item.color = "#FFFF99";
+      } else {
+        item.color = "#69D2E7";
+      }
 
       break;
     case "StoerfallBetriebeKlasse1":
