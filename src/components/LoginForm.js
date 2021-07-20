@@ -1,14 +1,14 @@
-import localforage from "localforage";
-import { useContext, useEffect, useRef, useState } from "react";
-import { Alert, Button, Form, Modal } from "react-bootstrap";
-import IconComp from "react-cismap/commons/Icon";
-import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
-import { apiUrl, appKey, daqKeys, db } from "../App";
-import { CACHE_JWT } from "react-cismap/tools/fetching";
-import {offlineDataAvailable} from "../search"
-import { FeatureCollectionDispatchContext } from "react-cismap/contexts/FeatureCollectionContextProvider";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import localforage from "localforage";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import IconComp from "react-cismap/commons/Icon";
+import { FeatureCollectionDispatchContext } from "react-cismap/contexts/FeatureCollectionContextProvider";
+import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
+import { CACHE_JWT } from "react-cismap/tools/fetching";
+import { appKey, daqKeys, db } from "../App";
+import { offlineDataAvailable } from "../search";
 
 dayjs.extend(customParseFormat);
 
@@ -18,7 +18,10 @@ const LoginForm = ({
   },
   loginInfo,
   setLoginInfo = () => {},
+  setLoggedOut,
 }) => {
+  console.log("xxx loginform mounted");
+
   const { windowSize } = useContext(ResponsiveTopicMapContext);
   const { setMetaInformation } = useContext(FeatureCollectionDispatchContext);
   const pwFieldRef = useRef();
@@ -35,21 +38,21 @@ const LoginForm = ({
 
   window.localforage = localforage;
   const setUser = (user) => {
+    // eslint-disable-next-line
     localforage.setItem("@" + appKey + "." + "auth" + "." + "user", user);
     _setUser(user);
   };
 
   useEffect(() => {
     (async () => {
+      // eslint-disable-next-line
       const userInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "user");
       const dataValueInCache = await offlineDataAvailable(db, daqKeys);
-      console.log('xxx o' + dataValueInCache);
-      console.log('xxx offData' + (dataValueInCache !== null && dataValueInCache !== undefined));
 
       setCacheDataAvailable(dataValueInCache !== null && dataValueInCache !== undefined);
       if (dataValueInCache !== null && dataValueInCache !== undefined) {
         const time = dayjs(dataValueInCache, "YYYY-MM-DD hh:mm:ss").toDate();
-        setMetaInformation({time});      
+        setMetaInformation({ time });
       }
       if (userInCache) {
         setUser(userInCache);
@@ -59,8 +62,9 @@ const LoginForm = ({
         userFieldRef.current.select();
       }
     })();
-  }, []);
+  }, [setMetaInformation]);
 
+  /*eslint no-useless-concat: "off"*/
   const login = () => {
     fetch("https://umweltalarm-api.cismet.de/users", {
       method: "GET",
@@ -79,6 +83,7 @@ const LoginForm = ({
             });
             setTimeout(() => {
               setJWT(jwt);
+              setLoggedOut(false);
               setLoginInfo();
             }, 500);
           });
@@ -187,6 +192,7 @@ const LoginForm = ({
                     });
                     setTimeout(() => {
                       setJWT(CACHE_JWT);
+                      setLoggedOut(false);
                       setLoginInfo();
                     }, 500);
                   }}

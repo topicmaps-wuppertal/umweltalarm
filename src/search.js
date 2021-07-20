@@ -134,17 +134,17 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                           ansprechpartnerZustaendigkeit
                         );
 
-                        if (obj.ansprechpartner != undefined) {
+                        if (obj.ansprechpartner !== undefined) {
                           ansprechpartnerArray.push(obj.ansprechpartner);
                         }
                       }
                       obj.dienststellen = dienststellenOld;
                       obj.ansprechpartner = ansprechpartnerArray;
 
-                      if (geom !== null && geom.geometry.type !== 'Point') {
+                      if (geom !== null && geom.geometry.type !== "Point") {
                         const centerGeom = turfCenter(geom);
                         if (booleanIntersects(geoj, centerGeom.geometry)) {
-                          obj["abstand"] =  0;
+                          obj["abstand"] = 0;
                         } else {
                           const distanceInMeters = getDistance(geom, geoj);
                           obj["abstand"] = Math.round(distanceInMeters);
@@ -152,7 +152,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                       }
 
                       allFlurstuecke.push(obj);
-//                      hits.push(obj);
+                      //                      hits.push(obj);
                     } else {
                       await addAnsprechpartner(
                         key,
@@ -160,10 +160,10 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                         ansprechpartner,
                         ansprechpartnerZustaendigkeit
                       );
-                      if (geom !== null && geom.geometry.type !== 'Point') {
+                      if (geom !== null && geom.geometry.type !== "Point") {
                         const centerGeom = turfCenter(geom);
                         if (booleanIntersects(geoj, centerGeom.geometry)) {
-                          obj["abstand"] =  0;
+                          obj["abstand"] = 0;
                         } else {
                           const distanceInMeters = getDistance(geom, geoj);
                           obj["abstand"] = Math.round(distanceInMeters);
@@ -171,7 +171,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
                       }
 
                       allFlurstuecke.push(obj);
-//                      hits.push(obj);
+                      //                      hits.push(obj);
                     }
                   } else {
                     await addAnsprechpartner(
@@ -192,7 +192,7 @@ export const searchForFeatures = async (db, daqKeys, geom) => {
       }
     }
   }
-  
+
   if (allFlurstuecke !== null && allFlurstuecke.length > 0) {
     allFlurstuecke.sort(compareDist);
     Array.prototype.push.apply(hits, allFlurstuecke);
@@ -267,7 +267,7 @@ export const addAnsprechpartner = async (
   let found = false;
 
   for (const key of keys) {
-    if (key !== "geojson" && dataObject[key] != undefined) {
+    if (key !== "geojson" && dataObject[key] !== undefined && dataObject[key] !== null) {
       const anprechreferenz = await ansprechpartnerZustaendigkeit.get({
         tabelle: table,
         referenz: dataObject[key],
