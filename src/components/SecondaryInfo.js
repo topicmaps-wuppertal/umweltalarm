@@ -283,8 +283,8 @@ const InfoPanel = ({ hits }) => {
             {hitObject.stadtFlurstuecke && hitObject.stadtFlurstuecke.length > 1 && (
               <div>
                 <div>
-                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Folgend wird
-                  das Flurstück mit dem geringsten Abstand zur Mitte angezeigt.
+                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Nachfolgend wird
+                  das Flurstück mit dem geringsten Abstand zum Fadenkreuz angezeigt.
                 </div>
                 <br></br>
                 <div>
