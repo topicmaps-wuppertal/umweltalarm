@@ -18,7 +18,7 @@
     "react": "^16.11",
     "react-bootstrap": "^1.5.2",
     "react-bootstrap-typeahead": "^5.1.4",
-    "react-cismap": "^1.2.30",
+    "react-cismap": "^1.2.48",
     "react-dom": "^16.11",
     "react-scripts": "4.0.3",
     "turf": "^3.0.14",
