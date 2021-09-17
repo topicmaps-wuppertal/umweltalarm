@@ -166,7 +166,7 @@ const getDienststellen = (dienststellen, ansprechpartner) => {
     <span>
       {dienststellenArray.map((value, index) => {
         var styleParam =
-          value === ansprechpartner.firma.trim() && dienststellenArray.length > 1
+          value === ansprechpartner?.firma.trim() && dienststellenArray.length > 1
             ? { borderBottom: "1px solid black" }
             : {};
 
@@ -283,8 +283,8 @@ const InfoPanel = ({ hits }) => {
             {hitObject.stadtFlurstuecke && hitObject.stadtFlurstuecke.length > 1 && (
               <div>
                 <div>
-                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Nachfolgend wird
-                  das Flurstück mit dem geringsten Abstand zum Fadenkreuz angezeigt.
+                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Nachfolgend
+                  wird das Flurstück mit dem geringsten Abstand zum Fadenkreuz angezeigt.
                 </div>
                 <br></br>
                 <div>
