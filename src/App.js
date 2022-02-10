@@ -19,6 +19,7 @@ import {
   md5ActionFetchDAQ4Dexie,
 } from "./md5Fetching";
 import UmweltalarmMap from "./UmweltalarmMap";
+import LogConsole from "react-cismap/tools/LogConsole";
 
 export const appKey = "umweltalarm.Online.Wuppertal";
 export const apiUrl = "https://umweltalarm-api.cismet.de";
@@ -43,6 +44,7 @@ function App() {
   useEffect(() => {
     document.title = "Umweltalarm Wuppertal";
   }, []);
+  const showConsole = new URLSearchParams(window.location.href).get("consoleOverlay") !== null;
 
   const [jwt, _setJWT] = useState();
   const [loggedOut, setLoggedOut] = useState();
@@ -108,7 +110,6 @@ function App() {
     }
   }, [jwt]);
 
-
   if (getInternetExplorerVersion() === -1) {
     backgroundModes = [
       {
@@ -121,7 +122,12 @@ function App() {
         mode: "default",
         layerKey: "vector",
       },
-
+      {
+        title: "Stadtplan Offline",
+        mode: "default",
+        layerKey: "vectorOffline",
+        offlineDataStoreKey: "wuppBasemap",
+      },
       { title: "Luftbildkarte", mode: "default", layerKey: "lbk" },
     ];
   } else {
@@ -131,7 +137,6 @@ function App() {
         mode: "default",
         layerKey: "stadtplan",
       },
-
       { title: "Luftbildkarte", mode: "default", layerKey: "lbk" },
     ];
   }
@@ -152,6 +157,84 @@ function App() {
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
+    vectorOffline: {
+      layerkey: "osmBrightOffline",
+      src: "/images/rain-hazard-map-bg/citymap.png",
+      title: "Stadtplan (Offline))",
+    },
+  };
+
+  const offlineConfig = {
+    rules: [
+      {
+        origin: "https://offline.omt.map-hosting.de/fonts",
+        cachePath: "fonts",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/styles",
+        cachePath: "styles",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/v3.json",
+        cachePath: "v3.json",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/v3",
+        cachePath: "tiles.v3",
+        realServerFallback: false,
+      },
+
+      {
+        origin: "https://events.mapbox.com/events/v2?access_token=multipass",
+        block: true,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/gewaesser.json",
+        cachePath: "gewaesser.json",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/gewaesser",
+        cachePath: "tiles.gewaesser",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/kanal.json",
+        cachePath: "kanal.json",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/kanal",
+        cachePath: "tiles.kanal",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/brunnen.json",
+        cachePath: "brunnen.json",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://offline.omt.map-hosting.de/data/brunnen",
+        cachePath: "tiles.brunnen",
+        realServerFallback: false,
+      },
+    ],
+    dataStores: [
+      {
+        name: "Vektorkarte für Wuppertal",
+        key: "wuppBasemap",
+        url: "https://offline-data.cismet.de/offline-data/wuppOMT3.zip",
+      },
+      {
+        name: "Gewässer, Kanal und Brunnendaten",
+        key: "umweltalarm",
+        url: "https://offline-data.cismet.de/offline-data/umweltalarm.zip",
+      },
+    ],
+    consoleDebug: true,
   };
 
   // const baseLayerConf = JSON.parse(JSON.stringify(defaultLayerConf));
@@ -172,10 +255,22 @@ function App() {
       pane: "backgroundlayerTooltips",
     };
   }
+  if (baseLayerConf.namedLayers.osmBrightOffline === undefined) {
+    baseLayerConf.namedLayers.osmBrightOffline = {
+      type: "vector",
+      style: "https://offline.omt.map-hosting.de/styles/osm-bright/style.json",
+    };
+  }
   let loginForm = null;
   if (loggedOut && checkedForJWT === true && jwt === undefined) {
     loginForm = (
-      <LoginForm key={"login."} setJWT={setJWT} loginInfo={loginInfo} setLoginInfo={setLoginInfo}  setLoggedOut={setLoggedOut} />
+      <LoginForm
+        key={"login."}
+        setJWT={setJWT}
+        loginInfo={loginInfo}
+        setLoginInfo={setLoginInfo}
+        setLoggedOut={setLoggedOut}
+      />
     );
   }
 
@@ -204,10 +299,12 @@ function App() {
             <MapLibreLayer
               key={"brunnen"}
               style_='http://localhost:888/styles/brunnen/style.json'
-              style='https://omt.map-hosting.de/styles/brunnen/style.json'
+              styleO='https://omt.map-hosting.de/styles/brunnen/style.json'
+              style='https://offline.omt.map-hosting.de/styles/brunnen/style.json'
               pane='additionalLayers0'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
         kanal: {
           title: <span>Kanalnetz</span>,
@@ -216,10 +313,12 @@ function App() {
             <MapLibreLayer
               key={"kanal"}
               style_='http://localhost:888/styles/kanal/style.json'
-              style='https://omt.map-hosting.de/styles/kanal/style.json'
+              styleO='https://omt.map-hosting.de/styles/brunnen/style.json'
+              style='https://offline.omt.map-hosting.de/styles/kanal/style.json'
               pane='additionalLayers1'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
         gewaesser: {
           title: <span>Gewässernetz</span>,
@@ -228,13 +327,16 @@ function App() {
             <MapLibreLayer
               key={"gewaesser"}
               style_='http://localhost:888/styles/gewaesser/style.json'
-              style='https://omt.map-hosting.de/styles/gewaesser/style.json'
+              styleO='https://omt.map-hosting.de/styles/gewaesser/style.json'
+              style='https://offline.omt.map-hosting.de/styles/gewaesser/style.json'
               pane='additionalLayers2'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
       }}
       baseLayerConf={baseLayerConf}
+      offlineCacheConfig={offlineConfig}
       backgroundConfigurations={backgroundConfigurations}
       backgroundModes={backgroundModes}
       referenceSystem={MappingConstants.crs3857}
@@ -264,6 +366,7 @@ function App() {
           jwt={jwt}
         />
       )}
+      {showConsole && <LogConsole ghostModeAvailable={true} minifyAvailable={true} />}
 
       <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>
