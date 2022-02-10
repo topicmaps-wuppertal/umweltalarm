@@ -11222,7 +11222,7 @@ polygon-clipping@^0.15.3:
   dependencies:
     splaytree "^3.1.0"
 
-polylabel@mapbox/polylabel:
+"polylabel@github:mapbox/polylabel":
   version "1.1.0"
   resolved "https://codeload.github.com/mapbox/polylabel/tar.gz/19d391cf95e8b756cd0663158fb2a54428b0553e"
   dependencies:
@@ -12349,9 +12349,10 @@ react-chartkick@^0.4.1:
   dependencies:
     chartkick "^3.2.0"
 
-react-cismap@/Volumes/Users/thorsten/dev/js/060-react-cismap/dist/react-cismap-1.6.3.tgz:
-  version "1.6.3"
-  resolved "/Volumes/Users/thorsten/dev/js/060-react-cismap/dist/react-cismap-1.6.3.tgz#45555806e91a48cdad28b2fc1e70c25b6f1e057a"
+react-cismap@1.7.0-experimental-1:
+  version "1.7.0-experimental-1"
+  resolved "https://registry.yarnpkg.com/react-cismap/-/react-cismap-1.7.0-experimental-1.tgz#a4c421dc0edf9b35861ac2c5f614dd6d50b139f3"
+  integrity sha512-XNQ8UHmH76NaeLsuS9QZD7uNJ1y6y1RDBnVbQD1f6b8C+oquck8GT93YD13ZrwP3I8Vjpi8cGQmDhHA2s3nQRg==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.12.0"
     "@fortawesome/fontawesome-svg-core" "^1.2.26"
@@ -12427,18 +12428,6 @@ react-cismap@/Volumes/Users/thorsten/dev/js/060-react-cismap/dist/react-cismap-1
     url-search-params-polyfill "^5.0.0"
     use-immer "^0.4.2"
     watchjs "^0.0.0"
-    workbox-background-sync "^5.1.4"
-    workbox-broadcast-update "^5.1.4"
-    workbox-cacheable-response "^5.1.4"
-    workbox-core "^5.1.4"
-    workbox-expiration "^5.1.4"
-    workbox-google-analytics "^5.1.4"
-    workbox-navigation-preload "^5.1.4"
-    workbox-precaching "^5.1.4"
-    workbox-range-requests "^5.1.4"
-    workbox-routing "^5.1.4"
-    workbox-strategies "^5.1.4"
-    workbox-streams "^5.1.4"
 
 react-dev-utils@^11.0.3:
   version "11.0.4"
