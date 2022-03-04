@@ -118,12 +118,13 @@ function App() {
         layerKey: "stadtplan",
       },
       {
-        title: "Stadtplan (Vektordaten light)",
+        title: "Stadtplan (grau)",
         mode: "default",
         layerKey: "vector",
+        offlineDataStoreKey: "wuppBasemap",
       },
       {
-        title: "Stadtplan Offline",
+        title: "Stadtplan (bunt)",
         mode: "default",
         layerKey: "vectorOffline",
         offlineDataStoreKey: "wuppBasemap",
@@ -167,57 +168,46 @@ function App() {
   const offlineConfig = {
     rules: [
       {
-        origin: "https://offline.omt.map-hosting.de/fonts",
+        origin: "https://omt.map-hosting.de/fonts/Metropolis Medium Italic,Noto",
+        cachePath: "fonts/Open",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://omt.map-hosting.de/fonts/Klokantech Noto",
+        cachePath: "fonts/Open",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://omt.map-hosting.de/fonts",
         cachePath: "fonts",
         realServerFallback: false,
       },
       {
-        origin: "https://offline.omt.map-hosting.de/styles",
+        origin: "https://omt.map-hosting.de/styles",
         cachePath: "styles",
-        realServerFallback: false,
-      },
-      {
-        origin: "https://offline.omt.map-hosting.de/data/v3.json",
-        cachePath: "v3.json",
-        realServerFallback: false,
-      },
-      {
-        origin: "https://offline.omt.map-hosting.de/data/v3",
-        cachePath: "tiles.v3",
         realServerFallback: false,
       },
 
       {
-        origin: "https://events.mapbox.com/events/v2?access_token=multipass",
-        block: true,
-      },
-      {
-        origin: "https://offline.omt.map-hosting.de/data/gewaesser.json",
-        cachePath: "gewaesser.json",
+        origin: "https://omt.map-hosting.de/data/v3",
+        cachePath: "tiles.wupp",
         realServerFallback: false,
       },
+
       {
-        origin: "https://offline.omt.map-hosting.de/data/gewaesser",
+        origin: "https://omt.map-hosting.de/data/gewaesser",
         cachePath: "tiles.gewaesser",
         realServerFallback: false,
       },
+
       {
-        origin: "https://offline.omt.map-hosting.de/data/kanal.json",
-        cachePath: "kanal.json",
-        realServerFallback: false,
-      },
-      {
-        origin: "https://offline.omt.map-hosting.de/data/kanal",
+        origin: "https://omt.map-hosting.de/data/kanal",
         cachePath: "tiles.kanal",
         realServerFallback: false,
       },
+
       {
-        origin: "https://offline.omt.map-hosting.de/data/brunnen.json",
-        cachePath: "brunnen.json",
-        realServerFallback: false,
-      },
-      {
-        origin: "https://offline.omt.map-hosting.de/data/brunnen",
+        origin: "https://omt.map-hosting.de/data/brunnen",
         cachePath: "tiles.brunnen",
         realServerFallback: false,
       },
@@ -226,12 +216,13 @@ function App() {
       {
         name: "Vektorkarte für Wuppertal",
         key: "wuppBasemap",
-        url: "https://offline-data.cismet.de/offline-data/wuppOMT3.zip",
+        url: "https://offline-data.cismet.de/offline-data/wupp.new.zip",
       },
       {
         name: "Gewässer, Kanal und Brunnendaten",
         key: "umweltalarm",
-        url: "https://offline-data.cismet.de/offline-data/umweltalarm.zip",
+
+        url: "https://offline-data.cismet.de/offline-data/umweltalarm.new.zip",
       },
     ],
     consoleDebug: true,
@@ -246,6 +237,8 @@ function App() {
       type: "vector",
       style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
       pane: "backgroundvectorLayers",
+      offlineAvailable: true,
+      offlineDataStoreKey: "wuppBasemap",
     };
   }
   if (baseLayerConf.namedLayers.cismetText === undefined) {
@@ -255,10 +248,13 @@ function App() {
       pane: "backgroundlayerTooltips",
     };
   }
-  if (baseLayerConf.namedLayers.osmBrightOffline === undefined) {
+  if (!baseLayerConf.namedLayers.osmBrightOffline) {
     baseLayerConf.namedLayers.osmBrightOffline = {
       type: "vector",
-      style: "https://offline.omt.map-hosting.de/styles/osm-bright/style.json",
+      style: "https://omt.map-hosting.de/styles/osm-bright-grey/style.json",
+      offlineAvailable: true,
+      offlineDataStoreKey: "wuppBasemap",
+      pane: "backgroundvectorLayers",
     };
   }
   let loginForm = null;
@@ -294,42 +290,42 @@ function App() {
       additionalLayerConfiguration={{
         brunnen: {
           title: <span>Trinkwasserbrunnen</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"brunnen"}
-              style_='http://localhost:888/styles/brunnen/style.json'
-              styleO='https://omt.map-hosting.de/styles/brunnen/style.json'
-              style='https://offline.omt.map-hosting.de/styles/brunnen/style.json'
+              style='https://omt.map-hosting.de/styles/brunnen/style.json'
               pane='additionalLayers0'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
           offlineDataStoreKey: "umweltalarm",
         },
         kanal: {
           title: <span>Kanalnetz</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"kanal"}
-              style_='http://localhost:888/styles/kanal/style.json'
-              styleO='https://omt.map-hosting.de/styles/brunnen/style.json'
-              style='https://offline.omt.map-hosting.de/styles/kanal/style.json'
+              style='https://omt.map-hosting.de/styles/kanal/style.json'
               pane='additionalLayers1'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
           offlineDataStoreKey: "umweltalarm",
         },
         gewaesser: {
           title: <span>Gewässernetz</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"gewaesser"}
-              style_='http://localhost:888/styles/gewaesser/style.json'
-              styleO='https://omt.map-hosting.de/styles/gewaesser/style.json'
-              style='https://offline.omt.map-hosting.de/styles/gewaesser/style.json'
+              style='https://omt.map-hosting.de/styles/gewaesser/style.json'
               pane='additionalLayers2'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
           offlineDataStoreKey: "umweltalarm",
