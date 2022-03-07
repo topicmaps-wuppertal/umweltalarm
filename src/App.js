@@ -225,6 +225,13 @@ function App() {
         url: "https://offline-data.cismet.de/offline-data/umweltalarm.new.zip",
       },
     ],
+    offlineStyles: [
+      "https://omt.map-hosting.de/styles/cismet-light/style.json",
+      "https://omt.map-hosting.de/styles/osm-bright-grey/style.json",
+      "https://omt.map-hosting.de/styles/brunnen/style.json",
+      "https://omt.map-hosting.de/styles/kanal/style.json",
+      "https://omt.map-hosting.de/styles/gewaesser/style.json",
+    ],
     consoleDebug: true,
   };
 
