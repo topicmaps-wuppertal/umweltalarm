@@ -168,7 +168,12 @@ function App() {
   const offlineConfig = {
     rules: [
       {
-        origin: "https://omt.map-hosting.de/fonts/Metropolis Medium Italic,Noto",
+        origin: "https://omt.map-hosting.de/fonts/Metropolis Regular,Noto",
+        cachePath: "fonts/Open",
+        realServerFallback: false,
+      },
+      {
+        origin: "https://omt.map-hosting.de/fonts/Metropolis Light,Noto",
         cachePath: "fonts/Open",
         realServerFallback: false,
       },
