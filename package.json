@@ -1,6 +1,6 @@
 {
   "name": "umweltalarm",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "private": true,
   "config": {
     "dockerRegistryPath": "reg.cismet.de/cismet"
