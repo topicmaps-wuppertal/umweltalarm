@@ -168,66 +168,54 @@ function App() {
   const offlineConfig = {
     rules: [
       {
-        origin: "https://omt.map-hosting.de/fonts/Metropolis Regular,Noto",
+        origin: "https://omt.map-hosting.de/fonts/Metropolis Medium Italic,Noto",
         cachePath: "fonts/Open",
-        realServerFallback: false,
-      },
-      {
-        origin: "https://omt.map-hosting.de/fonts/Metropolis Light,Noto",
-        cachePath: "fonts/Open",
-        realServerFallback: false,
       },
       {
         origin: "https://omt.map-hosting.de/fonts/Klokantech Noto",
         cachePath: "fonts/Open",
-        realServerFallback: false,
       },
       {
         origin: "https://omt.map-hosting.de/fonts",
         cachePath: "fonts",
-        realServerFallback: false,
       },
       {
         origin: "https://omt.map-hosting.de/styles",
         cachePath: "styles",
-        realServerFallback: false,
       },
 
       {
         origin: "https://omt.map-hosting.de/data/v3",
-        cachePath: "tiles.wupp",
-        realServerFallback: false,
+        cachePath: "tiles",
       },
 
       {
         origin: "https://omt.map-hosting.de/data/gewaesser",
         cachePath: "tiles.gewaesser",
-        realServerFallback: false,
       },
 
       {
         origin: "https://omt.map-hosting.de/data/kanal",
         cachePath: "tiles.kanal",
-        realServerFallback: false,
       },
 
       {
         origin: "https://omt.map-hosting.de/data/brunnen",
         cachePath: "tiles.brunnen",
-        realServerFallback: false,
+        // realServerFallback: true, //this can override the globalsetting
       },
     ],
     dataStores: [
       {
         name: "Vektorkarte für Wuppertal",
         key: "wuppBasemap",
-        url: "https://offline-data.cismet.de/offline-data/wupp.new.zip",
+        url: "https://offline-data.cismet.de/offline-data/wupp.zip",
       },
+
       {
         name: "Gewässer, Kanal und Brunnendaten",
         key: "umweltalarm",
-
-        url: "https://offline-data.cismet.de/offline-data/umweltalarm.new.zip",
+        url: "https://offline-data.cismet.de/offline-data/umweltalarm.zip",
       },
     ],
     offlineStyles: [
@@ -237,7 +225,10 @@ function App() {
       "https://omt.map-hosting.de/styles/kanal/style.json",
       "https://omt.map-hosting.de/styles/gewaesser/style.json",
     ],
-    consoleDebug: true,
+    realServerFallback: true, //should be true in production
+    consoleDebug: false,
+    optional: true,
+    initialActive: true,
   };
 
   // const baseLayerConf = JSON.parse(JSON.stringify(defaultLayerConf));
