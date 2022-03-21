@@ -20,6 +20,7 @@ import {
 } from "./md5Fetching";
 import UmweltalarmMap from "./UmweltalarmMap";
 import LogConsole from "react-cismap/tools/LogConsole";
+import { offlineConfig } from "./offlineConfig";
 
 export const appKey = "umweltalarm.Online.Wuppertal";
 export const apiUrl = "https://umweltalarm-api.cismet.de";
@@ -120,13 +121,13 @@ function App() {
       {
         title: "Stadtplan (grau)",
         mode: "default",
-        layerKey: "vector",
+        layerKey: "vectorCityMap2",
         offlineDataStoreKey: "wuppBasemap",
       },
       {
         title: "Stadtplan (bunt)",
         mode: "default",
-        layerKey: "vectorOffline",
+        layerKey: "vectorCityMap",
         offlineDataStoreKey: "wuppBasemap",
       },
       { title: "Luftbildkarte", mode: "default", layerKey: "lbk" },
@@ -153,102 +154,30 @@ function App() {
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
-    vector: {
+    vectorCityMap2: {
       layerkey: "cismetLight",
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
-    vectorOffline: {
+
+    vectorCityMap: {
       layerkey: "osmBrightOffline",
       src: "/images/rain-hazard-map-bg/citymap.png",
-      title: "Stadtplan (Offline))",
+      title: "Stadtplan",
     },
-  };
-
-  const offlineConfig = {
-    rules: [
-      {
-        origin: "https://omt.map-hosting.de/fonts/Metropolis Medium Italic,Noto",
-        cachePath: "fonts/Open",
-      },
-      {
-        origin: "https://omt.map-hosting.de/fonts/Klokantech Noto",
-        cachePath: "fonts/Open",
-      },
-      {
-        origin: "https://omt.map-hosting.de/fonts",
-        cachePath: "fonts",
-      },
-      {
-        origin: "https://omt.map-hosting.de/styles",
-        cachePath: "styles",
-      },
-
-      {
-        origin: "https://omt.map-hosting.de/data/v3",
-        cachePath: "tiles",
-      },
-
-      {
-        origin: "https://omt.map-hosting.de/data/gewaesser",
-        cachePath: "tiles.gewaesser",
-      },
-
-      {
-        origin: "https://omt.map-hosting.de/data/kanal",
-        cachePath: "tiles.kanal",
-      },
-
-      {
-        origin: "https://omt.map-hosting.de/data/brunnen",
-        cachePath: "tiles.brunnen",
-        // realServerFallback: true, //this can override the globalsetting
-      },
-    ],
-    dataStores: [
-      {
-        name: "Vektorkarte für Wuppertal",
-        key: "wuppBasemap",
-        url: "https://offline-data.cismet.de/offline-data/wupp.zip",
-      },
-
-      {
-        name: "Gewässer, Kanal und Brunnendaten",
-        key: "umweltalarm",
-        url: "https://offline-data.cismet.de/offline-data/umweltalarm.zip",
-      },
-    ],
-    offlineStyles: [
-      "https://omt.map-hosting.de/styles/cismet-light/style.json",
-      "https://omt.map-hosting.de/styles/osm-bright-grey/style.json",
-      "https://omt.map-hosting.de/styles/brunnen/style.json",
-      "https://omt.map-hosting.de/styles/kanal/style.json",
-      "https://omt.map-hosting.de/styles/gewaesser/style.json",
-    ],
-    realServerFallback: true, //should be true in production
-    consoleDebug: false,
-    optional: true,
-    initialActive: true,
   };
 
   // const baseLayerConf = JSON.parse(JSON.stringify(defaultLayerConf));
   // TODO problems in settings preview map wehen doing the immutable way
-  const baseLayerConf = { ...defaultLayerConf };
 
-  if (baseLayerConf.namedLayers.cismetLight === undefined) {
+  const baseLayerConf = { ...defaultLayerConf };
+  if (!baseLayerConf.namedLayers.cismetLight) {
     baseLayerConf.namedLayers.cismetLight = {
       type: "vector",
       style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
-      pane: "backgroundvectorLayers",
       offlineAvailable: true,
       offlineDataStoreKey: "wuppBasemap",
-    };
-  }
-  if (baseLayerConf.namedLayers.cismetText === undefined) {
-    baseLayerConf.namedLayers.cismetText = {
-      type: "vector",
-      style: "https://omt.map-hosting.de/styles/cismet-text/style.json",
-      pane: "backgroundlayerTooltips",
+      pane: "backgroundvectorLayers",
     };
   }
   if (!baseLayerConf.namedLayers.osmBrightOffline) {
@@ -260,6 +189,7 @@ function App() {
       pane: "backgroundvectorLayers",
     };
   }
+
   let loginForm = null;
   if (loggedOut && checkedForJWT === true && jwt === undefined) {
     loginForm = (
@@ -279,17 +209,6 @@ function App() {
 
   return (
     <TopicMapContextProvider
-      persistenceSettings={{
-        ui: ["XappMenuVisible", "appMenuActiveMenuSection", "collapsedInfoBox"],
-        featureCollection: ["filterState", "filterMode", "clusteringEnabled"],
-        responsive: [],
-        styling: [
-          "activeAdditionalLayerKeys",
-          "namedMapStyle",
-          "selectedBackground",
-          "markerSymbolSize",
-        ],
-      }}
       additionalLayerConfiguration={{
         brunnen: {
           title: <span>Trinkwasserbrunnen</span>,
@@ -366,7 +285,6 @@ function App() {
         />
       )}
       {showConsole && <LogConsole ghostModeAvailable={true} minifyAvailable={true} />}
-
       <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>
   );
