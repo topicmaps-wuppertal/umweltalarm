@@ -15,7 +15,7 @@ const MyMenu = () => {
         <span>
           Über <strong>Einstellungen</strong> können Sie die Darstellung der Hintergrundkarte und
           der Objekte an Ihre Vorlieben anpassen. Wählen Sie <strong>Kompaktanleitung</strong> für
-          detailliertere Bedienungsinformationen.enungsinformationen.
+          detailliertere Bedienungsinformationen.
         </span>
       }
       menuSections={[

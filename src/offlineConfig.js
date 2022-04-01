@@ -9,6 +9,11 @@ export const offlineConfig = {
       cachePath: "fonts/Open",
     },
     {
+      origin: "https://omt.map-hosting.de/fonts/Metropolis Regular,Noto",
+      cachePath: "fonts/Open",
+      realServerFallback: false,
+    },
+    {
       origin: "https://omt.map-hosting.de/fonts",
       cachePath: "fonts",
     },
