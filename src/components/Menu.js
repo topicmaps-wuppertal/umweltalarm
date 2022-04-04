@@ -24,6 +24,7 @@ const MyMenu = () => {
           skipFilterTitleSettings={true}
           skipClusteringSettings={true}
           skipSymbolsizeSetting={true}
+          previewMapPosition='lat=51.26237138174926&lng=7.236986160278321&zoom=16'
         />,
         <Section
           key='legend'
