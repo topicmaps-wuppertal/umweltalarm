@@ -181,6 +181,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
         modalMenu={<MyMenu />}
         homeZoom={13}
         maxZoom={22}
+        applicationMenuTooltipString='Einstellungen | Legende | Kompaktanleitung'
         secondaryInfo={windowSize && <InfoPanel hits={hits} />}
         locatorControl={true}
         mappingBoundsChanged={(boundingBox) => {
@@ -212,6 +213,7 @@ function UmweltalarmMap({ loggedOut, initialised }) {
 
         <Control className='leaflet-bar' position={"topleft"}>
           <button
+            title='Objekte im Kartenfenster suchen'
             disabled={!searchInWholeWindowEnabled}
             onClick={() => {
               setHits();
