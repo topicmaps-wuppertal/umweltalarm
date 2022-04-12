@@ -15,7 +15,7 @@ const MyMenu = () => {
         <span>
           Über <strong>Einstellungen</strong> können Sie die Darstellung der Hintergrundkarte und
           der Objekte an Ihre Vorlieben anpassen. Wählen Sie <strong>Kompaktanleitung</strong> für
-          detailliertere Bedienungsinformationen.enungsinformationen.
+          detailliertere Bedienungsinformationen.
         </span>
       }
       menuSections={[
@@ -24,6 +24,7 @@ const MyMenu = () => {
           skipFilterTitleSettings={true}
           skipClusteringSettings={true}
           skipSymbolsizeSetting={true}
+          previewMapPosition='lat=51.26237138174926&lng=7.236986160278321&zoom=16'
         />,
         <Section
           key='legend'

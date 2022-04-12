@@ -19,6 +19,8 @@ import {
   md5ActionFetchDAQ4Dexie,
 } from "./md5Fetching";
 import UmweltalarmMap from "./UmweltalarmMap";
+import LogConsole from "react-cismap/tools/LogConsole";
+import { offlineConfig } from "./offlineConfig";
 
 export const appKey = "umweltalarm.Online.Wuppertal";
 export const apiUrl = "https://umweltalarm-api.cismet.de";
@@ -43,6 +45,7 @@ function App() {
   useEffect(() => {
     document.title = "Umweltalarm Wuppertal";
   }, []);
+  const showConsole = new URLSearchParams(window.location.href).get("consoleOverlay") !== null;
 
   const [jwt, _setJWT] = useState();
   const [loggedOut, setLoggedOut] = useState();
@@ -108,7 +111,6 @@ function App() {
     }
   }, [jwt]);
 
-
   if (getInternetExplorerVersion() === -1) {
     backgroundModes = [
       {
@@ -117,11 +119,17 @@ function App() {
         layerKey: "stadtplan",
       },
       {
-        title: "Stadtplan (Vektordaten light)",
+        title: "Stadtplan (grau)",
         mode: "default",
-        layerKey: "vector",
+        layerKey: "vectorCityMap2",
+        offlineDataStoreKey: "wuppBasemap",
       },
-
+      {
+        title: "Stadtplan (bunt)",
+        mode: "default",
+        layerKey: "vectorCityMap",
+        offlineDataStoreKey: "wuppBasemap",
+      },
       { title: "Luftbildkarte", mode: "default", layerKey: "lbk" },
     ];
   } else {
@@ -131,7 +139,6 @@ function App() {
         mode: "default",
         layerKey: "stadtplan",
       },
-
       { title: "Luftbildkarte", mode: "default", layerKey: "lbk" },
     ];
   }
@@ -147,8 +154,14 @@ function App() {
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
-    vector: {
+    vectorCityMap2: {
       layerkey: "cismetLight",
+      src: "/images/rain-hazard-map-bg/citymap.png",
+      title: "Stadtplan",
+    },
+
+    vectorCityMap: {
+      layerkey: "osmBrightOffline",
       src: "/images/rain-hazard-map-bg/citymap.png",
       title: "Stadtplan",
     },
@@ -156,26 +169,37 @@ function App() {
 
   // const baseLayerConf = JSON.parse(JSON.stringify(defaultLayerConf));
   // TODO problems in settings preview map wehen doing the immutable way
-  const baseLayerConf = { ...defaultLayerConf };
 
-  if (baseLayerConf.namedLayers.cismetLight === undefined) {
+  const baseLayerConf = { ...defaultLayerConf };
+  if (!baseLayerConf.namedLayers.cismetLight) {
     baseLayerConf.namedLayers.cismetLight = {
       type: "vector",
       style: "https://omt.map-hosting.de/styles/cismet-light/style.json",
+      offlineAvailable: true,
+      offlineDataStoreKey: "wuppBasemap",
       pane: "backgroundvectorLayers",
     };
   }
-  if (baseLayerConf.namedLayers.cismetText === undefined) {
-    baseLayerConf.namedLayers.cismetText = {
+  if (!baseLayerConf.namedLayers.osmBrightOffline) {
+    baseLayerConf.namedLayers.osmBrightOffline = {
       type: "vector",
-      style: "https://omt.map-hosting.de/styles/cismet-text/style.json",
-      pane: "backgroundlayerTooltips",
+      style: "https://omt.map-hosting.de/styles/osm-bright-grey/style.json",
+      offlineAvailable: true,
+      offlineDataStoreKey: "wuppBasemap",
+      pane: "backgroundvectorLayers",
     };
   }
+
   let loginForm = null;
   if (loggedOut && checkedForJWT === true && jwt === undefined) {
     loginForm = (
-      <LoginForm key={"login."} setJWT={setJWT} loginInfo={loginInfo} setLoginInfo={setLoginInfo}  setLoggedOut={setLoggedOut} />
+      <LoginForm
+        key={"login."}
+        setJWT={setJWT}
+        loginInfo={loginInfo}
+        setLoginInfo={setLoginInfo}
+        setLoggedOut={setLoggedOut}
+      />
     );
   }
 
@@ -185,56 +209,52 @@ function App() {
 
   return (
     <TopicMapContextProvider
-      persistenceSettings={{
-        ui: ["XappMenuVisible", "appMenuActiveMenuSection", "collapsedInfoBox"],
-        featureCollection: ["filterState", "filterMode", "clusteringEnabled"],
-        responsive: [],
-        styling: [
-          "activeAdditionalLayerKeys",
-          "namedMapStyle",
-          "selectedBackground",
-          "markerSymbolSize",
-        ],
-      }}
       additionalLayerConfiguration={{
         brunnen: {
           title: <span>Trinkwasserbrunnen</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"brunnen"}
-              style_='http://localhost:888/styles/brunnen/style.json'
               style='https://omt.map-hosting.de/styles/brunnen/style.json'
               pane='additionalLayers0'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
         kanal: {
           title: <span>Kanalnetz</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"kanal"}
-              style_='http://localhost:888/styles/kanal/style.json'
               style='https://omt.map-hosting.de/styles/kanal/style.json'
               pane='additionalLayers1'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
         gewaesser: {
           title: <span>Gewässernetz</span>,
-          initialActive: true,
+          initialActive: false,
           layer: (
             <MapLibreLayer
               key={"gewaesser"}
-              style_='http://localhost:888/styles/gewaesser/style.json'
               style='https://omt.map-hosting.de/styles/gewaesser/style.json'
               pane='additionalLayers2'
+              offlineAvailable={true}
+              offlineDataStoreKey='umweltalarm'
             />
           ),
+          offlineDataStoreKey: "umweltalarm",
         },
       }}
       baseLayerConf={baseLayerConf}
+      offlineCacheConfig={offlineConfig}
       backgroundConfigurations={backgroundConfigurations}
       backgroundModes={backgroundModes}
       referenceSystem={MappingConstants.crs3857}
@@ -264,7 +284,7 @@ function App() {
           jwt={jwt}
         />
       )}
-
+      {showConsole && <LogConsole ghostModeAvailable={true} minifyAvailable={true} />}
       <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>
   );

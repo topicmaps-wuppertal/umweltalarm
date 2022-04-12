@@ -6,6 +6,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import IconComp from "react-cismap/commons/Icon";
 import { FeatureCollectionDispatchContext } from "react-cismap/contexts/FeatureCollectionContextProvider";
 import { ResponsiveTopicMapContext } from "react-cismap/contexts/ResponsiveTopicMapContextProvider";
+import { UIDispatchContext } from "react-cismap/contexts/UIContextProvider";
 import { CACHE_JWT } from "react-cismap/tools/fetching";
 import { appKey, daqKeys, db } from "../App";
 import { offlineDataAvailable } from "../search";
@@ -24,6 +25,8 @@ const LoginForm = ({
 
   const { windowSize } = useContext(ResponsiveTopicMapContext);
   const { setMetaInformation } = useContext(FeatureCollectionDispatchContext);
+  const { setAppMenuVisible } = useContext(UIDispatchContext);
+
   const pwFieldRef = useRef();
   const userFieldRef = useRef();
   const _height = windowSize?.height || 800 - 180;
@@ -35,14 +38,15 @@ const LoginForm = ({
   const [user, _setUser] = useState("");
   const [pw, setPw] = useState("");
   const [cacheDataAvailable, setCacheDataAvailable] = useState(false);
-
   window.localforage = localforage;
   const setUser = (user) => {
     // eslint-disable-next-line
     localforage.setItem("@" + appKey + "." + "auth" + "." + "user", user);
     _setUser(user);
   };
-
+  useEffect(() => {
+    setAppMenuVisible(false);
+  }, []);
   useEffect(() => {
     (async () => {
       // eslint-disable-next-line

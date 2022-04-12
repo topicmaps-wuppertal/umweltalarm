@@ -158,7 +158,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
       <Loadable active={hits === undefined} spinner text={"Suchen"}>
         <div style={gridStyle}>
           {/* Trinkwasserbrunnen */}
-          <div style={hitsObject?.brunnen !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='Trinkwasserbrunnen'
+            style={hitsObject?.brunnen !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faFaucet} />
             <div style={subtextStyle}>
               {hitsObject?.brunnen !== undefined
@@ -181,7 +184,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             <div style={subtextStyle}>{(hitsObject?.strassenmeisterei !== undefined ? hitsObject?.strassenmeisterei[0].default_name : '')}</div>
           </div> */}
           {/* BIMSchG */}
-          <div style={hitsObject?.bimsch !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='BImschG-Anlagen'
+            style={hitsObject?.bimsch !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faIndustry} />
             <div style={subtextStyle}>
               {hitsObject?.bimsch !== undefined
@@ -195,7 +201,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             </div>
           </div>
           {/* Wasserschutzgebiete */}
-          <div style={hitsObject?.wasserschutzgebiete !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='Wasserschutzgebiete'
+            style={hitsObject?.wasserschutzgebiete !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faHandHoldingWater} />
             <div style={subtextStyle}>
               {hitsObject?.wasserschutzgebiete !== undefined
@@ -215,7 +224,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             </div>
           </div> */}
           {/* Störfallbetriebe */}
-          <div style={hitsObject?.stoerfallbetriebe !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='Störfallbetriebe'
+            style={hitsObject?.stoerfallbetriebe !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faExclamationCircle} />
             <div style={subtextStyle}>
               {hitsObject?.stoerfallbetriebe !== undefined
@@ -230,7 +242,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             </div>
           </div>
           {/* städt. Flurstücke */}
-          <div style={hitsObject?.stadtFlurstuecke !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='Städtische Flurstücke'
+            style={hitsObject?.stadtFlurstuecke !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faCity} />
             <div style={subtextStyle}>
               {hitsObject?.stadtFlurstuecke !== undefined
@@ -243,7 +258,10 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
             </div>
           </div>
           {/* Landschafts und Naturschutzgebiete */}
-          <div style={hitsObject?.schutzgebiete !== undefined ? activeStyle : inactiveStyle}>
+          <div
+            title='Landschafts- und Naturschutzgebiete'
+            style={hitsObject?.schutzgebiete !== undefined ? activeStyle : inactiveStyle}
+          >
             <FontAwesomeIcon style={{ fontSize }} icon={faTree} />
             <div style={subtextStyle}>
               {hitsObject?.schutzgebiete !== undefined
@@ -276,6 +294,7 @@ const InfoBox = ({ hits, mode, setFeatureCollectionVisible, isFeatureCollectionV
         <div>
           <Button
             variant={isFeatureCollectionVisible ? "success" : "secondary"}
+            title={isFeatureCollectionVisible ? "aus Karte ausblenden" : "in Karte anzeigen"}
             style={{ marginBottom: 5 }}
             onClick={() => {
               setFeatureCollectionVisible(!isFeatureCollectionVisible);
