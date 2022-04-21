@@ -144,8 +144,7 @@ function App() {
   }
   const backgroundConfigurations = {
     lbk: {
-      layerkey: "cismetText|trueOrtho2020@40",
-      layerkey_: "wupp-plan-live@100|trueOrtho2020@75|rvrSchrift@100",
+      layerkey: "rvrGrundriss@100|trueOrtho2020@75|rvrSchriftNT@100",
       src: "/images/rain-hazard-map-bg/ortho.png",
       title: "Luftbildkarte",
     },
