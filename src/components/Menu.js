@@ -4,18 +4,30 @@ import DefaultSettingsPanel from "react-cismap/topicmaps/menu/DefaultSettingsPan
 import ModalApplicationMenu from "react-cismap/topicmaps/menu/ModalApplicationMenu";
 import Section from "react-cismap/topicmaps/menu/Section";
 import MenuFooter from "./MenuFooter";
+import Ueberblick from "./onlinehelpsections/010_Ueberblick";
+import Fachdatenquellen from "./onlinehelpsections/020_Fachdatenquellen";
+import Hintergrundkarten from "./onlinehelpsections/030_Hintergrundkarte";
+import ThematischerDurchstich from "./onlinehelpsections/040_ThematischerDurchstich";
+import Infobox from "./onlinehelpsections/050_Infobox";
+import InKartePositionieren from "./onlinehelpsections/060_InKartePositionieren";
+import MeinStandort from "./onlinehelpsections/070_MeinStandort";
+import ObjekteSuchen from "./onlinehelpsections/080_ObjekteSuchen";
+import AnmeldungUndOfflineBenutzung from "./onlinehelpsections/090_AnmeldungUndOfflineBenutzung";
 
 const MyMenu = () => {
   const simpleHelp = undefined;
   return (
     <ModalApplicationMenu
       menuIcon={"bars"}
-      menuTitle={"Einstellungen und Kompaktanleitung"}
+      menuTitle={"Einstellungen, Legende und Kompaktanleitung"}
       menuIntroduction={
         <span>
           Über <strong>Einstellungen</strong> können Sie die Darstellung der Hintergrundkarte und
-          der Objekte an Ihre Vorlieben anpassen. Wählen Sie <strong>Kompaktanleitung</strong> für
-          detailliertere Bedienungsinformationen.
+          der Objekte an Ihre Vorlieben anpassen. Im Abschnitt{" "}
+          <strong>Legende der Fachdaten</strong> finden Sie die Zeichenerklärung für diejenigen
+          Fachdaten, die flächendeckend als Bestandteil der Hintergrundkarte angeboten werden
+          (Gewässer- und Kanalnetz, Trinkwasserbrunnen). Wählen Sie{" "}
+          <strong>Kompaktanleitung</strong> für detailliertere Bedienungsinformationen.
         </span>
       }
       menuSections={[
@@ -134,7 +146,87 @@ const MyMenu = () => {
           sectionTitle='Kompaktanleitung'
           sectionBsStyle='default'
           sectionContent={
-            <ConfigurableDocBlocks configs={getSimpleHelpForTM(document.title, simpleHelp)} />
+            <ConfigurableDocBlocks
+              configs={[
+                {
+                  type: "FAQS",
+                  configs: [
+                    {
+                      title: "Überblick",
+                      bsStyle: "secondary",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <Ueberblick />,
+                      },
+                    },
+                    {
+                      title: "Fachdatenquellen",
+                      bsStyle: "secondary",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <Fachdatenquellen />,
+                      },
+                    },
+                    {
+                      title: "Hintergrundkarte",
+                      bsStyle: "secondary",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <Hintergrundkarten />,
+                      },
+                    },
+                    {
+                      title: "Karteninhalt verschieben und thematischer Durchstich",
+                      bsStyle: "success",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <ThematischerDurchstich />,
+                      },
+                    },
+                    {
+                      title: "Info-Box und Datenblattansicht",
+                      bsStyle: "success",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <Infobox />,
+                      },
+                    },
+                    {
+                      title: "In Karte positionieren",
+                      bsStyle: "success",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <InKartePositionieren />,
+                      },
+                    },
+                    {
+                      title: "Mein Standort",
+                      bsStyle: "success",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <MeinStandort />,
+                      },
+                    },
+                    {
+                      title: "Objekte im Kartenfenster suchen",
+                      bsStyle: "warning",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <ObjekteSuchen />,
+                      },
+                    },
+                    {
+                      title: "Anmeldung und Offline-Benutzung",
+                      bsStyle: "warning",
+                      contentBlockConf: {
+                        type: "REACTCOMP",
+                        content: <AnmeldungUndOfflineBenutzung />,
+                      },
+                    },
+                  ],
+                },
+              ]}
+            />
           }
         />,
       ]}
