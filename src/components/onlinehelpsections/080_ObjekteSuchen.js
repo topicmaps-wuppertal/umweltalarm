@@ -39,9 +39,9 @@ const ObjekteSuchen = () => {
         (Schaltfläche dann mit grünem Hintergrund), erfolgt die Anzeige in der Karte sofort.{" "}
       </p>
       <p>
-        Die Funktion als Einmal-Aktion implementiert, mit der Sie sich schnell einen Überblick über
-        die relevanten Objekte in der näheren Umgebung Ihres Einsatzortes verschaffen können. Mit
-        der nächsten Aktion zur Veränderung des Kartenausschnittes (Positionierung, Verschiebung
+        Die Funktion ist als Einmal-Aktion implementiert, mit der Sie sich schnell einen Überblick
+        über die relevanten Objekte in der näheren Umgebung Ihres Einsatzortes verschaffen können.
+        Mit der nächsten Aktion zur Veränderung des Kartenausschnittes (Positionierung, Verschiebung
         oder Zoom-in / Zoom-out) wird wieder ein thematischer Durchstich an der Position des
         Fadenkreuzes ausgelöst. Um die Anzahl der gefundenen und darzustellenden Objekte auf ein
         praktikables Maß zu beschränken, ist diese Funktion nur in den großen
