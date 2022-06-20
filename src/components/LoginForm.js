@@ -21,8 +21,6 @@ const LoginForm = ({
   setLoginInfo = () => {},
   setLoggedOut,
 }) => {
-  console.log("xxx loginform mounted");
-
   const { windowSize } = useContext(ResponsiveTopicMapContext);
   const { setMetaInformation } = useContext(FeatureCollectionDispatchContext);
   const { setAppMenuVisible } = useContext(UIDispatchContext);
