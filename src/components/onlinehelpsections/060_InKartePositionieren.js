@@ -10,6 +10,7 @@ const InKartePositionieren = () => {
             grosseZoomstufe: 18,
             addendum: (
               <span>
+                {" "}
                 Mit den hier beschriebenen Positionierungen werden stets Verschiebungen des
                 Karteninhaltes bewirkt, nach denen jeweils automatisch ein{" "}
                 <Link
