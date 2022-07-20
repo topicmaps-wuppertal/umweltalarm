@@ -2754,6 +2754,14 @@
     "@turf/bbox" "^6.4.0"
     "@turf/helpers" "^6.4.0"
 
+"@turf/center@^6.5.0":
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@turf/center/-/center-6.5.0.tgz#3bcb6bffcb8ba147430cfea84aabaed5dbdd4f07"
+  integrity sha512-T8KtMTfSATWcAX088rEDKjyvQCBkUsLnK/Txb6/8WUXIeOZyHu42G7MkdkHRoHtwieLdduDdmPLFyTdG5/e7ZQ==
+  dependencies:
+    "@turf/bbox" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
+
 "@turf/circle@^6.4.0":
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/@turf/circle/-/circle-6.4.0.tgz#fccbd5cb06e35226e38ac9aecb287b1dc94aaa95"
@@ -9975,7 +9983,7 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-maplibre-gl@^1.13.0-rc.5:
+maplibre-gl@1.15.2:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-1.15.2.tgz#7fb47868b62455af916c090903f2154394450f9c"
   integrity sha512-uPeV530apb4JfX3cRFfE+awFnbcJTOnCv2QvY4mw4huiInbybElWYkNzTs324YLSADq0f4bidRoYcR81ho3aLA==
@@ -12351,10 +12359,10 @@ react-chartkick@^0.4.1:
   dependencies:
     chartkick "^3.2.0"
 
-react-cismap@1.8.10:
-  version "1.8.10"
-  resolved "https://registry.yarnpkg.com/react-cismap/-/react-cismap-1.8.10.tgz#ebba241284ffd7e4edd86a821107ace76e4af720"
-  integrity sha512-x2/U/bSuwkiVu0J2WW1marxZvSTPy6cyVv6U5Di3Sa5UJfMqe6QVl5qsKaM2BR/7SWSNEaxWa7EjRW4mvNIO0Q==
+react-cismap@1.9.4:
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/react-cismap/-/react-cismap-1.9.4.tgz#7c5b41af59b86c9725ee9a2005e2bbc27cb93185"
+  integrity sha512-96bl2FCLzCuH+igf7AeoVwqLcGT3UEs8LYYSdUK9h7pqOUCV31og2Q0VLyuJrd0xb6V4y5Q0Yejnrwk16Jz9/Q==
   dependencies:
     "@fortawesome/fontawesome-free" "^5.12.0"
     "@fortawesome/fontawesome-svg-core" "^1.2.26"
@@ -12368,6 +12376,7 @@ react-cismap@1.8.10:
     "@turf/bbox" "^6.0.1"
     "@turf/bbox-polygon" "^6.0.1"
     "@turf/boolean-intersects" "^6.3.0"
+    "@turf/center" "^6.5.0"
     "@turf/envelope" "^6.3.0"
     "@turf/helpers" "^6.1.4"
     "@turf/inside" "^5.0.0"
@@ -12402,7 +12411,7 @@ react-cismap@1.8.10:
     leaflet.path.drag "^0.0.6"
     localforage "^1.9.0"
     lodash "^4.17.20"
-    maplibre-gl "^1.13.0-rc.5"
+    maplibre-gl "1.15.2"
     md5 "^2.3.0"
     object-assign "^4.1.1"
     polylabel mapbox/polylabel
