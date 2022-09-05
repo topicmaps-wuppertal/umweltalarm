@@ -1,31 +1,32 @@
 {
   "files": {
     "main.css": "./static/css/main.a617e044.chunk.css",
-    "main.js": "./static/js/main.2a5cfdcb.chunk.js",
-    "main.js.map": "./static/js/main.2a5cfdcb.chunk.js.map",
+    "main.js": "./static/js/main.23a3c247.chunk.js",
+    "main.js.map": "./static/js/main.23a3c247.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.9e1c2700.js",
     "runtime-main.js.map": "./static/js/runtime-main.9e1c2700.js.map",
-    "static/css/2.7317f719.chunk.css": "./static/css/2.7317f719.chunk.css",
-    "static/js/2.426ce213.chunk.js": "./static/js/2.426ce213.chunk.js",
-    "static/js/2.426ce213.chunk.js.map": "./static/js/2.426ce213.chunk.js.map",
+    "static/css/2.6996ec9b.chunk.css": "./static/css/2.6996ec9b.chunk.css",
+    "static/js/2.49dd6e6d.chunk.js": "./static/js/2.49dd6e6d.chunk.js",
+    "static/js/2.49dd6e6d.chunk.js.map": "./static/js/2.49dd6e6d.chunk.js.map",
     "static/js/3.273d1b85.chunk.js": "./static/js/3.273d1b85.chunk.js",
     "static/js/3.273d1b85.chunk.js.map": "./static/js/3.273d1b85.chunk.js.map",
     "index.html": "./index.html",
     "service-worker.js": "./service-worker.js",
     "service-worker.js.map": "./service-worker.js.map",
-    "static/css/2.7317f719.chunk.css.map": "./static/css/2.7317f719.chunk.css.map",
+    "static/css/2.6996ec9b.chunk.css.map": "./static/css/2.6996ec9b.chunk.css.map",
     "static/css/main.a617e044.chunk.css.map": "./static/css/main.a617e044.chunk.css.map",
-    "static/js/2.426ce213.chunk.js.LICENSE.txt": "./static/js/2.426ce213.chunk.js.LICENSE.txt",
+    "static/js/2.49dd6e6d.chunk.js.LICENSE.txt": "./static/js/2.49dd6e6d.chunk.js.LICENSE.txt",
     "static/media/MeinStandpunktMarker.aec65d22.jpg": "./static/media/MeinStandpunktMarker.aec65d22.jpg",
     "static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg": "./static/media/MeinStandpunktMarkerDoppel.e4a85271.jpg",
     "static/media/font-awesome.css": "./static/media/fontawesome-webfont.f691f37e.woff",
+    "static/media/L.Control.Locate.min.css": "./static/media/spinner-solid.bc3f17b3.svg",
     "static/media/leaflet.extra-markers.min.css": "./static/media/markers_default@2x.9593b3c7.png"
   },
   "entrypoints": [
     "static/js/runtime-main.9e1c2700.js",
-    "static/css/2.7317f719.chunk.css",
-    "static/js/2.426ce213.chunk.js",
+    "static/css/2.6996ec9b.chunk.css",
+    "static/js/2.49dd6e6d.chunk.js",
     "static/css/main.a617e044.chunk.css",
-    "static/js/main.2a5cfdcb.chunk.js"
+    "static/js/main.23a3c247.chunk.js"
   ]
 }
