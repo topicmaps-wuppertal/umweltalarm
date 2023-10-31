@@ -45,7 +45,8 @@ function App() {
   useEffect(() => {
     document.title = "Umweltalarm Wuppertal";
   }, []);
-  const showConsole = new URLSearchParams(window.location.href).get("consoleOverlay") !== null;
+  const showConsole =
+    new URLSearchParams(window.location.href).get("consoleOverlay") !== null;
 
   const [jwt, _setJWT] = useState();
   const [loggedOut, setLoggedOut] = useState();
@@ -61,7 +62,9 @@ function App() {
   useEffect(() => {
     (async () => {
       // eslint-disable-next-line
-      const jwtInCache = await localforage.getItem("@" + appKey + "." + "auth" + "." + "jwt");
+      const jwtInCache = await localforage.getItem(
+        "@" + appKey + "." + "auth" + "." + "jwt"
+      );
       if (jwtInCache) {
         setJWT(jwtInCache);
         setLoggedOut(false);
@@ -80,26 +83,48 @@ function App() {
       for (const daqKey of daqKeys) {
         tasks.push(md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, daqKey, db));
       }
-      tasks.push(md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartner", db));
-      tasks.push(md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartnerZustaendigkeit", db));
+      tasks.push(
+        md5ActionFetchDAQ4Dexie(appKey, apiUrl, jwt, "ansprechpartner", db)
+      );
+      tasks.push(
+        md5ActionFetchDAQ4Dexie(
+          appKey,
+          apiUrl,
+          jwt,
+          "ansprechpartnerZustaendigkeit",
+          db
+        )
+      );
 
       Promise.all(tasks).then(
         (results) => {
+          console.log("results", results);
+
           for (const result of results) {
-            if (result.daqKey === "ansprechpartner" && Array.isArray(result.data)) {
+            if (
+              result.daqKey === "ansprechpartner" &&
+              Array.isArray(result.data)
+            ) {
               indexAnsprechpartner(result.data, "ansprechpartner", db);
             } else if (
               result.daqKey === "ansprechpartnerZustaendigkeit" &&
               Array.isArray(result.data)
             ) {
-              indexAnsprechpartnerZustaendigkeit(result.data, "ansprechpartnerZustaendigkeit", db);
+              indexAnsprechpartnerZustaendigkeit(
+                result.data,
+                "ansprechpartnerZustaendigkeit",
+                db
+              );
             }
           }
           setInitialised("initialised complete");
         },
         (problem) => {
           setJWT(undefined);
-          setLoginInfo({ color: "#F9D423", text: "Bitte melden Sie sich erneut an." });
+          setLoginInfo({
+            color: "#F9D423",
+            text: "Bitte melden Sie sich erneut an.",
+          });
           setTimeout(() => {
             setLoginInfo();
           }, 2500);
@@ -215,10 +240,10 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"brunnen"}
-              style='https://omt.map-hosting.de/styles/brunnen/style.json'
-              pane='additionalLayers0'
+              style="https://omt.map-hosting.de/styles/brunnen/style.json"
+              pane="additionalLayers0"
               offlineAvailable={true}
-              offlineDataStoreKey='umweltalarm'
+              offlineDataStoreKey="umweltalarm"
             />
           ),
           offlineDataStoreKey: "umweltalarm",
@@ -229,10 +254,10 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"kanal"}
-              style='https://omt.map-hosting.de/styles/kanal/style.json'
-              pane='additionalLayers1'
+              style="https://omt.map-hosting.de/styles/kanal/style.json"
+              pane="additionalLayers1"
               offlineAvailable={true}
-              offlineDataStoreKey='umweltalarm'
+              offlineDataStoreKey="umweltalarm"
             />
           ),
           offlineDataStoreKey: "umweltalarm",
@@ -243,10 +268,10 @@ function App() {
           layer: (
             <MapLibreLayer
               key={"gewaesser"}
-              style='https://omt.map-hosting.de/styles/gewaesser/style.json'
-              pane='additionalLayers2'
+              style="https://omt.map-hosting.de/styles/gewaesser/style.json"
+              pane="additionalLayers2"
               offlineAvailable={true}
-              offlineDataStoreKey='umweltalarm'
+              offlineDataStoreKey="umweltalarm"
             />
           ),
           offlineDataStoreKey: "umweltalarm",
@@ -257,9 +282,9 @@ function App() {
       backgroundConfigurations={backgroundConfigurations}
       backgroundModes={backgroundModes}
       referenceSystem={MappingConstants.crs3857}
-      mapEPSGCode='3857'
+      mapEPSGCode="3857"
       referenceSystemDefinition={MappingConstants.proj4crs3857def}
-      maskingPolygon='POLYGON((668010.063156992 6750719.23021889,928912.612468322 6757273.20343972,930494.610325512 6577553.43685138,675236.835570551 6571367.64964125,668010.063156992 6750719.23021889))'
+      maskingPolygon="POLYGON((668010.063156992 6750719.23021889,928912.612468322 6757273.20343972,930494.610325512 6577553.43685138,675236.835570551 6571367.64964125,668010.063156992 6750719.23021889))"
     >
       {/* {loggedOut && checkedForJWT === true && jwt === undefined && (
         <LoginForm
@@ -275,7 +300,10 @@ function App() {
           logout={() => {
             setJWT(undefined);
             setLoggedOut(true);
-            setLoginInfo({ color: "#69D2E7", text: "Sie wurden erfolgreich abgemeldet." });
+            setLoginInfo({
+              color: "#69D2E7",
+              text: "Sie wurden erfolgreich abgemeldet.",
+            });
             setTimeout(() => {
               setLoginInfo();
             }, 2500);
@@ -283,7 +311,9 @@ function App() {
           jwt={jwt}
         />
       )}
-      {showConsole && <LogConsole ghostModeAvailable={true} minifyAvailable={true} />}
+      {showConsole && (
+        <LogConsole ghostModeAvailable={true} minifyAvailable={true} />
+      )}
       <UmweltalarmMap loggedOut={loggedOut} initialised={initialised} />
     </TopicMapContextProvider>
   );

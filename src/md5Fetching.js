@@ -12,14 +12,21 @@ export const initTables = (prefix, daqKeys) => {
   }
   schema["daq_meta"] = "++id,name,md5,time";
   schema["anprechp"] = "id";
-  schema["zustaendigkeit"] = "id,tabelle,referenzfeld,referenz,[tabelle+referenzfeld+referenz]";
+  schema["zustaendigkeit"] =
+    "id,tabelle,referenzfeld,referenz,[tabelle+referenzfeld+referenz]";
 
   db.version(10).stores(schema);
 
   return db;
 };
 
-export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) => {
+export const md5ActionFetchDAQ4Dexie = async (
+  prefix,
+  apiUrl,
+  jwt,
+  daqKey,
+  db
+) => {
   const allObjects = await db.table("daq_meta").get({ name: daqKey });
   let md5InCache = null;
 
@@ -32,7 +39,7 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
   let taskParameters = {
     parameters: {
       daqKey,
-      md5: md5InCache || "-",
+      md5: md5InCache + (daqKey === "trinkwasserbrunnen" ? "XXX" : "") || "-",
     },
   };
 
@@ -54,7 +61,8 @@ export const md5ActionFetchDAQ4Dexie = async (prefix, apiUrl, jwt, daqKey, db) =
     });
   } else {
     const response = await fetch(
-      apiUrl + "/actions/WUNDA_BLAU.dataAquisition/tasks?resultingInstanceType=result",
+      apiUrl +
+        "/actions/WUNDA_BLAU.dataAquisition/tasks?resultingInstanceType=result",
       {
         method: "POST",
         // method: "GET",
@@ -181,7 +189,11 @@ export const indexAnsprechpartner = async (content, table, db) => {
   await tableObject.bulkPut(data);
 };
 
-export const indexAnsprechpartnerZustaendigkeit = async (content, table, db) => {
+export const indexAnsprechpartnerZustaendigkeit = async (
+  content,
+  table,
+  db
+) => {
   const tableObject = db.table("zustaendigkeit");
   await tableObject.clear();
 
