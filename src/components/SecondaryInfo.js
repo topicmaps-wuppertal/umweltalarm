@@ -39,22 +39,22 @@ const footer = (
         {document.title} v{getApplicationVersion()}
       </b>
       :{" "}
-      <a href='https://cismet.de/' target='_cismet'>
+      <a href="https://cismet.de/" target="_cismet">
         cismet GmbH
       </a>{" "}
       auf Basis von{" "}
-      <a href='http://leafletjs.com/' target='_more'>
+      <a href="http://leafletjs.com/" target="_more">
         Leaflet
       </a>{" "}
       und{" "}
-      <a href='https://cismet.de/#refs' target='_cismet'>
+      <a href="https://cismet.de/#refs" target="_cismet">
         cids | react-cismap v{reactCismapVersion}
       </a>{" "}
       |{" "}
       <a
-        target='_blank'
-        rel='noopener noreferrer'
-        href='https://cismet.de/datenschutzerklaerung.html'
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://cismet.de/datenschutzerklaerung.html"
       >
         Datenschutzerklärung (Privacy Policy)
       </a>
@@ -70,9 +70,9 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
       <span key={`span.tel` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.tel` + keyPostfix}
-          tooltip='Ansprechpartner Anrufen'
+          tooltip="Ansprechpartner Anrufen"
           href={"tel:" + ansprechpartner.tel}
-          iconname='phone'
+          iconname="phone"
         />
       </span>
     );
@@ -82,10 +82,10 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
       <span key={`span.email` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.email` + keyPostfix}
-          tooltip='E-Mail an Ansprechpartner schreiben'
+          tooltip="E-Mail an Ansprechpartner schreiben"
           href={"mailto:" + ansprechpartner.email}
-          iconname='envelope-square'
-          target='_blank'
+          iconname="envelope-square"
+          target="_blank"
         />
       </span>
     );
@@ -95,10 +95,10 @@ const getAnsprechpartnerLinks = (ansprechpartner) => {
       <span key={`span.web` + keyPostfix} style={{ padding: 4 }}>
         <IconLink
           key={`IconLink.web` + keyPostfix}
-          tooltip='Webseite'
+          tooltip="Webseite"
           href={ansprechpartner.url}
-          target='_blank'
-          iconname='external-link-square'
+          target="_blank"
+          iconname="external-link-square"
         />
       </span>
     );
@@ -166,7 +166,8 @@ const getDienststellen = (dienststellen, ansprechpartner) => {
     <span>
       {dienststellenArray.map((value, index) => {
         var styleParam =
-          value === ansprechpartner?.firma.trim() && dienststellenArray.length > 1
+          value === ansprechpartner?.firma.trim() &&
+          dienststellenArray.length > 1
             ? { borderBottom: "1px solid black" }
             : {};
 
@@ -194,7 +195,12 @@ const getSeparator = (name) => {
       }}
     >
       <span
-        style={{ fontSize: "16px", backgroundColor: "#FFFFFF", xcolor: "#aaa", padding: "0 10px" }}
+        style={{
+          fontSize: "16px",
+          backgroundColor: "#FFFFFF",
+          xcolor: "#aaa",
+          padding: "0 10px",
+        }}
       >
         {name}
       </span>
@@ -206,7 +212,8 @@ const InfoPanel = ({ hits }) => {
   const { history } = useContext(TopicMapContext);
   const lat = new URLSearchParams(history.location.search).get("lat");
   const long = new URLSearchParams(history.location.search).get("lng");
-  const showRawData = new URLSearchParams(history.location.search).get("showRawData") !== null;
+  const showRawData =
+    new URLSearchParams(history.location.search).get("showRawData") !== null;
 
   const hitObject = objectifyHits(hits);
 
@@ -220,7 +227,11 @@ const InfoPanel = ({ hits }) => {
             <b>{desc}:</b> {value}
           </div>
         );
-      } else if (value && valFunc === undefined && Array.isArray(value) === true) {
+      } else if (
+        value &&
+        valFunc === undefined &&
+        Array.isArray(value) === true
+      ) {
         return (
           <div>
             <b>{desc}:</b> {value.join(", ")}
@@ -245,7 +256,7 @@ const InfoPanel = ({ hits }) => {
         subSections.push(
           <SecondaryInfoPanelSection
             key={"standort" + hitObject.id}
-            bsStyle='success'
+            bsStyle="success"
             header={"Zuständigkeiten"}
           >
             {hitObject.wasserverbaende && getSeparator("Wasserverband")}
@@ -254,7 +265,8 @@ const InfoPanel = ({ hits }) => {
               hitObject.wasserverbaende.map((value, index) => {
                 return (
                   <div key={"wasserverbaende_" + index}>
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -266,7 +278,8 @@ const InfoPanel = ({ hits }) => {
                 return (
                   <div key={"autm_" + index}>
                     {index > 0 && <br></br>}
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -275,48 +288,54 @@ const InfoPanel = ({ hits }) => {
             {hitObject.strassenmeisterei && (
               <div>
                 {hitObject.strassenmeisterei[0].ansprechpartner &&
-                  getAnsprechpartner(hitObject.strassenmeisterei[0].ansprechpartner)}
+                  getAnsprechpartner(
+                    hitObject.strassenmeisterei[0].ansprechpartner
+                  )}
               </div>
             )}
 
             {hitObject.stadtFlurstuecke && getSeparator("Stadt Wuppertal")}
-            {hitObject.stadtFlurstuecke && hitObject.stadtFlurstuecke.length > 1 && (
-              <div>
-                <div>
-                  Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke gefunden. Nachfolgend
-                  wird das Flurstück mit dem geringsten Abstand zum Fadenkreuz angezeigt.
-                </div>
-                <br></br>
+            {hitObject.stadtFlurstuecke &&
+              hitObject.stadtFlurstuecke.length > 1 && (
                 <div>
                   <div>
-                    <b>Flurstück: </b>
-                    {hitObject.stadtFlurstuecke[0].flurstueck}
+                    Es wurden {hitObject.stadtFlurstuecke.length} Flurstücke
+                    gefunden. Nachfolgend wird das Flurstück mit dem geringsten
+                    Abstand zum Fadenkreuz angezeigt.
                   </div>
+                  <br></br>
                   <div>
-                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length > 1 && (
-                      <b>Dienststellen: </b>
-                    )}
-                    {hitObject.stadtFlurstuecke[0].dienststellen.split("#").length <= 1 && (
-                      <b>Dienststelle: </b>
-                    )}
-                    {getDienststellen(
-                      hitObject.stadtFlurstuecke[0].dienststellen,
-                      Array.isArray(hitObject.stadtFlurstuecke[0].ansprechpartner)
-                        ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
-                        : hitObject.stadtFlurstuecke[0].ansprechpartner
-                    )}
-                    {/* {value.dienststellen.replace('#', ', ')} */}
+                    <div>
+                      <b>Flurstück: </b>
+                      {hitObject.stadtFlurstuecke[0].flurstueck}
+                    </div>
+                    <div>
+                      {hitObject.stadtFlurstuecke[0].dienststellen.split("#")
+                        .length > 1 && <b>Dienststellen: </b>}
+                      {hitObject.stadtFlurstuecke[0].dienststellen.split("#")
+                        .length <= 1 && <b>Dienststelle: </b>}
+                      {getDienststellen(
+                        hitObject.stadtFlurstuecke[0].dienststellen,
+                        Array.isArray(
+                          hitObject.stadtFlurstuecke[0].ansprechpartner
+                        )
+                          ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
+                          : hitObject.stadtFlurstuecke[0].ansprechpartner
+                      )}
+                      {/* {value.dienststellen.replace('#', ', ')} */}
+                    </div>
+                    <br />
+                    {hitObject.stadtFlurstuecke[0].ansprechpartner &&
+                      getAnsprechpartner(
+                        Array.isArray(
+                          hitObject.stadtFlurstuecke[0].ansprechpartner
+                        )
+                          ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
+                          : hitObject.stadtFlurstuecke[0].ansprechpartner
+                      )}
                   </div>
-                  <br />
-                  {hitObject.stadtFlurstuecke[0].ansprechpartner &&
-                    getAnsprechpartner(
-                      Array.isArray(hitObject.stadtFlurstuecke[0].ansprechpartner)
-                        ? hitObject.stadtFlurstuecke[0].ansprechpartner[0]
-                        : hitObject.stadtFlurstuecke[0].ansprechpartner
-                    )}
                 </div>
-              </div>
-            )}
+              )}
             {hitObject.stadtFlurstuecke &&
               hitObject.stadtFlurstuecke.length === 1 &&
               hitObject.stadtFlurstuecke.map((value, index) => {
@@ -328,8 +347,12 @@ const InfoPanel = ({ hits }) => {
                       {value.flurstueck}
                     </div>
                     <div>
-                      {value.dienststellen.split("#").length > 1 && <b>Dienststellen: </b>}
-                      {value.dienststellen.split("#").length <= 1 && <b>Dienststelle: </b>}
+                      {value.dienststellen.split("#").length > 1 && (
+                        <b>Dienststellen: </b>
+                      )}
+                      {value.dienststellen.split("#").length <= 1 && (
+                        <b>Dienststelle: </b>
+                      )}
                       {getDienststellen(
                         value.dienststellen,
                         Array.isArray(value.ansprechpartner)
@@ -364,8 +387,8 @@ const InfoPanel = ({ hits }) => {
       ) {
         subSections.push(
           <SecondaryInfoPanelSection
-            key='standort'
-            bsStyle='primary'
+            key="standort"
+            bsStyle="primary"
             header={"Schutzgebiete und Anlagen"}
           >
             {hitObject.trinkwasserbrunnen && getSeparator("Trinkwasserbrunnen")}
@@ -380,15 +403,20 @@ const InfoPanel = ({ hits }) => {
                       {value.abstand} m
                     </div>
                     <div>
-                      <b>Adresse: </b>
-                      {value.str_name + " " + value.hsnr + (value.zusatz ? value.zusatz : "")}
+                      <b>Adresse Entnahmestelle: </b>
+                      {value.str_name +
+                        " " +
+                        value.hsnr +
+                        (value.zusatz ? value.zusatz : "")}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
-            {hitObject.bimschWuppertal && getSeparator("BImschG-Anlage Wuppertal")}
+            {hitObject.bimschWuppertal &&
+              getSeparator("BImschG-Anlage Wuppertal")}
 
             {hitObject.bimschWuppertal &&
               hitObject.bimschWuppertal.map((value, index) => {
@@ -404,7 +432,8 @@ const InfoPanel = ({ hits }) => {
                       {value.anlag_bez}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -425,12 +454,14 @@ const InfoPanel = ({ hits }) => {
                       {value.anlag_bez}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
 
-            {hitObject.wasserschutzgebiete && getSeparator("Wasserschutzgebiet")}
+            {hitObject.wasserschutzgebiete &&
+              getSeparator("Wasserschutzgebiet")}
 
             {/* mehrere möglich*/}
             {hitObject.wasserschutzgebiete &&
@@ -444,7 +475,8 @@ const InfoPanel = ({ hits }) => {
                       {value.zone}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -463,12 +495,14 @@ const InfoPanel = ({ hits }) => {
                       {value.nrw_nummer}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
 
-            {hitObject.landschaftsschutzgebiete && getSeparator("Landschaftsschutzgebiet")}
+            {hitObject.landschaftsschutzgebiete &&
+              getSeparator("Landschaftsschutzgebiet")}
 
             {/* mehrere möglich*/}
             {hitObject.landschaftsschutzgebiete &&
@@ -478,15 +512,19 @@ const InfoPanel = ({ hits }) => {
                     {index > 0 && <br></br>}
                     <div>
                       <b>Schutzgebietstyp: </b>
-                      {value.sg_typ === "LS" ? "Landschaftsschutzgebiet" : value.sg_typ}
+                      {value.sg_typ === "LS"
+                        ? "Landschaftsschutzgebiet"
+                        : value.sg_typ}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
 
-            {hitObject.StoerfallBetriebeKlasse1 && getSeparator("Störfallbetrieb Abstandsklasse 1")}
+            {hitObject.StoerfallBetriebeKlasse1 &&
+              getSeparator("Störfallbetrieb Abstandsklasse 1")}
 
             {hitObject.StoerfallBetriebeKlasse1 &&
               hitObject.StoerfallBetriebeKlasse1.map((value, index) => {
@@ -502,12 +540,14 @@ const InfoPanel = ({ hits }) => {
                       {value.lage}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
 
-            {hitObject.StoerfallBetriebeKlasse2 && getSeparator("Störfallbetrieb Abstandsklasse 2")}
+            {hitObject.StoerfallBetriebeKlasse2 &&
+              getSeparator("Störfallbetrieb Abstandsklasse 2")}
 
             {hitObject.StoerfallBetriebeKlasse2 &&
               hitObject.StoerfallBetriebeKlasse2.map((value, index) => {
@@ -523,7 +563,8 @@ const InfoPanel = ({ hits }) => {
                       {value.lage}
                     </div>
                     <br />
-                    {value.ansprechpartner && getAnsprechpartner(value.ansprechpartner)}
+                    {value.ansprechpartner &&
+                      getAnsprechpartner(value.ansprechpartner)}
                   </div>
                 );
               })}
@@ -543,12 +584,20 @@ const InfoPanel = ({ hits }) => {
 
         subSections.push(
           <SecondaryInfoPanelSection
-            key='standort'
-            bsStyle='info'
-            header={"Trefferobjekte (Raw Data ohne Geometrie): " + hits.length + " Treffer"}
+            key="standort"
+            bsStyle="info"
+            header={
+              "Trefferobjekte (Raw Data ohne Geometrie): " +
+              hits.length +
+              " Treffer"
+            }
           >
-            <div style={{ fontSize: "115%", padding: "10px", paddingTop: "0px" }}>
-              <pre key='hitObject'>{JSON.stringify(hitObjectForRawDisplay, null, 2)}</pre>
+            <div
+              style={{ fontSize: "115%", padding: "10px", paddingTop: "0px" }}
+            >
+              <pre key="hitObject">
+                {JSON.stringify(hitObjectForRawDisplay, null, 2)}
+              </pre>
               {/* <pre key='hits'>{JSON.stringify(hitsForRawDisplay, null, 2)}</pre> */}
             </div>
           </SecondaryInfoPanelSection>
@@ -557,7 +606,7 @@ const InfoPanel = ({ hits }) => {
     }
     return (
       <SecondaryInfo
-        titleIconName='info-circle'
+        titleIconName="info-circle"
         title={
           "Datenblatt zu: " +
           Math.round(lat * 10000) / 10000 +
@@ -567,7 +616,8 @@ const InfoPanel = ({ hits }) => {
         mainSection={
           <div style={{ fontSize: "115%", padding: "10px", paddingTop: "0px" }}>
             <div>
-              Die Suche an der angegebene Position hat insgesamt {hits.length} Treffer ergeben:
+              Die Suche an der angegebene Position hat insgesamt {hits.length}{" "}
+              Treffer ergeben:
               {display("Bezeichnung", hits?.bezeichnung)}
               {display("Flächengröße", hits?.groesse, (a) => (
                 <span>
@@ -575,7 +625,9 @@ const InfoPanel = ({ hits }) => {
                   {(Math.round((a / 10000) * 10) / 10).toLocaleString()} ha)
                 </span>
               ))}
-              {display("Stadtbezirk(e)", hits?.stadtbezirke, (sb) => sb.join(", "))}
+              {display("Stadtbezirk(e)", hits?.stadtbezirke, (sb) =>
+                sb.join(", ")
+              )}
               {display("Quartier(e)", hits?.quartiere, (q) => q.join(", "))}
               {display("Eigentümer", hits?.eigentuemer, (e) => e.join(", "))}
             </div>
